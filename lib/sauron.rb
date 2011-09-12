@@ -1,14 +1,10 @@
 module Sauron
-  autoload :GmailAccount, "sauron/gmail_account"
-  autoload :Message, "sauron/message"
-  autoload :MessageStore, "sauron/message_store"
+  autoload :RawMessage, 'sauron/raw_message'
 
   def self.update
-    message_store = Sauron::MessageStore.new
-
     Sauron::GmailAccount.all.each do |account|
-      account.each_new_message do |message, uid|
-        message_store.insert message, uid
+      account.each_new_message do |raw_message|
+        Message.create!(raw_message.attributes)
       end
     end
   end

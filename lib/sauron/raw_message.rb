@@ -1,13 +1,8 @@
-require 'mail'
-require 'time'
-
 module Sauron
-  class Message
-    attr_reader :raw_message
-
-    def initialize(raw_message_as_string)
-      @raw_message = raw_message_as_string
-      @mail = Mail.new(@raw_message)
+  class RawMessage
+    def initialize(raw_message_as_string, uid)
+      @mail = Mail.new(raw_message_as_string)
+      @uid = uid
     end
 
     def headers
@@ -28,9 +23,10 @@ module Sauron
       @mail.message_id
     end
 
-    def to_hash
+    def attributes
       h = {
         message_id: message_id,
+        uid: @uid,
         date: Time.parse(headers["Date"]),
         to: headers["To"],
         from: headers["From"],
