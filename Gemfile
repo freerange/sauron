@@ -9,6 +9,7 @@ gem "haml"
 gem "mail"
 gem "mongoid"
 gem "bson_ext"
+gem "whenever"
 
 gem "tomafro-deploy", :git => "http://github.com/tomafro/tomafro-deploy.git"
 
