@@ -6,6 +6,7 @@ class Message
   belongs_to :message_thread
   has_and_belongs_to_many :contacts
 
+  index [[:date, Mongo::DESCENDING]]
   default_scope order_by([[:date, :desc]])
 
   field :to, type: String
