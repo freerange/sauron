@@ -8,8 +8,14 @@ module Sauron
           begin
             raw_message.import!
           rescue => e
+            filename = "tmp/message_failures/#{account.id}-message-#{raw_message.uid}"
             puts "Failed to import message #{raw_message.uid}"
-            File.open("tmp/message_failures/#{account.id}-message-#{raw_message.uid}", "w") { |f| f.write raw_message.raw_string }
+            begin
+              File.open(filename, "w") { |f| f.write raw_message.raw_string }
+            rescue => e
+              puts "Couldn't even save file!"
+              File.open(filename, "w") { |f| f.write e.to_s }
+            end
           end
         end
       rescue Net::IMAP::NoResponseError
