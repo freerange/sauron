@@ -26,7 +26,7 @@ class GmailAccount
     indexes = @imap.search("UID #{most_recent_uid || 1}:*")
     indexes_excluding_most_recent = indexes[1..-1]
     if indexes_excluding_most_recent.any?
-      @imap.fetch(indexes_excluding_most_recent, "UID").map { |x| x.attr["UID"] }.reverse
+      @imap.fetch(indexes_excluding_most_recent, "UID").map { |x| x.attr["UID"] }
     else
       []
     end
