@@ -36,10 +36,3 @@ namespace :whenever do
     run "cd #{deploy_to} && sudo #{whenever_command} #{whenever_clear_flags}"
   end
 end
-
-after "deploy:tag", "assets:compile"
-namespace :assets do
-  task :compile, :roles => :app do
-    run "cd #{deploy_to} && RAILS_ENV=#{rails_env} bundle exec rake assets:precompile"
-  end
-end
