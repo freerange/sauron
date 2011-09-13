@@ -10,10 +10,12 @@ module Sauron
           rescue => e
             filename = "tmp/message_failures/#{account.id}-message-#{raw_message.uid}"
             puts "Failed to import message #{raw_message.uid}"
+            puts e
             begin
               File.open(filename, "w") { |f| f.write raw_message.raw_string }
             rescue => e
               puts "Couldn't even save file!"
+              puts e
               File.open(filename, "w") { |f| f.write e.to_s }
             end
           end
