@@ -37,7 +37,7 @@ class GmailAccount
     uids = recent_uids
     if uids.any?
       uids.each_slice(10) do |uid_slice|
-        puts "fetching #{uid_slice.inspect}"
+        puts "#{self.email}: fetching #{uid_slice.inspect}"
         messages =  @imap.uid_fetch(uid_slice, "BODY[]")
         messages.each.with_index do |message, index|
           yield Sauron::RawMessage.new(message.attr["BODY[]"], uid_slice[index])
