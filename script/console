@@ -1,3 +1,0 @@
-#!/bin/sh
-
-irb -Ilib -rubygems -rbundler/setup -rsauron

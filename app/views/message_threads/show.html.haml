@@ -1,0 +1,5 @@
+= link_to "back", message_threads_path
+
+- @thread.messages.each do |message|
+  .message
+    = render :partial => "messages/message", :object => message

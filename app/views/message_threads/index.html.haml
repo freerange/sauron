@@ -1,0 +1,8 @@
+%h1 Messages
+
+%ul
+  - @threads.each do |thread|
+    %li
+      = link_to thread.subject, thread
+      %span.count= pluralize thread.messages.count, 'message'
+      

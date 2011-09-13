@@ -3,6 +3,9 @@ require 'time'
 
 class Message
   include Mongoid::Document
+  belongs_to :message_thread
+  has_and_belongs_to_many :contacts
+
   field :to, type: String
   field :from, type: String
   field :subject, type: String

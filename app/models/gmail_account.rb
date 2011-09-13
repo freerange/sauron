@@ -29,7 +29,7 @@ class GmailAccount
   end
 
   def load_message(uid)
-    Sauron::Message.new(@imap.uid_fetch([uid], "BODY[]")[0].attr["BODY[]"])
+    Sauron::RawMessage.new(@imap.uid_fetch([uid], "BODY[]")[0].attr["BODY[]"], uid)
   end
 
   def each_new_message(&block)

@@ -1,7 +1,10 @@
 module Sauron
   class RawMessage
+    attr_reader :raw_string, :uid
+
     def initialize(raw_message_as_string, uid)
-      @mail = Mail.new(raw_message_as_string)
+      @raw_string = raw_message_as_string
+      @mail = Mail.new(@raw_string)
       @uid = uid
     end
 
@@ -23,9 +26,29 @@ module Sauron
       @mail.message_id
     end
 
+    def in_reply_to
+      raw_in_reply_to = headers["In-Reply-To"]
+      if raw_in_reply_to
+        raw_in_reply_to.gsub(/^</, '').gsub(/>$/, '')
+      else
+        nil
+      end
+    end
+
+    def contacts
+      ["To", "From", "Cc"].inject([]) do |a, header|
+        begin
+          a + Mail::AddressList.new(headers[header]).addresses
+        rescue
+          a
+        end
+      end.map { |email| [email.display_name, email.address] }
+    end
+
     def attributes
       h = {
         message_id: message_id,
+        in_reply_to: in_reply_to,
         uid: @uid,
         date: Time.parse(headers["Date"]),
         to: headers["To"],
@@ -40,6 +63,20 @@ module Sauron
         h[:body] = body
       end
       h
+    end
+
+    def import!
+      message = Message.create!(attributes)
+      contacts.each do |name, email|
+        contact = Contact.find_or_create_by(name: name, email: email)
+        contact.messages << message
+      end
+
+      message_replied_to = Message.where(message_id: in_reply_to).first
+      thread = message_replied_to ? message_replied_to.message_thread : MessageThread.create!
+      thread.messages << message
+      thread.save
+      message
     end
 
     private

@@ -1,0 +1,11 @@
+div.message {
+  margin-bottom: 1em;
+  
+  h2.subject {
+    background-color: #ccc;
+  }
+  
+  h3.date, h3.to, h3.from {
+    margin: 0;
+  }
+}

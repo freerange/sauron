@@ -1,0 +1,15 @@
+%h2.subject= message.subject
+%h3.date= message.date.to_s(:long)
+%h3.to
+  To:
+  = message.to
+%h3.from
+  From:
+  = message.from
+
+- if message.multipart?
+  = message.parts.map do |part|
+    %pre.part= part['body']
+      
+- else
+%pre.body= message.body
