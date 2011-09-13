@@ -13,7 +13,11 @@ class GmailAccount
     return if @logged_in
     @imap = Net::IMAP.new(GMAIL_HOST, GMAIL_PORT, ssl=true)
     @imap.login(email, password)
-    @imap.select("[Gmail]/All Mail")
+    possible_imap_roots = ["Gmail", "Google Mail"]
+    imap_root = possible_imap_roots.find do |root|
+      @imap.list("", "[#{root}]/%")
+    end
+    @imap.select("[#{imap_root}]/All Mail")
     @logged_in = true
   end
 
