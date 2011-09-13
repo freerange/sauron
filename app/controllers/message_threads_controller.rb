@@ -1,6 +1,6 @@
 class MessageThreadsController < ApplicationController
   def index
-    @threads = MessageThread.all
+    @threads = MessageThread.page(params[:page])
   end
 
   def show

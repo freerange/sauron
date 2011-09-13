@@ -67,6 +67,8 @@ GEM
     jquery-rails (1.0.14)
       railties (~> 3.0)
       thor (~> 0.14)
+    kaminari (0.12.4)
+      rails (>= 3.0.0)
     mail (2.3.0)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
@@ -145,6 +147,7 @@ DEPENDENCIES
   coffee-rails (~> 3.1.0)
   haml
   jquery-rails
+  kaminari
   mail
   mongoid
   rails (= 3.1.0)

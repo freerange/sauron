@@ -6,6 +6,8 @@ class Message
   belongs_to :message_thread
   has_and_belongs_to_many :contacts
 
+  default_scope order_by([[:date, :desc]])
+
   field :to, type: String
   field :from, type: String
   field :subject, type: String

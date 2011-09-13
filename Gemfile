@@ -10,6 +10,7 @@ gem "mail"
 gem "mongoid"
 gem "bson_ext"
 gem "whenever"
+gem "kaminari"
 
 gem "tomafro-deploy", :git => "http://github.com/tomafro/tomafro-deploy.git"
 
