@@ -2,14 +2,18 @@
 %h3.date= message.date.to_s(:long)
 %h3.to
   To:
-  = message.to
+  = message.to.map { |to| link_to(to.email, to) }.join(", ").html_safe
 %h3.from
   From:
-  = message.from
+  = link_to message.from.email, message.from
+- if message.cc
+  %h3.cc
+    CC:
+    = message.cc.map { |cc| link_to(cc.email, cc) }.join(", ").html_safe
 
 - if message.multipart?
   = message.parts.map do |part|
-    %pre.part= part['body']
+    .part= hiding_quoted_parts part['body']
       
 - else
-%pre.body= message.body
+.body= hiding_quoted_parts message.body

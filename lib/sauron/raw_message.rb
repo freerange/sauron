@@ -26,33 +26,11 @@ module Sauron
       @mail.message_id
     end
 
-    def in_reply_to
-      raw_in_reply_to = headers["In-Reply-To"]
-      if raw_in_reply_to
-        raw_in_reply_to.gsub(/^</, '').gsub(/>$/, '')
-      else
-        nil
-      end
-    end
-
-    def contacts
-      ["To", "From", "Cc"].inject([]) do |a, header|
-        begin
-          a + Mail::AddressList.new(headers[header]).addresses
-        rescue
-          a
-        end
-      end.map { |email| [email.display_name, email.address] }
-    end
-
     def attributes
       h = {
         message_id: message_id,
-        in_reply_to: in_reply_to,
         uid: @uid,
         date: Time.parse(headers["Date"]),
-        to: headers["To"],
-        from: headers["From"],
         subject: headers["Subject"],
         headers: headers,
         multipart: @mail.multipart?
@@ -66,20 +44,63 @@ module Sauron
     end
 
     def import!
+      return if Message.where(message_id: message_id).first
+      puts "creating #{@uid} / #{message_id}"
       message = Message.create!(attributes)
-      contacts.each do |name, email|
-        contact = Contact.find_or_create_by(name: name, email: email)
-        contact.messages << message
+
+      message.from = contact_from(headers["From"])
+      message.to = contacts_from(headers["To"])
+      message.cc = contacts_from(headers["Cc"])
+
+      [message.from, message.to, message.cc].flatten.each do |contact|
+        contact.messages << message unless contact.messages.include?(message)
       end
 
+      in_reply_to = if headers["In-Reply-To"]
+        headers["In-Reply-To"].gsub(/^</, '').gsub(/>$/, '')
+      else
+        nil
+      end
       message_replied_to = Message.where(message_id: in_reply_to).first
-      thread = message_replied_to ? message_replied_to.message_thread : MessageThread.create!
+
+      if message_replied_to
+        message.in_reply_to = message_replied_to
+        thread = message_replied_to.message_thread
+      else
+        thread = MessageThread.create!
+      end
+
+      message.save
       thread.messages << message
       thread.save
       message
     end
 
     private
+
+    def contact_from(header)
+      a = Mail::Address.new(header)
+      Contact.where(email: a.address).first || Contact.create(name: a.display_name, email: a.address)
+    end
+
+    def contacts_from(header)
+      addresses = Mail::AddressList.new(header).addresses
+      addresses.map do |a|
+        Contact.where(email: a.address).first || Contact.create(name: a.display_name, email: a.address)
+      end
+    end
+
+    def contacts
+      ["To", "From", "Cc"].inject([]) do |a, header|
+        begin
+          a + Mail::AddressList.new(headers[header]).addresses
+        rescue
+          a
+        end
+      end.map { |email| [email.display_name, email.address] }
+    end
+
+
 
     def mail_header_to_hash(header)
       header.fields.inject({}) { |h, f| h[f.name.to_s] = f.value.to_s; h }

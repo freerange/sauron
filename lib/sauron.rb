@@ -1,24 +1,20 @@
+require "base64"
+
 module Sauron
   autoload :RawMessage, 'sauron/raw_message'
 
-  def self.update
+  MESSAGE_DIRECTORY = "tmp/messages"
+
+  def self.download
+    FileUtils.mkdir_p(MESSAGE_DIRECTORY)
     threads = ::GmailAccount.all.map do |account|
+      dir = account_message_directory(account)
+      FileUtils.mkdir_p(dir)
       Thread.new do
         begin
-          account.each_new_message do |raw_message|
-            begin
-              raw_message.import!
-            rescue => e
-              filename = "tmp/message_failures/#{account.id}-message-#{raw_message.uid}"
-              puts "Failed to import message #{raw_message.uid}"
-              puts e
-              begin
-                File.open(filename, "w") { |f| f.write raw_message.raw_string }
-              rescue => e
-                puts "Couldn't even save file!"
-                puts e
-                File.open(filename, "w") { |f| f.write e.to_s }
-              end
+          account.each_new_message do |message_as_string, uid|
+            File.open(File.join(dir, uid.to_s), "w") do |f| 
+              f.write Base64.encode64(message_as_string)
             end
           end
         rescue Net::IMAP::NoResponseError
@@ -28,5 +24,42 @@ module Sauron
     end
     threads.each { |t| t.join }
     puts "Done import."
+  end
+
+  def self.update
+    ::GmailAccount.all.each do |account|
+      with_new_messages_for_account(account) do |message_string, uid|
+        begin
+          raw_message = Sauron::RawMessage.new(message_string, uid)
+          raw_message.import!
+        rescue => e1
+          filename = "tmp/message_failures/#{account.id}-message-#{raw_message.uid}"
+          puts "Failed to import message #{raw_message.uid}"
+          puts e1
+          puts e1.backtrace
+          begin
+            File.open(filename, "w") { |f| f.write raw_message.raw_string }
+          rescue => e2
+           puts "Couldn't even save file!"
+           puts e2
+           puts e2.backtrace
+           File.open(filename, "w") { |f| f.write e2.to_s }
+          end
+        end
+      end
+    end
+  end
+
+  def self.account_message_directory(account)
+    File.join(MESSAGE_DIRECTORY, account.email.split("@")[0])
+  end
+
+  def self.with_new_messages_for_account(account)
+    directory = account_message_directory(account)
+    most_recent_uid = account.most_recent_uid
+    unimported_files = Dir[File.join(directory, "/*")] #.select { |f| File.basename(f).to_i > most_recent_uid }
+    unimported_files.each do |filename|
+      yield Base64.decode64(File.read(filename)), File.basename(filename).to_i
+    end
   end
 end

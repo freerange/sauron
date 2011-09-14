@@ -36,3 +36,8 @@ namespace :whenever do
     run "cd #{deploy_to} && sudo #{whenever_command} #{whenever_clear_flags}"
   end
 end
+
+after "deploy:tag", "create_mongo_indexes"
+task :create_mongo_indexes do
+  run "cd #{deploy_to} && RAILS_ENV=production bundle exec rake db:mongoid:create_indexes"
+end

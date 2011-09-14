@@ -5,7 +5,12 @@ div.message {
     background-color: #ccc;
   }
   
-  h3.date, h3.to, h3.from {
+  h3.date, h3.to, h3.from, h3.cc {
     margin: 0;
+  }
+
+  .body, .part {
+    padding: 1em;
+    width: 50em;
   }
 }

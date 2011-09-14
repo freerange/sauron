@@ -3,6 +3,7 @@
 %ul
   - @threads.each do |thread|
     %li
+      %span.timestamp= thread.most_recent_message_at.to_s(:full)
       = link_to thread.subject, thread
       %span.count= pluralize thread.messages.count, 'message'
 

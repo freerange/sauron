@@ -53,6 +53,7 @@ Sauron::Application.routes.draw do
   # See how all your routes lay out with "rake routes"
 
   resources :message_threads
+  resources :contacts
 
   root :to => 'message_threads#index'
 
