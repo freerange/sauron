@@ -53,7 +53,7 @@ module Sauron
       message.cc = contacts_from(headers["Cc"])
 
       [message.from, message.to, message.cc].flatten.each do |contact|
-        contact.messages << message unless contact.messages.include?(message)
+        contact.messages << message unless contact.message_ids.include?(message.id)
       end
 
       in_reply_to = if headers["In-Reply-To"]
