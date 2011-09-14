@@ -12,8 +12,12 @@
     = message.cc.map { |cc| link_to(cc.email, cc) }.join(", ").html_safe
 
 - if message.multipart?
-  = message.parts.map do |part|
+  - message.parts.each do |part|
+    %h4
+      Part
+      = part['headers']['Content-Type']
     .part= hiding_quoted_parts part['body']
-      
+    %hr
+
 - else
-.body= hiding_quoted_parts message.body
+  .body= hiding_quoted_parts message.body
