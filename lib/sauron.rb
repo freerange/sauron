@@ -57,7 +57,7 @@ module Sauron
   def self.with_new_messages_for_account(account)
     directory = account_message_directory(account)
     most_recent_uid = account.most_recent_uid
-    unimported_files = Dir[File.join(directory, "/*")] #.select { |f| File.basename(f).to_i > most_recent_uid }
+    unimported_files = Dir[File.join(directory, "/*")].sort_by { |f| File.basename(f).to_i }
     unimported_files.each do |filename|
       yield Base64.decode64(File.read(filename)), File.basename(filename).to_i
     end
