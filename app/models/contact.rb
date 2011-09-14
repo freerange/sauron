@@ -8,4 +8,6 @@ class Contact
 
   field :email, type: String
   field :name, type: String
+
+  index [[:email, Mongo::ASCENDING]], unique: true
 end  
