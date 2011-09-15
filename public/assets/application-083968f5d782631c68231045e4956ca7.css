@@ -1,0 +1,14 @@
+/*
+ * This is a manifest file that'll automatically include all the stylesheets available in this directory
+ * and any sub-directories. You're free to add application-wide styles to this file and they'll appear at
+ * the top of the compiled file, but it's generally better to create a new file per style scope.
+*/
+div.message {
+  margin-bottom: 1em; }
+  div.message h2.subject {
+    background-color: #ccc; }
+  div.message h3.date, div.message h3.to, div.message h3.from, div.message h3.cc {
+    margin: 0; }
+  div.message .body, div.message .part {
+    padding: 1em;
+    width: 50em; }
