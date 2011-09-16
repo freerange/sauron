@@ -1,5 +1,6 @@
 require "tomafro/deploy"
 require "tomafro/deploy/foreman"
+require "tomafro/deploy/env"
 
 server "gofreerange.com", :app
 
@@ -8,6 +9,8 @@ set :repository,  "git@github.com:freerange/sauron.git"
 set :default_environment, {
   "PATH" => "/var/rubies/1.9.2-p290/bin:$PATH"
 }
+set(:environment_file) { "#{deploy_to}/.env" }
+
 
 set :whenever_command, "bundle exec whenever"
 set(:whenever_identifier)   { application }
