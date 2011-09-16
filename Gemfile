@@ -11,6 +11,8 @@ gem "mongoid"
 gem "bson_ext"
 gem "whenever"
 gem "kaminari"
+gem "foreman"
+gem "thin"
 
 gem "tomafro-deploy", :git => "http://github.com/tomafro/tomafro-deploy.git"
 
