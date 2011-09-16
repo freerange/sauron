@@ -1,22 +1,30 @@
-%h3.date= message.date.to_s(:long)
-%h3.to
-  To:
-  = message.to.map { |to| link_to(to.display_name, to) }.join(", ").html_safe
-%h3.from
-  From:
-  = link_to message.from.display_name, message.from
-- if message.cc
-  %h3.cc
-    CC:
-    = message.cc.map { |cc| link_to(cc.display_name, cc) }.join(", ").html_safe
+.row
+  .span13.offset3
+    %h2.from
+      = link_to message.from.display_name, message.from
+      = succeed(":") do
+        = said
+  
+  .span3
+    .to
+      To:
+      = message.to.map { |to| link_to(to.display_name, to) }.join(", ").html_safe
+    - if message.cc.any?
+      .cc
+        CC:
+        = message.cc.map { |cc| link_to(cc.display_name, cc) }.join(", ").html_safe
+    .date= message.date.to_s(:long)
 
-- if message.multipart?
-  - message.parts.each do |part|
-    %h4
-      Part
-      = part['headers']['Content-Type']
-    .part= hiding_quoted_parts part['body']
-    %hr
+  .span13
+    - if message.multipart?
+      - message.parts.each do |part|
+        %h4
+          Part
+          = part['headers']['Content-Type']
+        .part= hiding_quoted_parts part['body']
+        %hr
 
-- else
-  .body= hiding_quoted_parts message.body
+    - else
+      .body= hiding_quoted_parts message.body
+
+

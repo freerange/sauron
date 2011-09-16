@@ -1,16 +1,24 @@
 div.message {
-  margin-bottom: 1em;
-  
-  h2.subject {
-    background-color: #ccc;
+  margin-bottom: 1.5em;
+
+  .to {
+    font-size: 1.5em;
+    line-height: 1.5em;
   }
-  
-  h3.date, h3.to, h3.from, h3.cc {
-    margin: 0;
+
+  .to, .cc {
+    font-weight: bold;
+  }
+
+  .from {
+    padding-left: 0.3em;
   }
 
   .body, .part {
+    background-color: #fafafa;
     padding: 1em;
-    width: 50em;
+    border-top: 1px solid #eee;
+    border-bottom: 4px solid #ddd;
+    border-right: 3px solid #e8e8e8;
   }
 }

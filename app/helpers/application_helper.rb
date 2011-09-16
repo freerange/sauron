@@ -9,4 +9,8 @@ module ApplicationHelper
       lines.join("<br/>").html_safe
     end
   end
+
+  def said
+    %w(said wrote quoth spake penned scrieved scribbled uttered).sample
+  end
 end

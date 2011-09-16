@@ -2,6 +2,4 @@
 
 - @thread.messages.each do |message|
   .message{id: message.id}
-    = link_to "next message", "#end_of_#{message.id}"
     = render :partial => "messages/message", :object => message
-    %a{name: "end_of_#{message.id}"}
