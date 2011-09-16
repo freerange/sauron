@@ -5,6 +5,11 @@ module Sauron
 
   MESSAGE_DIRECTORY = "tmp/messages"
 
+  def self.update
+    download
+    import
+  end
+
   def self.download
     FileUtils.mkdir_p(MESSAGE_DIRECTORY)
     threads = ::GmailAccount.all.map do |account|
