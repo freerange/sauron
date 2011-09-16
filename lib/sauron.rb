@@ -13,7 +13,7 @@ module Sauron
       Thread.new do
         begin
           account.each_new_message do |message_as_string, uid|
-            File.open(File.join(dir, uid.to_s), "w") do |f| 
+            File.open(File.join(dir, uid.to_s + ".new"), "w") do |f|
               f.write Base64.encode64(message_as_string)
             end
           end
@@ -26,7 +26,7 @@ module Sauron
     puts "Done import."
   end
 
-  def self.update
+  def self.import
     ::GmailAccount.all.each do |account|
       with_new_messages_for_account(account) do |message_string, uid|
         begin
@@ -56,10 +56,10 @@ module Sauron
 
   def self.with_new_messages_for_account(account)
     directory = account_message_directory(account)
-    most_recent_uid = account.most_recent_uid
-    unimported_files = Dir[File.join(directory, "/*")].sort_by { |f| File.basename(f).to_i }
+    unimported_files = Dir[File.join(directory, "/*.new")].sort_by { |f| File.basename(f, ".new").to_i }
     unimported_files.each do |filename|
-      yield Base64.decode64(File.read(filename)), File.basename(filename).to_i
+      yield Base64.decode64(File.read(filename)), File.basename(filename, ".new").to_i
+      FileUtils.mv(filename, File.join(directory, File.basename(filename, ".new")))
     end
   end
 end
