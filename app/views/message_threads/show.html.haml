@@ -1,6 +1,4 @@
-= link_to "back", message_threads_path
-
-%hr
+%h1= @thread.subject
 
 - @thread.messages.each do |message|
   .message{id: message.id}

@@ -1,11 +1,16 @@
-%h1 Messages
+.row
+  .span16
+    .page-header
+      %h1 Threads
 
-%ul
-  - @threads.each do |thread|
-    %li
-      %span.timestamp= thread.most_recent_message_at.to_s(:full)
-      = link_to thread.subject, thread
-      %span.count= pluralize thread.messages.count, 'message'
+    %ul.message_threads.unstyled
+      - @threads.each do |thread|
+        %li.row
+          %span.timestamp.span3= thread.most_recent_message_at.to_s(:long)
+          = link_to thread.subject, thread, {:class => "subject span8"}
+          %span.contacts.span3
+            = thread.contacts.map { |c| link_to c.display_name, c }.to_sentence.html_safe
+          %span.count.span2= pluralize thread.messages.count, 'message'
 
 = paginate @threads
       

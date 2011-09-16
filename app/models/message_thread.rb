@@ -11,6 +11,10 @@ class MessageThread
     messages.first.subject
   end
 
+  def contacts
+    messages.map { |m| m.contacts }.flatten.uniq
+  end
+
   private
 
   def update_most_recent_message_at
