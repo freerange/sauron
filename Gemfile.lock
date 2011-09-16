@@ -1,9 +1,10 @@
 GIT
   remote: http://github.com/tomafro/tomafro-deploy.git
-  revision: 93b019ae4d98bd5b7ca5bb118035f53c342d55e4
+  revision: 36cfe6a129b509c686678064290ce7e591f360a9
   specs:
     tomafro-deploy (0.0.1)
       capistrano (~> 2.6.0)
+      thor
 
 GEM
   remote: http://rubygems.org/
