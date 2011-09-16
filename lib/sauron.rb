@@ -23,7 +23,7 @@ module Sauron
       end
     end
     threads.each { |t| t.join }
-    puts "Done import."
+    puts "Done download."
   end
 
   def self.import
@@ -48,6 +48,7 @@ module Sauron
         end
       end
     end
+    puts "Done import."
   end
 
   def self.account_message_directory(account)
