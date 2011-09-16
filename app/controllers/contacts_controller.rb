@@ -1,6 +1,7 @@
 class ContactsController < ApplicationController
   def show
     @contact = Contact.find(params[:id])
+    @messages = @contact.messages.page(params[:page])
   end
 
   def edit
