@@ -3,7 +3,7 @@ module ApplicationHelper
     if string
       lines = string.split("\n").map { |s| s.strip }
       quoted_lines = lines.select { |s| s =~ /^>/ }
-      if quoted_lines == lines.slice(lines.length - quoted_lines.length, quoted_lines.length)
+      if quoted_lines.any? && quoted_lines == lines.slice(lines.index(quoted_lines.first), quoted_lines.length)
         lines = lines - quoted_lines
         lines.pop while lines.last == ""
         if lines.last.strip =~ /^\s*On .* wrote:\s*$/
