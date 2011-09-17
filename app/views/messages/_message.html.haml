@@ -15,5 +15,13 @@
         = message.cc.map { |cc| link_to(display_name(cc), cc) }.join(", ").html_safe
     .date= message.date.to_s(:long)
 
+    - if message.multipart?
+      .parts
+        = message.parts.count
+        parts:
+        %ul.unstyled
+          - message.parts.each do |part|
+            %li= metadata_for(part)
+
   .span12
     .body= hiding_quoted_parts message.best_body

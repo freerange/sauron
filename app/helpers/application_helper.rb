@@ -26,4 +26,8 @@ module ApplicationHelper
       contact.email
     end
   end
+
+  def metadata_for(part)
+    part["headers"]["Content-Type"].split(";").first
+  end
 end

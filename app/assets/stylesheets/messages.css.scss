@@ -18,11 +18,15 @@ div.message {
     padding-left: 0.3em;
   }
 
-  .body, .part {
+  .body {
     background-color: #fafafa;
     padding: 1em;
     border-top: 1px solid #eee;
     border-bottom: 4px solid #ddd;
     border-right: 3px solid #e8e8e8;
+  }
+
+  .parts {
+    margin-top: 1em;
   }
 }
