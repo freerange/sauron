@@ -24,4 +24,19 @@ class Message
 
   index [[:date, Mongo::DESCENDING]]
   index [[:message_id, Mongo::ASCENDING]], unique: true
+
+  def best_body
+    if body
+      body
+    else
+      part = parts.find { |p| p["headers"]["Content-Type"].split(";").first == "text/plain" } ||
+             parts.find { |p| p["headers"]["Content-Type"].split(";").first =~ /^text/ } ||
+             parts.find { |p| p["headers"]["Content-Type"].split(";").first == "multipart/alternative" }
+      if part
+        part["body"]
+      else
+        "Couldn't determine best body to show. Parts have content type #{parts.map { |p| p["headers"]["Content-Type"]}.to_sentence}"
+      end
+    end
+  end
 end

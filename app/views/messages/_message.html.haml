@@ -16,15 +16,4 @@
     .date= message.date.to_s(:long)
 
   .span12
-    - if message.multipart?
-      - message.parts.each do |part|
-        %h4
-          Part
-          = part['headers']['Content-Type']
-        .part= hiding_quoted_parts part['body']
-        %hr
-
-    - else
-      .body= hiding_quoted_parts message.body
-
-
+    .body= hiding_quoted_parts message.best_body
