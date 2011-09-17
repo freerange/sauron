@@ -9,7 +9,7 @@
           %span.timestamp.span3= thread.most_recent_message_at.to_s(:long)
           = link_to thread.subject, thread, {:class => "subject span8"}
           %span.contacts.span3
-            = thread.contacts.map { |c| link_to c.display_name, c }.to_sentence.html_safe
+            = thread.contacts.map { |c| link_to display_name(c), c }.to_sentence.html_safe
           %span.count.span2= pluralize thread.messages.count, 'message'
 
 = paginate @threads

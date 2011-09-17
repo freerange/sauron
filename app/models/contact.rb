@@ -10,8 +10,4 @@ class Contact
   field :name, type: String
 
   index [[:email, Mongo::ASCENDING]], unique: true
-
-  def display_name
-    name || email
-  end
 end  

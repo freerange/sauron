@@ -13,4 +13,12 @@ module ApplicationHelper
   def said
     %w(said wrote quoth spake penned scrieved scribbled uttered).sample
   end
+
+  def display_name(contact)
+    if contact.name
+      contact.name.gsub(/\s+/, "&nbsp;").html_safe
+    else
+      contact.email
+    end
+  end
 end

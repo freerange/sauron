@@ -1,21 +1,21 @@
 .row
-  .span13.offset3
+  .span12.offset4
     %h2.from
-      = link_to message.from.display_name, message.from
+      = link_to display_name(message.from), message.from
       = succeed(":") do
         = said
   
-  .span3
+  .span4.info
     .to
       To:
-      = message.to.map { |to| link_to(to.display_name, to) }.join(", ").html_safe
+      = message.to.map { |to| link_to(display_name(to), to) }.join(", ").html_safe
     - if message.cc.any?
       .cc
         CC:
-        = message.cc.map { |cc| link_to(cc.display_name, cc) }.join(", ").html_safe
+        = message.cc.map { |cc| link_to(display_name(cc), cc) }.join(", ").html_safe
     .date= message.date.to_s(:long)
 
-  .span13
+  .span12
     - if message.multipart?
       - message.parts.each do |part|
         %h4

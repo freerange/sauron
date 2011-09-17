@@ -15,7 +15,7 @@
             %span.timestamp.span3= message.date.to_s(:long)
             = link_to message.subject, message.message_thread, {:class => "subject span10"}
             %span.contacts.span3
-              = (message.contacts - [@contact]).map { |c| link_to c.display_name, c }.to_sentence.html_safe
+              = (message.contacts - [@contact]).map { |c| link_to display_name(c), c }.to_sentence.html_safe
 
 
   = paginate @messages
