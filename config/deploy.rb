@@ -6,34 +6,26 @@ server "gofreerange.com", :app
 
 set :application, "sauron"
 set :repository,  "git@github.com:freerange/sauron.git"
-set :default_environment, {
-  "PATH" => "/var/rubies/1.9.2-p290/bin:$PATH"
-}
-set(:environment_file) { "#{deploy_to}/.env" }
-
-
-set :whenever_command, "bundle exec whenever"
-set(:whenever_identifier)   { application }
-set(:whenever_update_flags) { "--update-crontab #{whenever_identifier} -u #{application_user}" }
-set(:whenever_clear_flags)  { "--clear-crontab #{whenever_identifier} -u #{application_user}" }
 
 before "deploy:update_code", "whenever:clear_crontab"
 after "deploy:tag", "whenever:update_crontab"
 after "deploy:rollback", "whenever:update_crontab"
 
+set :whenever_command, "bundle exec whenever"
+
 namespace :whenever do
   desc "Update application's crontab entries using Whenever"
   task :update_crontab, :roles => :app do
-    run "cd #{deploy_to} && sudo env PATH=$PATH #{whenever_command} #{whenever_update_flags}"
+    as_app "cd #{deploy_to} && #{whenever_command} --update-crontab #{application}"
   end
 
   desc "Clear application's crontab entries using Whenever"
   task :clear_crontab, :roles => :app do
-    run "cd #{deploy_to} && sudo env PATH=$PATH #{whenever_command} #{whenever_clear_flags}"
+    as_app "cd #{deploy_to} && #{whenever_command} --clear-crontab #{application}"
   end
 end
 
 after "deploy:tag", "create_mongo_indexes"
 task :create_mongo_indexes do
-  run "cd #{deploy_to} && RAILS_ENV=production bundle exec rake db:mongoid:create_indexes"
+  as_app "cd #{deploy_to} && bundle exec rake db:mongoid:create_indexes"
 end
