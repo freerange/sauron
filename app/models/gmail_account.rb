@@ -42,7 +42,7 @@ class GmailAccount
     if uids.any?
       uids.each_slice(10) do |uid_slice|
         puts "#{self.email}: fetching #{uid_slice.inspect}"
-        messages =  @imap.uid_fetch(uid_slice, "BODY[]")
+        messages = messages_preserving_state(uid_slice)
         messages.each.with_index do |message, index|
           yield message.attr["BODY[]"], uid_slice[index]
         end
@@ -53,5 +53,14 @@ class GmailAccount
 
   def reset!
     update_attribute(:most_recent_uid, nil)
+  end
+
+  def messages_preserving_state(uid_slice)
+    flags = @imap.uid_fetch(uid_slice, "FLAGS")
+    messages = @imap.uid_fetch(uid_slice, "BODY[]")
+    unread_messages = flags.reject { |f| f.attr["FLAGS"].include?(:Seen) }
+    unread_message_uids = unread_messages.map { |f| f.attr["UID"] }
+    @imap.uid_store(unread_message_uids, "-FLAGS", [:Seen])
+    messages
   end
 end
