@@ -60,7 +60,7 @@ class GmailAccount
     messages = @imap.uid_fetch(uid_slice, "BODY[]")
     unread_messages = flags.reject { |f| f.attr["FLAGS"].include?(:Seen) }
     unread_message_uids = unread_messages.map { |f| f.attr["UID"] }
-    @imap.uid_store(unread_message_uids, "-FLAGS", [:Seen])
+    @imap.uid_store(unread_message_uids, "-FLAGS", [:Seen]) if unread_message_uids.any?
     messages
   end
 end
