@@ -2,6 +2,7 @@ class MessageThread
   include Mongoid::Document
   has_many :messages
   before_save :update_most_recent_message_at
+  before_create :update_most_recent_message_at
 
   field :most_recent_message_at, type: Time
 
