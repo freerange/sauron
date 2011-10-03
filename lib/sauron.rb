@@ -24,6 +24,9 @@ module Sauron
           end
         rescue Net::IMAP::NoResponseError
           puts "Couldn't log in for #{account.email}; skipping"
+        rescue StandardError => e
+          puts "Got an error: #{e}"
+          puts e.backtrace
         end
       end
     end
