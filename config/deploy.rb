@@ -6,6 +6,7 @@ server "gofreerange.com", :app
 
 set :application, "sauron"
 set :repository,  "git@github.com:freerange/sauron.git"
+set :deploy_to, "/var/apps/sauron"
 
 before "deploy:update_code", "whenever:clear_crontab"
 after "deploy:tag", "whenever:update_crontab"
