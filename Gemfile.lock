@@ -1,8 +1,8 @@
 GIT
-  remote: http://github.com/tomafro/tomafro-deploy.git
-  revision: 2d935b1ecb6a505efb77afb89f825f37c7c18362
+  remote: http://github.com/freerange/recap.git
+  revision: d770ccbfa59374f091bebc336c866a4096a36812
   specs:
-    tomafro-deploy (0.0.1)
+    recap (0.1.0)
       capistrano (~> 2.6.0)
       thor
 
@@ -163,9 +163,9 @@ DEPENDENCIES
   mail
   mongoid
   rails (= 3.1.0)
+  recap!
   sass-rails (~> 3.1.0)
   thin
-  tomafro-deploy!
   turn
   uglifier
   whenever

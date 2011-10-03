@@ -1,6 +1,6 @@
-require "tomafro/deploy"
-require "tomafro/deploy/foreman"
-require "tomafro/deploy/env"
+require "recap/deploy"
+require "recap/foreman"
+require "recap/env"
 
 server "gofreerange.com", :app
 

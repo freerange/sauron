@@ -14,7 +14,7 @@ gem "kaminari"
 gem "foreman"
 gem "thin"
 
-gem "tomafro-deploy", :git => "http://github.com/tomafro/tomafro-deploy.git"
+gem "recap", :git => "http://github.com/freerange/recap.git"
 
 # Gems used only for assets and not required
 # in production environments by default.
