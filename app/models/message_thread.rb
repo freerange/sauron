@@ -19,6 +19,6 @@ class MessageThread
   private
 
   def update_most_recent_message_at
-    self.most_recent_message_at = messages.first.date if messages.any?
+    self.most_recent_message_at = messages.first.date unless messages.first.nil?
   end
 end
