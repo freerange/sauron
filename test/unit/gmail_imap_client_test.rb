@@ -1,17 +1,10 @@
 require 'test_helper'
-require 'gmail'
+require 'gmail_imap_client'
 
-class GmailTest < ActiveSupport::TestCase
-  test "should return an empty array when there are no messages" do
-    imap = stub_everything
-    imap.stubs(:uid_search).returns([])
-    Net::IMAP.stubs(:new).returns(imap)
-    assert_equal [], Gmail.messages("", "")
-  end
-
+class GmailImapClientTest < ActiveSupport::TestCase
   test "should connect to the gmail imap server" do
     Net::IMAP.expects(:new).with('imap.gmail.com', 993, ssl=true).returns(stub_everything)
-    Gmail.new("", "")
+    GmailImapClient.new("", "")
   end
 
   test "should login using the supplied email and password" do
@@ -19,7 +12,7 @@ class GmailTest < ActiveSupport::TestCase
     imap = stub("imap")
     imap.expects(:login).with(email, password)
     Net::IMAP.stubs(:new).returns(imap)
-    Gmail.new(email, password)
+    GmailImapClient.new(email, password)
   end
 
   test "should retrieve all raw messages from the 'INBOX'" do
@@ -30,15 +23,7 @@ class GmailTest < ActiveSupport::TestCase
     imap.stubs(:uid_fetch).with("uid-1", "BODY.PEEK[]").returns([stub(attr: {"BODY[]" => "raw-message-body-1"})])
     imap.stubs(:uid_fetch).with("uid-2", "BODY.PEEK[]").returns([stub(attr: {"BODY[]" => "raw-message-body-2"})])
     Net::IMAP.stubs(:new).returns(imap)
-    gmail = Gmail.new("", "")
-    gmail.retrieve_raw_messages
-  end
-
-  test "should return mail objects representing the messages on the server" do
-    messages = [Mail.new("FROM: George")]
-    Net::IMAP.stubs(:new).returns(stub_everything)
-    gmail = Gmail.new("", "")
-    gmail.stubs(:retrieve_raw_messages).returns(["FROM: George"])
-    assert_equal messages, gmail.messages
+    client = GmailImapClient.new("", "")
+    client.raw_messages
   end
 end

@@ -1,4 +1,4 @@
-require 'gmail'
+require 'gmail_account'
 
-Gmail.email = ENV["EMAIL"]
-Gmail.password = ENV["PASSWORD"]
+GmailAccount.email = ENV["EMAIL"]
+GmailAccount.password = ENV["PASSWORD"]
