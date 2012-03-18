@@ -2,20 +2,22 @@ require "net/imap"
 require 'mail'
 
 class GmailImapClient
-  class NotConnectedError < RuntimeError; end
+  attr_reader :connection
 
-  def initialize
-    @imap = Net::IMAP.new('imap.gmail.com', 993, ssl=true)
-  end
-
-  def connect_as(email, password)
-    @imap.login(email, password)
-    @connected = true
+  def initialize(connection)
+    @connection = connection
   end
 
   def raw_messages
-    raise NotConnectedError unless @connected
-    @imap.select 'INBOX'
-    @imap.uid_search('ALL').map {|uid| @imap.uid_fetch(uid, 'BODY.PEEK[]')[0].attr['BODY[]']}
+    connection.select 'INBOX'
+    connection.uid_search('ALL').map {|uid| connection.uid_fetch(uid, 'BODY.PEEK[]')[0].attr['BODY[]']}
+  end
+
+  class << self
+    def connect(email, password)
+      connection = Net::IMAP.new('imap.gmail.com', 993, ssl=true)
+      connection.login(email, password)
+      new connection
+    end
   end
 end

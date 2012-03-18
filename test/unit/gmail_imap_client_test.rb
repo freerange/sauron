@@ -4,7 +4,7 @@ require 'gmail_imap_client'
 class GmailImapClientTest < ActiveSupport::TestCase
   test "should connect to the gmail imap server" do
     Net::IMAP.expects(:new).with('imap.gmail.com', 993, ssl=true).returns(stub_everything)
-    GmailImapClient.new
+    GmailImapClient.connect('email', 'password')
   end
 
   test "should login using the supplied email and password" do
@@ -12,15 +12,15 @@ class GmailImapClientTest < ActiveSupport::TestCase
     imap = stub("imap")
     imap.expects(:login).with(email, password)
     Net::IMAP.stubs(:new).returns(imap)
-    GmailImapClient.new.connect_as(email, password)
+    GmailImapClient.connect(email, password)
   end
 
-  test "should raise an exception if we're not connected" do
-    imap = stub("imap")
+  test "should return a new client with the authenticated connection" do
+    client = stub('client')
+    imap = stub_everything('imap')
     Net::IMAP.stubs(:new).returns(imap)
-    assert_raises(GmailImapClient::NotConnectedError) do
-      GmailImapClient.new.raw_messages
-    end
+    GmailImapClient.stubs(:new).with(imap).returns(client)
+    assert_equal client, GmailImapClient.connect('email', 'password')
   end
 
   test "should retrieve all raw messages from the 'INBOX'" do
@@ -31,8 +31,7 @@ class GmailImapClientTest < ActiveSupport::TestCase
     imap.stubs(:uid_fetch).with("uid-1", "BODY.PEEK[]").returns([stub(attr: {"BODY[]" => "raw-message-body-1"})])
     imap.stubs(:uid_fetch).with("uid-2", "BODY.PEEK[]").returns([stub(attr: {"BODY[]" => "raw-message-body-2"})])
     Net::IMAP.stubs(:new).returns(imap)
-    client = GmailImapClient.new
-    client.connect_as("", "")
+    client = GmailImapClient.connect('', '')
     client.raw_messages
   end
 end
