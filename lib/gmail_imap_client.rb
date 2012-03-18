@@ -18,6 +18,9 @@ class GmailImapClient
     end
   end
 
+  cattr_accessor :connection_class
+  self.connection_class = Connection
+
   attr_reader :connection
 
   def initialize(connection)
@@ -31,7 +34,7 @@ class GmailImapClient
 
   class << self
     def connect(email, password)
-      new Connection.new(email, password)
+      new connection_class.new(email, password)
     end
   end
 end

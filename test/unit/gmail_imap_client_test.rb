@@ -20,7 +20,7 @@ class GmailImapClientTest < ActiveSupport::TestCase
   test "should return a new client with connection created with supplied credentials" do
     client = stub('client')
     connection = stub('connection')
-    GmailImapClient::Connection.stubs(:new).with('email', 'password').returns(connection)
+    GmailImapClient.connection_class.stubs(:new).with('email', 'password').returns(connection)
     GmailImapClient.stubs(:new).with(connection).returns(client)
     assert_equal client, GmailImapClient.connect('email', 'password')
   end
