@@ -2,6 +2,22 @@ require "net/imap"
 require 'mail'
 
 class GmailImapClient
+  class Connection
+    attr_reader :imap
+    delegate :login, :select, :uid_search, :uid_fetch, to: :imap
+
+    def initialize(email, password)
+      @imap = ::Net::IMAP.new('imap.gmail.com', 993, ssl=true)
+      login(email, password)
+    end
+
+    def select(*args)
+      # Method delegation fails for select as it's already defined in Object.  Changing
+      # Connection to be a subclass of BasicObject breaks mocha
+      @imap.select(*args)
+    end
+  end
+
   attr_reader :connection
 
   def initialize(connection)
@@ -15,9 +31,7 @@ class GmailImapClient
 
   class << self
     def connect(email, password)
-      connection = Net::IMAP.new('imap.gmail.com', 993, ssl=true)
-      connection.login(email, password)
-      new connection
+      new Connection.new(email, password)
     end
   end
 end
