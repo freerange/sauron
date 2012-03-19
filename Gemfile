@@ -22,4 +22,8 @@ group :test do
   gem 'cucumber-rails', require: false
   gem 'database_cleaner'
   gem 'mocha', require: false
+
+  gem 'guard'
+  gem 'growl'
+  gem 'guard-minitest'
 end
