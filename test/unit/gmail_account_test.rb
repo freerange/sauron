@@ -14,15 +14,9 @@ class GmailAccountTest < ActiveSupport::TestCase
     assert_equal [], gmail_account.messages
   end
 
-  test "should tell the imap client to connect using our credentials" do
-    imap_client = stub('imap client')
-    imap_client.expects(:connect_as).with("email", "password")
-    GmailAccount.new("email", "password", imap_client)
-  end
-
-  test "should instantiate an imap client" do
-    GmailImapClient.expects(:new).returns(stub(:connect_as => nil, :raw_messages => []))
-    GmailAccount.new("", "")
+  test "should instantiate a new imap client with our credentials" do
+    GmailImapClient.expects(:connect).with("email", "password").returns(raw_messages: [])
+    GmailAccount.new("email", "password")
   end
 
   test "should return mail objects representing the messages on the server" do

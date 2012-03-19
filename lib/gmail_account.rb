@@ -9,8 +9,7 @@ class GmailAccount
   end
 
   def initialize(email, password, imap_client = nil)
-    @imap_client = imap_client || GmailImapClient.new
-    @imap_client.connect_as(email, password)
+    @imap_client = imap_client || GmailImapClient.connect(email, password)
   end
 
   def messages
