@@ -1,0 +1,1 @@
+web: bundle exec ruby script/rails server -p 6543
