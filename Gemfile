@@ -14,6 +14,8 @@ end
 
 gem 'jquery-rails'
 
+gem 'recap', git: 'https://github.com/freerange/recap.git'
+
 group :test do
   gem 'cucumber-rails', require: false
   gem 'database_cleaner'
