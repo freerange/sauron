@@ -1,6 +1,6 @@
 require 'net/imap'
 
-module MockGmail
+module FakeGmail
   class Server
     class Account
       def add_message(mailbox, message)
@@ -50,7 +50,7 @@ module MockGmail
     end
 
     def server
-      MockGmail.server
+      FakeGmail.server
     end
 
     def account

@@ -36,6 +36,6 @@ Sauron::Application.configure do
   config.active_support.deprecation = :stderr
 end
 
-require Rails.root + 'test' + 'mocks' + 'mock_gmail'
+require Rails.root + 'test' + 'fakes' + 'fake_gmail'
 require 'gmail_imap_client'
-GmailImapClient.connection_class = MockGmail::Connection
+GmailImapClient.connection_class = FakeGmail::Connection
