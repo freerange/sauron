@@ -1,1 +1,1 @@
-web: bundle exec ruby script/rails server -p 6543
+web: bundle exec unicorn_rails -c config/unicorn.rb -p 6543
