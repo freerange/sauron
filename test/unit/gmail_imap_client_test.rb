@@ -25,7 +25,7 @@ class GmailImapClientTest < ActiveSupport::TestCase
     assert_equal client, GmailImapClient.connect('email', 'password')
   end
 
-  test "should retrieve all raw messages from the 'INBOX'" do
+  test "should retrieve all inbox messages from the 'INBOX'" do
     connection = stub("imap-connection")
     connection.expects(:select).with("INBOX")
     connection.stubs(:uid_search).with("ALL").returns(["uid-1", "uid-2"])
@@ -34,6 +34,6 @@ class GmailImapClientTest < ActiveSupport::TestCase
       stub(attr: {"BODY[]" => "raw-message-body-2"})
     ])
     client = GmailImapClient.new(connection)
-    client.raw_messages
+    client.inbox_messages
   end
 end

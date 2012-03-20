@@ -13,7 +13,7 @@ class GmailAccount
   end
 
   def messages
-    raw = @imap_client.raw_messages
+    raw = @imap_client.inbox_messages
     raw.map {|m| Mail.new m}
   end
 end
