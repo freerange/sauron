@@ -9,7 +9,7 @@ class GmailAccountTest < ActiveSupport::TestCase
   end
 
   test "should return an empty array when there are no messages" do
-    imap_client = stub(:connect_as => nil, :raw_messages => [])
+    imap_client = stub(:raw_messages => [])
     gmail_account = GmailAccount.new("", "", imap_client)
     assert_equal [], gmail_account.messages
   end
@@ -21,7 +21,7 @@ class GmailAccountTest < ActiveSupport::TestCase
 
   test "should return mail objects representing the messages on the server" do
     messages = [Mail.new("FROM: George")]
-    imap_client = stub(:connect_as => nil, :raw_messages => ["FROM: George"])
+    imap_client = stub(:raw_messages => ["FROM: George"])
     gmail_account = GmailAccount.new("", "", imap_client)
     assert_equal messages, gmail_account.messages
   end
