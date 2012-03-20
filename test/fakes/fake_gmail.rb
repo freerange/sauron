@@ -44,9 +44,12 @@ module FakeGmail
       account.mailboxes[@mailbox]
     end
 
-    def uid_fetch(uid, scope)
+    def uid_fetch(uids, scope)
+      uids = [*uids]
       raise 'Mock only supports BODY.PEEK[]' unless scope == 'BODY.PEEK[]'
-      [Net::IMAP::FetchData.new(1, 'UID' => uid, 'BODY[]' => account.messages[uid])]
+      uids.map do |uid|
+        Net::IMAP::FetchData.new(1, 'UID' => uid, 'BODY[]' => account.messages[uid])
+      end
     end
 
     def server

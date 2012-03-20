@@ -29,8 +29,10 @@ class GmailImapClientTest < ActiveSupport::TestCase
     connection = stub("imap-connection")
     connection.expects(:select).with("INBOX")
     connection.stubs(:uid_search).with("ALL").returns(["uid-1", "uid-2"])
-    connection.stubs(:uid_fetch).with("uid-1", "BODY.PEEK[]").returns([stub(attr: {"BODY[]" => "raw-message-body-1"})])
-    connection.stubs(:uid_fetch).with("uid-2", "BODY.PEEK[]").returns([stub(attr: {"BODY[]" => "raw-message-body-2"})])
+    connection.stubs(:uid_fetch).with(["uid-1", "uid-2"], "BODY.PEEK[]").returns([
+      stub(attr: {"BODY[]" => "raw-message-body-1"}),
+      stub(attr: {"BODY[]" => "raw-message-body-2"})
+    ])
     client = GmailImapClient.new(connection)
     client.raw_messages
   end

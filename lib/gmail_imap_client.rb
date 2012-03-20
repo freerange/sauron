@@ -29,7 +29,8 @@ class GmailImapClient
 
   def raw_messages
     connection.select 'INBOX'
-    connection.uid_search('ALL').map {|uid| connection.uid_fetch(uid, 'BODY.PEEK[]')[0].attr['BODY[]']}
+    uids = connection.uid_search('ALL')
+    connection.uid_fetch(uids, 'BODY.PEEK[]').map {|m| m.attr['BODY[]']}
   end
 
   class << self
