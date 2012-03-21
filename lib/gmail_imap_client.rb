@@ -7,7 +7,7 @@ class GmailImapClient
     delegate :login, :examine, :uid_search, :uid_fetch, to: :imap
 
     def initialize(email, password)
-      @imap = ::Net::IMAP.new('imap.gmail.com', 993, ssl=true)
+      @imap = ::Net::IMAP.new('imap.gmail.com', 993, true)
       login(email, password)
     end
   end
