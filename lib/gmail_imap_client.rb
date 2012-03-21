@@ -21,9 +21,10 @@ class GmailImapClient
     @connection = connection
   end
 
-  def inbox_messages
+  def inbox_messages(number_of_messages = nil)
     connection.examine 'INBOX'
     uids = connection.uid_search('ALL')
+    uids = uids.take(number_of_messages) if number_of_messages
     connection.uid_fetch(uids, 'BODY.PEEK[]').map {|m| m.attr['BODY[]']}
   end
 

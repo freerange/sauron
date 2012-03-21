@@ -36,4 +36,15 @@ class GmailImapClientTest < ActiveSupport::TestCase
     client = GmailImapClient.new(connection)
     client.inbox_messages
   end
+  
+  test "should retrieve the specified number of messages from the 'INBOX'" do
+    connection = stub("imap-connection")
+    connection.expects(:examine).with("INBOX")
+    connection.stubs(:uid_search).with("ALL").returns(["uid-1", "uid-2"])
+    connection.stubs(:uid_fetch).with(["uid-1"], "BODY.PEEK[]").returns([
+      stub(attr: {"BODY[]" => "raw-message-body-1"})
+    ])
+    client = GmailImapClient.new(connection)
+    client.inbox_messages(1)
+  end
 end
