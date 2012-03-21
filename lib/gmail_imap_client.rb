@@ -2,18 +2,17 @@ require "net/imap"
 require 'mail'
 
 class GmailImapClient
-  class Connection
-    attr_reader :imap
-    delegate :login, :examine, :uid_search, :uid_fetch, to: :imap
+  class AuthenticatedConnection
+    delegate :examine, :uid_search, :uid_fetch, to: :@imap
 
     def initialize(email, password)
-      @imap = ::Net::IMAP.new('imap.gmail.com', 993, true)
-      login(email, password)
+      @imap = ::Net::IMAP.new 'imap.gmail.com', 993, true
+      @imap.login email, password
     end
   end
 
   cattr_accessor :connection_class
-  self.connection_class = Connection
+  self.connection_class = AuthenticatedConnection
 
   attr_reader :connection
 

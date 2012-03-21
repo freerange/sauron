@@ -1,9 +1,9 @@
 require 'test_helper'
 
-class GmailImapClient::ConnectionTest < ActiveSupport::TestCase
+class GmailImapClient::AuthenticatedConnectionTest < ActiveSupport::TestCase
   test "should connect to the gmail imap server" do
     Net::IMAP.expects(:new).with('imap.gmail.com', 993, true).returns(stub_everything)
-    GmailImapClient::Connection.new('email', 'password')
+    GmailImapClient::AuthenticatedConnection.new('email', 'password')
   end
 
   test "should login using the supplied email and password" do
@@ -11,7 +11,7 @@ class GmailImapClient::ConnectionTest < ActiveSupport::TestCase
     imap = stub("imap")
     imap.expects(:login).with(email, password)
     Net::IMAP.stubs(:new).returns(imap)
-    GmailImapClient::Connection.new(email, password)
+    GmailImapClient::AuthenticatedConnection.new(email, password)
   end
 end
 
