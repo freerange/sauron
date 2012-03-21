@@ -12,6 +12,9 @@ Given /^some messages exist on the server$/ do
 end
 
 Then /^they should be visible on the messages page$/ do
+  ENV['HTTP_PASSWORD'] = 'password'
+  page.driver.browser.authorize('admin', 'password')
+
   visit "/"
   within ".message" do
     assert page.has_css? ".subject", "Message one"
