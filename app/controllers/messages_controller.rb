@@ -1,5 +1,3 @@
-require 'gmail_account'
-
 class MessagesController < ApplicationController
   def index
     @messages = GmailAccount.messages(GmailAccount.email, GmailAccount.password)

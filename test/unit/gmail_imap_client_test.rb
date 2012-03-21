@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'gmail_imap_client'
 
 class GmailImapClient::ConnectionTest < ActiveSupport::TestCase
   test "should connect to the gmail imap server" do

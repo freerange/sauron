@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'gmail_account'
 
 class GmailAccountTest < ActiveSupport::TestCase
   test "should provide a class method to access account messages" do

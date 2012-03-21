@@ -1,5 +1,3 @@
-require 'gmail_imap_client'
-
 class GmailAccount
   class << self
     attr_accessor :email, :password
