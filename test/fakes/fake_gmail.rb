@@ -35,7 +35,7 @@ module FakeGmail
       @password = password
     end
 
-    def select(mailbox)
+    def examine(mailbox)
       @mailbox = mailbox
     end
 

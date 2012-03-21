@@ -27,7 +27,7 @@ class GmailImapClientTest < ActiveSupport::TestCase
 
   test "should retrieve all inbox messages from the 'INBOX'" do
     connection = stub("imap-connection")
-    connection.expects(:select).with("INBOX")
+    connection.expects(:examine).with("INBOX")
     connection.stubs(:uid_search).with("ALL").returns(["uid-1", "uid-2"])
     connection.stubs(:uid_fetch).with(["uid-1", "uid-2"], "BODY.PEEK[]").returns([
       stub(attr: {"BODY[]" => "raw-message-body-1"}),
