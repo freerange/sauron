@@ -1,3 +1,5 @@
+require 'mail'
+
 class GmailAccount
   class << self
     attr_accessor :email, :password

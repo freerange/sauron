@@ -1,5 +1,4 @@
-require "net/imap"
-require 'mail'
+require 'net/imap'
 
 class GmailImapClient
   class AuthenticatedConnection
