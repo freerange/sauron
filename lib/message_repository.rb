@@ -22,4 +22,10 @@ class MessageRepository
   def store(message)
     message_store[key_for(message)] = message
   end
+
+  def messages
+    message_store.values.map do |message|
+      Mail.new message
+    end
+  end
 end

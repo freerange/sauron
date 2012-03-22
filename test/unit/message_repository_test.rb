@@ -1,8 +1,5 @@
 require 'test_helper'
 
-#messages
-#store(message)
-
 class MessageRepositoryTest < ActiveSupport::TestCase
   test 'delegates key generation to a MessageRepository::KeyGenerator by default' do
     key_generator = stub('key-generator')
@@ -30,7 +27,10 @@ class MessageRepositoryTest < ActiveSupport::TestCase
   end
 
   test 'retrieves all messages from the message store' do
-    pending
+    store = stub('message-store')
+    repository = MessageRepository.new(store)
+    store.stubs(:values).returns(["Subject: One", "Subject: Two"])
+    assert_equal [Mail.new("Subject: One"), Mail.new("Subject: Two")], repository.messages
   end
 end
 
