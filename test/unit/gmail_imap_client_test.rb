@@ -24,17 +24,21 @@ class GmailImapClientTest < ActiveSupport::TestCase
     assert_equal client, GmailImapClient.connect('email', 'password')
   end
 
-  test "searches for uids of messages in the INBOX" do
-    connection = stub('imap-connection')
+  test "selects INBOX mailbox during initialization" do
+    connection = stub('connection')
     connection.expects(:examine).with('INBOX')
+    GmailImapClient.new(connection)
+  end
+
+  test "searches for uids of messages in the INBOX" do
+    connection = stub('imap-connection', examine: nil)
     connection.stubs(:uid_search).with('ALL').returns [1, 2, 3, 4]
     client = GmailImapClient.new(connection)
     assert_equal [1, 2, 3, 4], client.inbox_uids
   end
 
   test "loads messages from INBOX given their uids" do
-    connection = stub('imap-connection')
-    connection.expects(:examine).with('INBOX')
+    connection = stub('imap-connection', examine: nil)
     connection.stubs(:uid_fetch).with([1, 2], 'BODY.PEEK[]').returns [
       stub(attr: {"BODY[]" => "raw-message-body-1"}),
       stub(attr: {"BODY[]" => "raw-message-body-2"})
