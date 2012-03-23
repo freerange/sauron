@@ -21,6 +21,13 @@ class FileBasedMessageStoreTest < ActiveSupport::TestCase
     assert File.directory?('tmp/test/data')
   end
 
+  test 'indicates if a key has already been stored' do
+    store = FileBasedMessageStore.new(TEST_ROOT_PATH)
+    refute store.include?('a')
+    store['a'] = 'b'
+    assert store.include?('a')
+  end
+
   test 'retrieves all messages from its root path' do
     store = FileBasedMessageStore.new(TEST_ROOT_PATH)
     File.write(File.expand_path('a', TEST_ROOT_PATH), '1')

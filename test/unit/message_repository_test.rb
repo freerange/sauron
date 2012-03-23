@@ -26,6 +26,15 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     repository.store(123, message)
   end
 
+  test 'indicates if a message exists in message store' do
+    store = stub('message-store')
+    repository = MessageRepository.new(store)
+    store.stubs(:include?).with(repository.key_for(1)).returns(true)
+    store.stubs(:include?).with(repository.key_for(2)).returns(false)
+    assert repository.include?(1)
+    refute repository.include?(2)
+  end
+
   test 'retrieves all messages from the message store' do
     store = stub('message-store')
     repository = MessageRepository.new(store)

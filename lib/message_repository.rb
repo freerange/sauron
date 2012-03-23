@@ -25,6 +25,10 @@ class MessageRepository
     @key_generator = key_generator
   end
 
+  def include?(id)
+    message_store.include?(key_for(id))
+  end
+
   def store(id, message)
     message_store[key_for(id)] = message
   end

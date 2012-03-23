@@ -5,15 +5,24 @@ class FileBasedMessageStore
     @root_path = root_path
   end
 
+  def include?(key)
+    File.exist? key_path(key)
+  end
+
   def []=(key, value)
-    full_path = File.expand_path(key, @root_path)
-    FileUtils.mkdir_p File.dirname(full_path)
-    File.write full_path, value
+    FileUtils.mkdir_p File.dirname(key_path(key))
+    File.write key_path(key), value
   end
 
   def values
     Dir["#{@root_path}/**"].map do |path|
       File.read(path)
     end
+  end
+
+  private
+
+  def key_path(key)
+    File.expand_path(key.to_s, @root_path)
   end
 end

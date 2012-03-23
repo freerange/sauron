@@ -7,7 +7,9 @@ class MessageImporter
 
   def import_into(repository)
     message_client.inbox_uids.each do |uid|
-      repository.store uid, message_client.inbox_message(uid)
+      unless repository.include?(uid)
+        repository.store uid, message_client.inbox_message(uid)
+      end
     end
   end
 end
