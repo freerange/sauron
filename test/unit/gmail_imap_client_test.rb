@@ -37,7 +37,16 @@ class GmailImapClientTest < ActiveSupport::TestCase
     assert_equal [1, 2, 3, 4], client.inbox_uids
   end
 
-  test "loads messages from INBOX given their uids" do
+  test "fetches a single message from INBOX given its uid" do
+    connection = stub('imap-connection', examine: nil)
+    connection.stubs(:uid_fetch).with([1], 'BODY.PEEK[]').returns [
+      stub(attr: {"BODY[]" => "raw-message-body-1"})
+    ]
+    client = GmailImapClient.new(connection)
+    assert_equal 'raw-message-body-1', client.inbox_message(1)
+  end
+
+  test "fetches multiple messages from INBOX given their uids" do
     connection = stub('imap-connection', examine: nil)
     connection.stubs(:uid_fetch).with([1, 2], 'BODY.PEEK[]').returns [
       stub(attr: {"BODY[]" => "raw-message-body-1"}),
