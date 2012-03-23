@@ -1,13 +1,17 @@
 require 'test_helper'
 
 class MessageRepositoryTest < ActiveSupport::TestCase
-  test 'stores messages in message store' do
+  test 'stores messages in message store, using Mail to bypass encoding issues' do
     store = stub('message-store')
     repository = MessageRepository.new(store)
 
-    message = stub('message')
-    store.expects(:[]=).with(123, message)
-    repository.store(123, message)
+    message = :message
+    mail = stub('mail')
+    Mail.stubs(:new).with(:message).returns(mail)
+    mail.stubs(:to_s).returns(:bypassed_message)
+
+    store.expects(:[]=).with(123, :bypassed_message)
+    repository.store(123, :message)
   end
 
   test 'indicates if a message exists in message store' do
