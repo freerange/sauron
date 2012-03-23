@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/freerange/recap.git
-  revision: cf55905e68ae5963c3350f9b43a958f4a35d6082
+  revision: 63ce214d45a74e10d073d7f0b8b1c5abdf83b506
   specs:
     recap (0.2.0)
       capistrano (~> 2.9.0)
