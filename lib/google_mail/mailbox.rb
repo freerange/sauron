@@ -31,11 +31,7 @@ module GoogleMail
     end
 
     def message(uid)
-      messages(uid).first
-    end
-
-    def messages(*uids)
-      connection.uid_fetch(uids, 'BODY.PEEK[]').map {|m| m.attr['BODY[]']}
+      connection.uid_fetch(uid, 'BODY.PEEK[]').map {|m| m.attr['BODY[]']}.first
     end
 
     class << self

@@ -39,30 +39,20 @@ module GoogleMail
       Mailbox.new(connection)
     end
 
-    test "searches for uids of messages in the INBOX" do
+    test "returns uids of all messages in the mailbox" do
       connection = stub('imap-connection', examine: nil, list: [])
       connection.stubs(:uid_search).with('ALL').returns [1, 2, 3, 4]
       mailbox = Mailbox.new(connection)
       assert_equal [1, 2, 3, 4], mailbox.uids
     end
 
-    test "fetches a single message from INBOX given its uid" do
+    test "returns a single message given its uid" do
       connection = stub('imap-connection', examine: nil, list: [])
-      connection.stubs(:uid_fetch).with([1], 'BODY.PEEK[]').returns [
+      connection.stubs(:uid_fetch).with(1, 'BODY.PEEK[]').returns [
         stub(attr: {"BODY[]" => "raw-message-body-1"})
       ]
       mailbox = Mailbox.new(connection)
       assert_equal 'raw-message-body-1', mailbox.message(1)
-    end
-
-    test "fetches multiple messages from INBOX given their uids" do
-      connection = stub('imap-connection', examine: nil, list: [])
-      connection.stubs(:uid_fetch).with([1, 2], 'BODY.PEEK[]').returns [
-        stub(attr: {"BODY[]" => "raw-message-body-1"}),
-        stub(attr: {"BODY[]" => "raw-message-body-2"})
-      ]
-      mailbox = Mailbox.new(connection)
-      assert_equal ['raw-message-body-1', 'raw-message-body-2'], mailbox.messages(1, 2)
     end
   end
 end
