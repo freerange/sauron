@@ -1,14 +1,14 @@
 class MessageImporter
-  attr_reader :message_client
+  attr_reader :mailbox
 
-  def initialize(message_client)
-    @message_client = message_client
+  def initialize(mailbox)
+    @mailbox = mailbox
   end
 
   def import_into(repository)
-    message_client.inbox_uids.each do |uid|
+    mailbox.uids.each do |uid|
       unless repository.include?(uid)
-        repository.store uid, message_client.inbox_message(uid)
+        repository.store uid, mailbox.message(uid)
       end
     end
   end

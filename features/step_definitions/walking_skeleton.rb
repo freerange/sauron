@@ -14,7 +14,7 @@ Given /^the email account "([^"]*)" has messages in their Gmail inbox$/ do |acco
 end
 
 When /^the messages for account "([^"]*)" are imported$/ do |account|
-  MessageImporter.new(GmailImapClient.connect(account, 'password')).import_into(MessageRepository.instance)
+  MessageImporter.new(GoogleMail::Mailbox.connect(account, 'password')).import_into(MessageRepository.instance)
 end
 
 Then /^they should be visible on the messages page$/ do

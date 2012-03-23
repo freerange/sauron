@@ -37,5 +37,5 @@ Sauron::Application.configure do
 end
 
 require Rails.root + 'test' + 'fakes' + 'fake_gmail'
-require 'gmail_imap_client'
-GmailImapClient.connection_class = FakeGmail::Connection
+require 'google_mail/mailbox'
+GoogleMail::Mailbox.connection_class = FakeGmail::Connection
