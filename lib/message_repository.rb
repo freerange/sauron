@@ -2,8 +2,8 @@ require 'mail'
 
 class MessageRepository
   class KeyGenerator
-    def key_for(message)
-      Digest::MD5.hexdigest(message)
+    def key_for(id)
+      Digest::MD5.hexdigest(id.to_s)
     end
   end
 
@@ -25,8 +25,8 @@ class MessageRepository
     @key_generator = key_generator
   end
 
-  def store(message)
-    message_store[key_for(message)] = message
+  def store(id, message)
+    message_store[key_for(id)] = message
   end
 
   def messages

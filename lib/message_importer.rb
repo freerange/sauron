@@ -6,9 +6,8 @@ class MessageImporter
   end
 
   def import_into(repository)
-    uids = message_client.inbox_uids
-    message_client.inbox_messages(*uids).each do |message|
-      repository.store(message)
+    message_client.inbox_uids.each do |uid|
+      repository.store uid, message_client.inbox_message(uid)
     end
   end
 end

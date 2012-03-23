@@ -21,9 +21,9 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     repository = MessageRepository.new(store)
 
     message = stub('message')
-    repository.stubs(:key_for).with(message).returns(:a_message_key)
-    store.expects(:[]=).with(:a_message_key, message)
-    repository.store(message)
+    repository.stubs(:key_for).with(123).returns('123')
+    store.expects(:[]=).with('123', message)
+    repository.store(123, message)
   end
 
   test 'retrieves all messages from the message store' do
@@ -35,9 +35,9 @@ class MessageRepositoryTest < ActiveSupport::TestCase
 end
 
 class MessageRepository::KeyGeneratorTest < ActiveSupport::TestCase
-  test 'generates keys by calculating MD5 hash of the message' do
+  test 'generates keys by calculating MD5 hash' do
     generator = MessageRepository::KeyGenerator.new
-    hash = Digest::MD5.hexdigest('a-message')
-    assert_equal hash, generator.key_for('a-message')
+    hash = Digest::MD5.hexdigest(1.to_s)
+    assert_equal hash, generator.key_for(1)
   end
 end
