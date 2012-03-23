@@ -8,7 +8,7 @@ class MessagesControllerTest < ActionController::TestCase
 
   test "#index assigns messages from Gmail" do
     messages = [Mail.new("FROM: George\nDate: 2012-01-01 12:00:00"), Mail.new("FROM: Bob\nDate: 2012-01-01 12:00:00")]
-    GmailAccount.stubs(:messages).with().returns(messages)
+    MessageRepository.stubs(:messages).with().returns(messages)
     get :index
     assert_equal messages, assigns[:messages]
   end
