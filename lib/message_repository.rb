@@ -1,3 +1,5 @@
+require 'mail'
+
 class MessageRepository
   class KeyGenerator
     def key_for(message)
