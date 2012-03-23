@@ -22,7 +22,7 @@ class MessageRepository
   end
 
   def store(id, message)
-    message_store[id] = Mail.new(message).to_s
+    message_store[id] = message
   end
 
   def messages

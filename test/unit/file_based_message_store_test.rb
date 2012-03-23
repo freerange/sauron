@@ -9,22 +9,28 @@ class FileBasedMessageStoreTest < ActiveSupport::TestCase
   end
 
   test 'determines path to store keys using root path and MD5 hash of key' do
-    store = FileBasedMessageStore.new(TEST_ROOT_PATH)
-    hash = Digest::MD5.hexdigest('1')
-    assert_equal File.expand_path(File.join('tmp/test/data', hash)), store.key_path(1)
+    hash = Digest::MD5.hexdigest('message-key')
+    FileBasedMessageStore.new(TEST_ROOT_PATH)['message-key'] = 'something'
   end
 
-  test 'stores messages in the path for the given key' do
-    store = FileBasedMessageStore.new(TEST_ROOT_PATH)
-    store['x'] = 'y'
-    assert_equal 'y', File.read(store.key_path('x'))
+  test 'stores messages persistently on the filesystem' do
+    FileBasedMessageStore.new(TEST_ROOT_PATH)['x'] = 'y'
+    assert_equal 'y', FileBasedMessageStore.new(TEST_ROOT_PATH)['x']
+    FileUtils.rm_rf TEST_ROOT_PATH
+    assert_nil FileBasedMessageStore.new(TEST_ROOT_PATH)['x']
   end
 
-  test 'stores messages successfully whether directory exists or not' do
+  test 'creates storage directory if it doesn\'t already exist' do
     store = FileBasedMessageStore.new(TEST_ROOT_PATH)
     FileUtils.rm_rf 'tmp/test'
     store['x'] = 'y'
-    assert_equal 'y', File.read(store.key_path('x'))
+    assert File.directory?(TEST_ROOT_PATH)
+  end
+
+  test 'encodes messages to avoid problems with strange encodings' do
+    store = FileBasedMessageStore.new(TEST_ROOT_PATH)
+    store['strange'] = "\xA3"
+    assert_equal "\xA3", store['strange']
   end
 
   test 'indicates if a key has already been stored' do
@@ -36,8 +42,8 @@ class FileBasedMessageStoreTest < ActiveSupport::TestCase
 
   test 'provides access to all messages stored' do
     store = FileBasedMessageStore.new(TEST_ROOT_PATH)
-    File.write(store.key_path('a'), '1')
-    File.write(store.key_path('b'), '2')
+    store['a'] = '1'
+    store['b'] = '2'
     assert_equal ['1', '2'], store.values.sort
   end
 

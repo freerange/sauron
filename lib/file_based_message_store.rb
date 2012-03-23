@@ -1,4 +1,5 @@
 require 'fileutils'
+require 'base64'
 
 class FileBasedMessageStore
   def initialize(root_path)
@@ -9,14 +10,20 @@ class FileBasedMessageStore
     File.exist? key_path(key)
   end
 
+  def [](key)
+    if include?(key)
+      Base64.strict_decode64(File.read(key_path(key)))
+    end
+  end
+
   def []=(key, value)
     FileUtils.mkdir_p File.dirname(key_path(key))
-    File.write key_path(key), value
+    File.write key_path(key), Base64.strict_encode64(value)
   end
 
   def values
     Dir["#{@root_path}/**"].map do |path|
-      File.read(path)
+      Base64.strict_decode64(File.read(path))
     end
   end
 
