@@ -24,21 +24,29 @@ class GmailImapClientTest < ActiveSupport::TestCase
     assert_equal client, GmailImapClient.connect('email', 'password')
   end
 
-  test "selects INBOX mailbox during initialization" do
+  test "selects [Gmail]/All Mail mailbox if it exists" do
     connection = stub('connection')
-    connection.expects(:examine).with('INBOX')
+    connection.stubs(:list).with('', '%').returns([stub(name: 'Anything'), stub(name: '[Gmail]')])
+    connection.expects(:examine).with('[Gmail]/All Mail')
+    GmailImapClient.new(connection)
+  end
+
+  test "selects [Google Mail]/All Mail mailbox if there is no [Gmail] mailbox" do
+    connection = stub('connection')
+    connection.stubs(:list).with('', '%').returns([stub(name: 'Anything')])
+    connection.expects(:examine).with('[Google Mail]/All Mail')
     GmailImapClient.new(connection)
   end
 
   test "searches for uids of messages in the INBOX" do
-    connection = stub('imap-connection', examine: nil)
+    connection = stub('imap-connection', examine: nil, list: [])
     connection.stubs(:uid_search).with('ALL').returns [1, 2, 3, 4]
     client = GmailImapClient.new(connection)
     assert_equal [1, 2, 3, 4], client.inbox_uids
   end
 
   test "fetches a single message from INBOX given its uid" do
-    connection = stub('imap-connection', examine: nil)
+    connection = stub('imap-connection', examine: nil, list: [])
     connection.stubs(:uid_fetch).with([1], 'BODY.PEEK[]').returns [
       stub(attr: {"BODY[]" => "raw-message-body-1"})
     ]
@@ -47,7 +55,7 @@ class GmailImapClientTest < ActiveSupport::TestCase
   end
 
   test "fetches multiple messages from INBOX given their uids" do
-    connection = stub('imap-connection', examine: nil)
+    connection = stub('imap-connection', examine: nil, list: [])
     connection.stubs(:uid_fetch).with([1, 2], 'BODY.PEEK[]').returns [
       stub(attr: {"BODY[]" => "raw-message-body-1"}),
       stub(attr: {"BODY[]" => "raw-message-body-2"})
