@@ -20,9 +20,7 @@ class FileBasedMessageStore
     end
   end
 
-  private
-
   def key_path(key)
-    File.expand_path(key.to_s, @root_path)
+    File.expand_path(Digest::MD5.hexdigest(key.to_s), @root_path)
   end
 end

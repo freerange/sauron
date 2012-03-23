@@ -8,17 +8,23 @@ class FileBasedMessageStoreTest < ActiveSupport::TestCase
     FileUtils.mkdir_p TEST_ROOT_PATH
   end
 
-  test 'stores messages in given root path' do
+  test 'determines path to store keys using root path and MD5 hash of key' do
     store = FileBasedMessageStore.new(TEST_ROOT_PATH)
-    store['x'] = 'y'
-    assert_equal 'y', File.read(File.expand_path('x', TEST_ROOT_PATH))
+    hash = Digest::MD5.hexdigest('1')
+    assert_equal File.expand_path(File.join('tmp/test/data', hash)), store.key_path(1)
   end
 
-  test 'stores messages successfully when directory doesn\'t exist beforehand' do
+  test 'stores messages in the path for the given key' do
+    store = FileBasedMessageStore.new(TEST_ROOT_PATH)
+    store['x'] = 'y'
+    assert_equal 'y', File.read(store.key_path('x'))
+  end
+
+  test 'stores messages successfully whether directory exists or not' do
     store = FileBasedMessageStore.new(TEST_ROOT_PATH)
     FileUtils.rm_rf 'tmp/test'
     store['x'] = 'y'
-    assert File.directory?('tmp/test/data')
+    assert_equal 'y', File.read(store.key_path('x'))
   end
 
   test 'indicates if a key has already been stored' do
@@ -28,10 +34,10 @@ class FileBasedMessageStoreTest < ActiveSupport::TestCase
     assert store.include?('a')
   end
 
-  test 'retrieves all messages from its root path' do
+  test 'provides access to all messages stored' do
     store = FileBasedMessageStore.new(TEST_ROOT_PATH)
-    File.write(File.expand_path('a', TEST_ROOT_PATH), '1')
-    File.write(File.expand_path('b', TEST_ROOT_PATH), '2')
+    File.write(store.key_path('a'), '1')
+    File.write(store.key_path('b'), '2')
     assert_equal ['1', '2'], store.values.sort
   end
 

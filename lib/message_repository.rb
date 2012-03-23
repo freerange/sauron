@@ -1,12 +1,6 @@
 require 'mail'
 
 class MessageRepository
-  class KeyGenerator
-    def key_for(id)
-      Digest::MD5.hexdigest(id.to_s)
-    end
-  end
-
   class << self
     attr_writer :instance
 
@@ -17,20 +11,18 @@ class MessageRepository
     end
   end
 
-  delegate :key_for, to: :@key_generator
   attr_reader :message_store
 
-  def initialize(store, key_generator = KeyGenerator.new)
+  def initialize(store)
     @message_store = store
-    @key_generator = key_generator
   end
 
   def include?(id)
-    message_store.include?(key_for(id))
+    message_store.include?(id)
   end
 
   def store(id, message)
-    message_store[key_for(id)] = message
+    message_store[id] = message
   end
 
   def messages
