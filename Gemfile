@@ -17,6 +17,7 @@ gem 'jquery-rails'
 gem 'recap', git: 'https://github.com/freerange/recap.git'
 gem 'foreman'
 gem 'unicorn'
+gem 'whenever', require: false
 
 group :test do
   gem 'cucumber-rails', require: false
