@@ -6,8 +6,12 @@ class MessageRepository
   end
 
   class << self
-    def messages
+    attr_writer :instance
 
+    delegate :messages, to: :instance
+
+    def instance
+      @instance ||= new(FileBasedMessageStore.new("data/#{Rails.env}"))
     end
   end
 
