@@ -14,7 +14,7 @@ module GoogleMail
     end
 
     class CachedConnection
-      delegate :examine, :uid_search, :list, to: :@connection
+      delegate :email, :examine, :uid_search, :list, to: :@connection
 
       def initialize(email, password, cache = GoogleMail::ImapCache)
         @connection = AuthenticatedConnection.new(email, password)
@@ -32,6 +32,7 @@ module GoogleMail
     self.connection_class = CachedConnection
 
     attr_reader :connection
+    delegate :email, to: :connection
 
     def initialize(connection)
       @connection = connection

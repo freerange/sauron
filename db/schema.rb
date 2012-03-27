@@ -14,6 +14,7 @@
 ActiveRecord::Schema.define(:version => 20120327123609) do
 
   create_table "messages", :force => true do |t|
+    t.string   "account"
     t.string   "uid"
     t.string   "subject"
     t.datetime "date"

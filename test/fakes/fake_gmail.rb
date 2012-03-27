@@ -31,6 +31,8 @@ module FakeGmail
   self.server ||= Server.new
 
   class Connection
+    attr_reader :email
+
     def initialize(email, password)
       @email = email
       @password = password

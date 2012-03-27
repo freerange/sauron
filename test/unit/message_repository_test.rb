@@ -10,17 +10,17 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     model = stub('model')
     message = Mail.new(subject: 'Subject', from: 'tom@example.com', date: Date.today).to_s
     repository = MessageRepository.new(model)
-    model.expects(:create!).with(uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today)
-    repository.add(123, message)
+    model.expects(:create!).with(account: 'sam@example.com', uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today)
+    repository.add('sam@example.com', 123, message)
   end
 
   test 'uses model to check if messages already exist' do
     model = stub('model')
     repository = MessageRepository.new(model)
     scope = stub('scope')
-    model.stubs(:where).with(uid: 1).returns(scope)
+    model.stubs(:where).with(account: 'sam@example.com', uid: 1).returns(scope)
     scope.stubs(:exists?).returns(true)
-    assert repository.exists?(1)
+    assert repository.exists?('sam@example.com', 1)
   end
 
   test 'retrieves all messages from the message store' do

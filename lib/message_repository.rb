@@ -35,13 +35,13 @@ class MessageRepository
     @model = model
   end
 
-  def add(uid, message)
+  def add(account, uid, message)
     mail = Mail.new(message)
-    @model.create! uid: uid, subject: mail.subject, date: mail.date, from: mail.from.first
+    @model.create! account: account, uid: uid, subject: mail.subject, date: mail.date, from: mail.from.first
   end
 
-  def exists?(uid)
-    @model.where(uid: uid).exists?
+  def exists?(account, uid)
+    @model.where(account: account, uid: uid).exists?
   end
 
   def messages
