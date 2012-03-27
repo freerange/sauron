@@ -12,7 +12,7 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     repository = MessageRepository.new(store)
     message = :message
     store.expects(:[]=).with(123, :message)
-    repository.store(123, :message)
+    repository.add(123, :message)
   end
 
   test 'indicates if a message exists in message store' do

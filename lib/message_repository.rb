@@ -17,12 +17,12 @@ class MessageRepository
     @message_store = store
   end
 
-  def include?(id)
-    message_store.include?(id)
+  def include?(key)
+    message_store.include?(key)
   end
 
-  def store(id, message)
-    message_store[id] = message
+  def add(key, message)
+    message_store[key] = message
   end
 
   def messages
