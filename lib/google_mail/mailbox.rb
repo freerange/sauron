@@ -3,16 +3,33 @@ require 'net/imap'
 module GoogleMail
   class Mailbox
     class AuthenticatedConnection
+      attr_reader :email
       delegate :examine, :uid_search, :list, :uid_fetch, to: :@imap
 
       def initialize(email, password)
         @imap = ::Net::IMAP.new 'imap.gmail.com', 993, true
         @imap.login email, password
+        @email = email
+      end
+    end
+
+    class CachedConnection
+      delegate :examine, :uid_search, :list, to: :@connection
+
+      def initialize(email, password, cache = GoogleMail::ImapCache)
+        @connection = AuthenticatedConnection.new(email, password)
+        @cache = cache
+      end
+
+      def uid_fetch(uid, command)
+        @cache.fetch [@connection.email, uid, command] do
+          @connection.uid_fetch(uid, command)
+        end
       end
     end
 
     cattr_accessor :connection_class
-    self.connection_class = AuthenticatedConnection
+    self.connection_class = CachedConnection
 
     attr_reader :connection
 

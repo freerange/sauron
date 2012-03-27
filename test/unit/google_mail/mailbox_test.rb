@@ -14,6 +14,41 @@ module GoogleMail
       Net::IMAP.stubs(:new).returns(imap)
       Mailbox::AuthenticatedConnection.new(email, password)
     end
+
+    test "gives access to the email address the account represents" do
+      email, password = "email", "password"
+      imap = stub("imap", login: nil)
+      Net::IMAP.stubs(:new).returns(imap)
+      assert_equal 'email', Mailbox::AuthenticatedConnection.new(email, password).email
+    end
+  end
+
+  class Mailbox::CachedConnectionTest < ActiveSupport::TestCase
+    test "instantiates an AuthenticatedConnection to make imap requests through" do
+      cache = stub('cache')
+      Mailbox::AuthenticatedConnection.expects(:new).with('email', 'password')
+      Mailbox::CachedConnection.new('email', 'password', cache)
+    end
+
+    test "delegates imap requests through its connection" do
+      cache = stub('cache')
+      connection = stub('connection')
+      Mailbox::AuthenticatedConnection.stubs(:new).returns(connection)
+      cached_connection = Mailbox::CachedConnection.new('email', 'password', cache)
+      connection.expects(:uid_search).with('ALL')
+      cached_connection.uid_search 'ALL'
+    end
+
+    test "uses cache to avoid repeated calls to uid_fetch" do
+      cache = ActiveSupport::Cache::MemoryStore.new
+      connection = stub('connection', email: 'tom@example.com')
+      Mailbox::AuthenticatedConnection.stubs(:new).returns(connection)
+      cached_connection = Mailbox::CachedConnection.new('email', 'password', cache)
+      connection.stubs(:uid_fetch).with([1, 2, 3], 'ALL').returns(:result)
+      assert_equal :result, cached_connection.uid_fetch([1, 2, 3], 'ALL')
+      connection.stubs(:uid_fetch).never
+      assert_equal :result, cached_connection.uid_fetch([1, 2, 3], 'ALL')
+    end
   end
 
   class MailboxTest < ActiveSupport::TestCase
