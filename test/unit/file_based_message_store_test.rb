@@ -8,6 +8,10 @@ class FileBasedMessageStoreTest < ActiveSupport::TestCase
     FileUtils.mkdir_p TEST_ROOT_PATH
   end
 
+  test 'uses "data/<Rails.env>/messages" as its default root path' do
+    assert_equal Rails.root + 'data' + 'test' + 'messages', FileBasedMessageStore.new.root_path
+  end
+
   test 'determines path to store keys using root path and MD5 hash of key' do
     hash = Digest::MD5.hexdigest('message-key')
     FileBasedMessageStore.new(TEST_ROOT_PATH)['message-key'] = 'something'

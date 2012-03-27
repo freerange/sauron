@@ -2,7 +2,9 @@ require 'fileutils'
 require 'base64'
 
 class FileBasedMessageStore
-  def initialize(root_path)
+  attr_reader :root_path
+
+  def initialize(root_path = Rails.root + 'data' + Rails.env + 'messages')
     @root_path = root_path
   end
 
@@ -22,12 +24,12 @@ class FileBasedMessageStore
   end
 
   def values
-    Dir["#{@root_path}/**"].map do |path|
+    Dir["#{root_path}/**"].map do |path|
       Base64.strict_decode64(File.read(path))
     end
   end
 
   def key_path(key)
-    File.expand_path(Digest::MD5.hexdigest(key.to_s), @root_path)
+    File.expand_path(Digest::MD5.hexdigest(key.to_s), root_path)
   end
 end

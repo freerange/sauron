@@ -7,7 +7,7 @@ class MessageRepository
     delegate :messages, to: :instance
 
     def instance
-      @instance ||= new(FileBasedMessageStore.new("data/#{Rails.env}"))
+      @instance ||= new(FileBasedMessageStore.new)
     end
   end
 
