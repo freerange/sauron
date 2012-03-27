@@ -22,9 +22,8 @@ class AccountMessageImporterTest < ActiveSupport::TestCase
 
     message_repository = stub('message-repository')
     importer = stub('importer')
-    MessageRepository.stubs(:instance).returns(message_repository)
     MessageImporter.stubs(:new).returns(importer)
-    importer.expects(:import_into).with(message_repository)
+    importer.expects(:import_into).with(MessageRepository)
 
     AccountMessageImporter.import_for('whatever', 'whatever')
   end
