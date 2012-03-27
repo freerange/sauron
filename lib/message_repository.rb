@@ -1,6 +1,19 @@
 require 'mail'
 
 class MessageRepository
+  class Message
+    attr_reader :mail
+    delegate :subject, :date, :from, to: :mail
+
+    def initialize(body)
+      @mail = Mail.new(body)
+    end
+
+    def ==(message)
+      message.is_a?(Message) && message.mail == mail
+    end
+  end
+
   class << self
     attr_writer :instance
 
@@ -27,7 +40,7 @@ class MessageRepository
 
   def messages
     message_store.values.map do |message|
-      Mail.new message
+      Message.new message
     end
   end
 end

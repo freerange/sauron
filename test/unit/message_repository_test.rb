@@ -28,6 +28,6 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     store = stub('message-store')
     repository = MessageRepository.new(store)
     store.stubs(:values).returns(["Subject: One", "Subject: Two"])
-    assert_equal [Mail.new("Subject: One"), Mail.new("Subject: Two")], repository.messages
+    assert_equal [MessageRepository::Message.new("Subject: One"), MessageRepository::Message.new("Subject: Two")], repository.messages
   end
 end
