@@ -1,6 +1,12 @@
 require 'test_helper'
 
 class MessageRepositoryTest < ActiveSupport::TestCase
+  test 'uses a FileBasedMessageStore by default' do
+    store = stub('store')
+    FileBasedMessageStore.stubs(:new).returns(store)
+    assert_equal store, MessageRepository.new.message_store
+  end
+
   test 'stores messages in message store' do
     store = stub('message-store')
     repository = MessageRepository.new(store)

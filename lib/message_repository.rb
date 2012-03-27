@@ -7,13 +7,13 @@ class MessageRepository
     delegate :messages, to: :instance
 
     def instance
-      @instance ||= new(FileBasedMessageStore.new)
+      @instance ||= new
     end
   end
 
   attr_reader :message_store
 
-  def initialize(store)
+  def initialize(store = FileBasedMessageStore.new)
     @message_store = store
   end
 
