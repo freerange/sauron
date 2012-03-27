@@ -14,6 +14,15 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     repository.add('sam@example.com', 123, message)
   end
 
+  test 'adds original message data to message store' do
+    model = stub('model', create!: nil)
+    store = stub('store')
+    message = Mail.new(subject: 'Subject', from: 'tom@example.com', date: Date.today).to_s
+    repository = MessageRepository.new(model, store)
+    store.expects(:add).with('sam@example.com', 123, message)
+    repository.add('sam@example.com', 123, message)
+  end
+
   test 'uses model to check if messages already exist' do
     model = stub('model')
     repository = MessageRepository.new(model)
@@ -23,11 +32,21 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     assert repository.exists?('sam@example.com', 1)
   end
 
-  test 'retrieves all messages from the message store' do
+  test 'retrieves all messages from the model' do
     model = stub('model')
     repository = MessageRepository.new(model)
-    message = stub('message')
+    message = stub('message', account: 'tom@example.com', uid: 123)
     model.stubs(:all).returns([message])
     assert_equal [MessageRepository::Message.new(message)], repository.messages
+  end
+
+  test 'finds a single message from the model' do
+    model = stub('model')
+    scope = stub('scope')
+    repository = MessageRepository.new(model)
+    message = stub('message', account: 'tom@example.com', uid: 123)
+    model.stubs(:where).with(id: '123').returns(scope)
+    scope.stubs(:first).returns(message)
+    assert_equal MessageRepository::Message.new(message), repository.find('123')
   end
 end
