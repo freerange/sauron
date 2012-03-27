@@ -4,7 +4,7 @@ class MessageRepository
   class << self
     attr_writer :instance
 
-    delegate :add, :include?, :messages, to: :instance
+    delegate :add, :exists?, :messages, to: :instance
 
     def instance
       @instance ||= new
@@ -21,7 +21,7 @@ class MessageRepository
     message_store[key] = message
   end
 
-  def include?(key)
+  def exists?(key)
     message_store.include?(key)
   end
 

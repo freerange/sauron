@@ -20,8 +20,8 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     repository = MessageRepository.new(store)
     store.stubs(:include?).with(1).returns(true)
     store.stubs(:include?).with(2).returns(false)
-    assert repository.include?(1)
-    refute repository.include?(2)
+    assert repository.exists?(1)
+    refute repository.exists?(2)
   end
 
   test 'retrieves all messages from the message store' do
