@@ -11,6 +11,13 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 0) do
+ActiveRecord::Schema.define(:version => 20120327123609) do
+
+  create_table "messages", :force => true do |t|
+    t.string   "uid"
+    t.string   "subject"
+    t.datetime "date"
+    t.string   "from"
+  end
 
 end

@@ -1,16 +1,21 @@
 require 'mail'
 
 class MessageRepository
-  class Message
-    attr_reader :mail
-    delegate :subject, :date, :from, to: :mail
+  class Record < ActiveRecord::Base
+    set_table_name :messages
+  end
 
-    def initialize(body)
-      @mail = Mail.new(body)
+  class Message
+    attr_reader :record
+    delegate :subject, :date, :from, to: :record
+
+    def initialize(record)
+      @record = record
     end
 
     def ==(message)
-      message.is_a?(Message) && message.mail == mail
+      message.is_a?(Message) &&
+      message.record == record
     end
   end
 
@@ -24,23 +29,24 @@ class MessageRepository
     end
   end
 
-  attr_reader :message_store
+  attr_reader :model
 
-  def initialize(store = FileBasedMessageStore.new)
-    @message_store = store
+  def initialize(model = Record)
+    @model = model
   end
 
-  def add(key, message)
-    message_store[key] = message
+  def add(uid, message)
+    mail = Mail.new(message)
+    @model.create! uid: uid, subject: mail.subject, date: mail.date, from: mail.from.first
   end
 
-  def exists?(key)
-    message_store.include?(key)
+  def exists?(uid)
+    @model.where(uid: uid).exists?
   end
 
   def messages
-    message_store.values.map do |message|
-      Message.new message
+    @model.all.map do |record|
+      Message.new record
     end
   end
 end

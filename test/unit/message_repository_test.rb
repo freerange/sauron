@@ -1,33 +1,33 @@
 require 'test_helper'
 
 class MessageRepositoryTest < ActiveSupport::TestCase
-  test 'uses a FileBasedMessageStore by default' do
-    store = stub('store')
-    FileBasedMessageStore.stubs(:new).returns(store)
-    assert_equal store, MessageRepository.new.message_store
+  test 'uses MessageRepository::Record by default' do
+    model = stub('model')
+    assert_equal MessageRepository::Record, MessageRepository.new.model
   end
 
-  test 'stores messages in message store' do
-    store = stub('message-store')
-    repository = MessageRepository.new(store)
-    message = :message
-    store.expects(:[]=).with(123, :message)
-    repository.add(123, :message)
+  test 'adds messages by creating a model' do
+    model = stub('model')
+    message = Mail.new(subject: 'Subject', from: 'tom@example.com', date: Date.today).to_s
+    repository = MessageRepository.new(model)
+    model.expects(:create!).with(uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today)
+    repository.add(123, message)
   end
 
-  test 'indicates if a message exists in message store' do
-    store = stub('message-store')
-    repository = MessageRepository.new(store)
-    store.stubs(:include?).with(1).returns(true)
-    store.stubs(:include?).with(2).returns(false)
+  test 'uses model to check if messages already exist' do
+    model = stub('model')
+    repository = MessageRepository.new(model)
+    scope = stub('scope')
+    model.stubs(:where).with(uid: 1).returns(scope)
+    scope.stubs(:exists?).returns(true)
     assert repository.exists?(1)
-    refute repository.exists?(2)
   end
 
   test 'retrieves all messages from the message store' do
-    store = stub('message-store')
-    repository = MessageRepository.new(store)
-    store.stubs(:values).returns(["Subject: One", "Subject: Two"])
-    assert_equal [MessageRepository::Message.new("Subject: One"), MessageRepository::Message.new("Subject: Two")], repository.messages
+    model = stub('model')
+    repository = MessageRepository.new(model)
+    message = stub('message')
+    model.stubs(:all).returns([message])
+    assert_equal [MessageRepository::Message.new(message)], repository.messages
   end
 end
