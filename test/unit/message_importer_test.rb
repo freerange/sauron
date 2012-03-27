@@ -1,8 +1,9 @@
 require 'test_helper'
 
 class MessageImporterTest < ActiveSupport::TestCase
+  stub(:mailbox, email: 'tom@example.com')
+
   test 'imports messages available in the mailbox' do
-    mailbox = stub('mailbox', email: 'tom@example.com')
     mailbox.stubs(:uids).returns([3, 4])
     mailbox.stubs(:message).with(3).returns(:message1)
     mailbox.stubs(:message).with(4).returns(:message2)
@@ -14,7 +15,6 @@ class MessageImporterTest < ActiveSupport::TestCase
   end
 
   test 'skips messages already available in repository' do
-    mailbox = stub('mailbox', email: 'tom@example.com')
     mailbox.stubs(:uids).returns([5])
     mailbox.expects(:message).with(5).never
     importer = MessageImporter.new(mailbox)
