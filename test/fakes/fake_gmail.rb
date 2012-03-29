@@ -3,8 +3,9 @@ require 'net/imap'
 module FakeGmail
   class Server
     class Account
-      def add_message(mailbox, message)
-        mailboxes[mailbox] << message.object_id
+      def add_message(message)
+        mailboxes['[Gmail]']
+        mailboxes['[Gmail]/All Mail'] << message.object_id
         messages[message.object_id] = message.to_s
       end
 
@@ -30,6 +31,8 @@ module FakeGmail
   self.server ||= Server.new
 
   class Connection
+    attr_reader :email
+
     def initialize(email, password)
       @email = email
       @password = password
@@ -37,6 +40,13 @@ module FakeGmail
 
     def examine(mailbox)
       @mailbox = mailbox
+    end
+
+    def list(box, search)
+      unless box == '' && search == '%'
+        raise 'Mock only supports list with no chosen box and a % search'
+      end
+      account.mailboxes.keys.map { |name| Net::IMAP::MailboxList.new([], '/', name) }
     end
 
     def uid_search(name)
