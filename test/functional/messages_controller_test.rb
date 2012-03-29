@@ -13,7 +13,7 @@ class MessagesControllerTest < ActionController::TestCase
     assert_equal messages, assigns[:messages]
   end
 
-  test "#finds message via repository" do
+  test "#show finds message via repository" do
     message = stub(subject: 'a', from: 'b', date: Time.now, original: 'Whut')
     MessageRepository.stubs(:find).with('1234').returns(message)
     get :show, id: '1234'
