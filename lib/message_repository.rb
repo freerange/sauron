@@ -3,6 +3,12 @@ require 'mail'
 class MessageRepository
   class Record < ActiveRecord::Base
     self.table_name = :messages
+
+    class << self
+      def most_recent
+        all(order: "date DESC", limit: 2500)
+      end
+    end
   end
 
   class Message
@@ -65,7 +71,7 @@ class MessageRepository
   end
 
   def messages
-    @model.all.map do |record|
+    @model.most_recent.map do |record|
       Message.new record, LazyOriginalMessage.new(record.account, record.uid, @store)
     end
   end

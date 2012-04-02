@@ -32,11 +32,11 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     assert repository.exists?('sam@example.com', 1)
   end
 
-  test 'retrieves all messages from the model' do
+  test 'retrieves the most recent messages from the model' do
     model = stub('model')
     repository = MessageRepository.new(model)
     message = stub('message', account: 'tom@example.com', uid: 123)
-    model.stubs(:all).returns([message])
+    model.stubs(:most_recent).returns([message])
     assert_equal [MessageRepository::Message.new(message)], repository.messages
   end
 
