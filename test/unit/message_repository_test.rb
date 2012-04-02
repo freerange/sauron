@@ -38,9 +38,6 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     message_record = stub('message_record', account: 'tom@example.com', uid: 123)
     model.stubs(:most_recent).returns([message_record])
     assert_equal [MessageRepository::Message.new(message_record)], repository.messages
-    message_record = stub('message_record', account: 'tom@example.com', uid: 123)
-    model.stubs(:all).returns([message_record])
-    assert_equal [MessageRepository::Message.new(message_record)], repository.messages
   end
 
   test 'finds a single message from the model' do
