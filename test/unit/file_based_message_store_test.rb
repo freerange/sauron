@@ -33,8 +33,9 @@ class FileBasedMessageStoreTest < ActiveSupport::TestCase
 
   test 'encodes messages to avoid problems with strange encodings' do
     store = FileBasedMessageStore.new(TEST_ROOT_PATH)
-    store['strange'] = "\xA3"
-    assert_equal "\xA3", store['strange']
+    string_with_unknown_encoding = "\xA3".force_encoding("ascii-8bit")
+    store['strange'] = string_with_unknown_encoding
+    assert_equal string_with_unknown_encoding, store['strange']
   end
 
   test 'indicates if a key has already been stored' do
