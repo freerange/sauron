@@ -8,19 +8,19 @@ class MessageRepositoryTest < ActiveSupport::TestCase
 
   test 'adds messages by creating a model' do
     model = stub('model')
-    message = Mail.new(subject: 'Subject', from: 'tom@example.com', date: Date.today).to_s
+    raw_message = Mail.new(subject: 'Subject', from: 'tom@example.com', date: Date.today).to_s
     repository = MessageRepository.new(model)
     model.expects(:create!).with(account: 'sam@example.com', uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today)
-    repository.add('sam@example.com', 123, message)
+    repository.add('sam@example.com', 123, raw_message)
   end
 
   test 'adds original message data to message store' do
     model = stub('model', create!: nil)
     store = stub('store')
-    message = Mail.new(subject: 'Subject', from: 'tom@example.com', date: Date.today).to_s
+    raw_message = Mail.new(subject: 'Subject', from: 'tom@example.com', date: Date.today).to_s
     repository = MessageRepository.new(model, store)
-    store.expects(:add).with('sam@example.com', 123, message)
-    repository.add('sam@example.com', 123, message)
+    store.expects(:add).with('sam@example.com', 123, raw_message)
+    repository.add('sam@example.com', 123, raw_message)
   end
 
   test 'uses model to check if messages already exist' do
@@ -35,18 +35,21 @@ class MessageRepositoryTest < ActiveSupport::TestCase
   test 'retrieves the most recent messages from the model' do
     model = stub('model')
     repository = MessageRepository.new(model)
-    message = stub('message', account: 'tom@example.com', uid: 123)
-    model.stubs(:most_recent).returns([message])
-    assert_equal [MessageRepository::Message.new(message)], repository.messages
+    message_record = stub('message_record', account: 'tom@example.com', uid: 123)
+    model.stubs(:most_recent).returns([message_record])
+    assert_equal [MessageRepository::Message.new(message_record)], repository.messages
+    message_record = stub('message_record', account: 'tom@example.com', uid: 123)
+    model.stubs(:all).returns([message_record])
+    assert_equal [MessageRepository::Message.new(message_record)], repository.messages
   end
 
   test 'finds a single message from the model' do
     model = stub('model')
     scope = stub('scope')
     repository = MessageRepository.new(model)
-    message = stub('message', account: 'tom@example.com', uid: 123)
+    message_record = stub('message_record', account: 'tom@example.com', uid: 123)
     model.stubs(:where).with(id: '123').returns(scope)
-    scope.stubs(:first).returns(message)
-    assert_equal MessageRepository::Message.new(message), repository.find('123')
+    scope.stubs(:first).returns(message_record)
+    assert_equal MessageRepository::Message.new(message_record), repository.find('123')
   end
 end

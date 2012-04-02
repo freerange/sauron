@@ -55,10 +55,10 @@ class MessageRepository
     @store = store
   end
 
-  def add(account, uid, message)
-    mail = Mail.new(message)
+  def add(account, uid, raw_message)
+    mail = Mail.new(raw_message)
     @model.create! account: account, uid: uid, subject: mail.subject, date: mail.date, from: mail.from.first
-    @store.add account, uid, message
+    @store.add account, uid, raw_message
   end
 
   def exists?(account, uid)

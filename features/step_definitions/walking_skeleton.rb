@@ -6,10 +6,10 @@ end
 
 Given /^the email account "([^"]*)" has messages in their Gmail inbox$/ do |account|
   [
-    Mail.new("Subject: Message one\nDate: 2012-05-23 12:34:45\nFrom: Dave"),
-    Mail.new("Subject: Message two\nDate: 2012-06-22 09:21:31\nFrom: Barry")
-  ].each do |message|
-    FakeGmail.server.accounts[account].add_message(message)
+    "Subject: Message one\nDate: 2012-05-23 12:34:45\nFrom: Dave",
+    "Subject: Message two\nDate: 2012-06-22 09:21:31\nFrom: Barry"
+  ].each do |raw_message|
+    FakeGmail.server.accounts[account].add_message(Mail.new(raw_message))
   end
 end
 
