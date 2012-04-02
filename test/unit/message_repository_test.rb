@@ -28,8 +28,9 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     repository = MessageRepository.new(model)
     scope = stub('scope')
     model.stubs(:where).with(account: 'sam@example.com', uid: 1).returns(scope)
-    scope.stubs(:exists?).returns(true)
+    scope.stubs(:exists?).returns(true).then.returns(false)
     assert repository.exists?('sam@example.com', 1)
+    refute repository.exists?('sam@example.com', 1)
   end
 
   test 'retrieves all messages from the model' do
