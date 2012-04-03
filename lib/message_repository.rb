@@ -61,7 +61,8 @@ class MessageRepository
 
   def add(account, uid, raw_message)
     mail = Mail.new(raw_message)
-    @model.create! account: account, uid: uid, subject: mail.subject, date: mail.date, from: mail.from.first
+    from = mail.from ? mail.from.first : nil
+    @model.create! account: account, uid: uid, subject: mail.subject, date: mail.date, from: from
     @store.add account, uid, raw_message
   end
 
