@@ -25,10 +25,8 @@ class MessageRepositoryTest < ActiveSupport::TestCase
 
   test 'uses model to check if messages already exist' do
     model = stub('model')
+    model.stubs(:message_exists?).with('sam@example.com', 1).returns(true)
     repository = MessageRepository.new(model)
-    scope = stub('scope')
-    model.stubs(:where).with(account: 'sam@example.com', uid: 1).returns(scope)
-    scope.stubs(:exists?).returns(true)
     assert repository.exists?('sam@example.com', 1)
   end
 

@@ -8,6 +8,10 @@ class MessageRepository
       def most_recent
         all(order: "date DESC", limit: 2500)
       end
+
+      def message_exists?(account_id, uid)
+        exists?(account: account_id, uid: uid)
+      end
     end
   end
 
@@ -62,7 +66,7 @@ class MessageRepository
   end
 
   def exists?(account, uid)
-    @model.where(account: account, uid: uid).exists?
+    @model.message_exists?(account, uid)
   end
 
   def find(id)
