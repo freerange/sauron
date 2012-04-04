@@ -26,7 +26,13 @@ class MessageRepository
     end
 
     def body
-      Mail.new(@original).body.to_s
+      mail = Mail.new(@original)
+      if mail.multipart?
+        mail.body.sort_parts!
+        mail.parts.first.body.to_s
+      else
+        mail.body.to_s
+      end
     end
 
     def ==(message)
