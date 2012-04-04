@@ -89,5 +89,15 @@ module GoogleMail
       mailbox = Mailbox.new(connection)
       assert_equal 'raw-message-body-1', mailbox.message(1)
     end
+
+    test "requests the message using a more explicit set of commands if BODY.PEEK[] is empty" do
+      connection = stub('imap-connection', examine: nil, list: [])
+      connection.stubs(:uid_fetch).with(1, 'BODY.PEEK[]').returns(nil)
+      connection.stubs(:uid_fetch).with(1, '(BODY.PEEK[HEADERS] BODY.PEEK[TEXT])').returns([
+        stub(attr: {"BODY[HEADERS]" => "raw-headers", "BODY[TEXT]" => "raw-message-body-1"})
+      ])
+      mailbox = Mailbox.new(connection)
+      assert_equal 'raw-headersraw-message-body-1', mailbox.message(1)
+    end
   end
 end

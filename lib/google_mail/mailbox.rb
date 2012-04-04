@@ -49,7 +49,13 @@ module GoogleMail
     end
 
     def message(uid)
-      connection.uid_fetch(uid, 'BODY.PEEK[]').map {|m| m.attr['BODY[]']}.first
+      response = connection.uid_fetch(uid, 'BODY.PEEK[]')
+      if response
+        response.map {|m| m.attr['BODY[]']}.first
+      else
+        response = connection.uid_fetch(uid, '(BODY.PEEK[HEADERS] BODY.PEEK[TEXT])')
+        response.first.attr["BODY[HEADERS]"] + response.first.attr["BODY[TEXT]"]
+      end
     end
 
     class << self
