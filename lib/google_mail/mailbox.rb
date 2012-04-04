@@ -48,7 +48,7 @@ module GoogleMail
       connection.uid_search('ALL')
     end
 
-    def message(uid)
+    def raw_message(uid)
       response = connection.uid_fetch(uid, 'BODY.PEEK[]')
       if response
         response.map {|m| m.attr['BODY[]']}.first
