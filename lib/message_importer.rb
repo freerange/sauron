@@ -22,7 +22,7 @@ class MessageImporter
       unless repository.exists?(mailbox.email, uid)
         begin
           repository.add mailbox.email, uid, mailbox.message(uid)
-        rescue => e
+        rescue
           raise ImportError.new(uid)
         end
       end
