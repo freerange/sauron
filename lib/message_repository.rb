@@ -28,8 +28,7 @@ class MessageRepository
     def body
       mail = Mail.new(@original)
       if mail.multipart?
-        mail.body.sort_parts!
-        mail.parts.first.body.to_s
+        mail.parts.select { |part| part.content_type =~ /text\/plain/ }.map(&:body).join
       else
         mail.body.to_s
       end

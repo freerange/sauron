@@ -19,5 +19,16 @@ class MessageRepository
 
       assert_equal 'plain-text-message-body', Message.new(stub('record'), raw_message).body
     end
+
+    test "shows all text parts when they are separated by an attachment" do
+      raw_message = Mail.new do
+        text_part { body 'before-attachment' }
+        add_file(__FILE__)
+        text_part { body 'after-attachment' }
+      end.to_s
+
+      assert_match /before-attachment/, Message.new(stub('record'), raw_message).body
+      assert_match /after-attachment/, Message.new(stub('record'), raw_message).body
+    end
   end
 end
