@@ -25,6 +25,10 @@ class MessageRepository
       @original = original
     end
 
+    def body
+      Mail.new(@original).body.to_s
+    end
+
     def ==(message)
       message.is_a?(Message) &&
       message.record == record
