@@ -97,7 +97,7 @@ module GoogleMail
         stub(attr: {"BODY[HEADER]" => "raw-headers", "BODY[TEXT]" => "raw-message-body-1"})
       ])
       mailbox = Mailbox.new(connection)
-      assert_equal 'raw-headersraw-message-body-1', mailbox.message(1)
+      assert_equal 'raw-headersraw-message-body-1', mailbox.raw_message(1)
     end
   end
 end
