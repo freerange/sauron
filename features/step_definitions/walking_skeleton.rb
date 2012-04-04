@@ -6,8 +6,8 @@ end
 
 Given /^the email account "([^"]*)" has messages in their Gmail inbox$/ do |account|
   [
-    "Subject: Message one\nDate: 2012-05-23 12:34:45\nFrom: Dave",
-    "Subject: Message two\nDate: 2012-06-22 09:21:31\nFrom: Barry"
+    "Subject: Old message\nDate: 2012-05-23 12:34:45\nFrom: Dave",
+    "Subject: New message\nDate: 2012-06-22 09:21:31\nFrom: Barry"
   ].each do |raw_message|
     FakeGmail.server.accounts[account].add_message(Mail.new(raw_message))
   end
@@ -22,14 +22,14 @@ Then /^they should be visible on the messages page$/ do
   page.driver.browser.authorize('admin', 'password')
 
   visit "/"
-  within ".message" do
-    assert page.has_css? ".subject", "Message one"
-    assert page.has_css? ".date", "2012-05-23 12:34:45"
-    assert page.has_css? ".sender", "Dave"
+  within ".message:first-child" do
+    assert page.has_css? ".subject", text: "New message"
+    assert page.has_css? ".date", text: "2012-06-22 09:21:31"
+    assert page.has_css? ".sender", text: "Barry"
   end
-  within ".message" do
-    assert page.has_css? ".subject", "Message two"
-    assert page.has_css? ".date", "2012-06-22 09:21:31"
-    assert page.has_css? ".sender", "Barry"
+  within ".message:last-child" do
+    assert page.has_css? ".subject", text: "Old message"
+    assert page.has_css? ".date", text: "2012-05-23 12:34:45"
+    assert page.has_css? ".sender", text: "Dave"
   end
 end
