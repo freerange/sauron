@@ -53,8 +53,8 @@ module GoogleMail
       if response
         response.map {|m| m.attr['BODY[]']}.first
       else
-        response = connection.uid_fetch(uid, '(BODY.PEEK[HEADERS] BODY.PEEK[TEXT])')
-        response.first.attr["BODY[HEADERS]"] + response.first.attr["BODY[TEXT]"]
+        response = connection.uid_fetch(uid, '(BODY.PEEK[HEADER] BODY.PEEK[TEXT])')
+        response.first.attr['BODY[HEADER]'] + response.first.attr['BODY[TEXT]']
       end
     end
 
