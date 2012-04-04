@@ -42,6 +42,16 @@ class MessageRepository
     end
   end
 
+  class MailWrapper
+    delegate :subject, :date, to: :@mail
+    def initialize(raw_message)
+      @mail = ::Mail.new(raw_message)
+    end
+    def from
+      @mail.from ? @mail.from.first : nil
+    end
+  end
+
   class << self
     attr_writer :instance
 
@@ -60,9 +70,8 @@ class MessageRepository
   end
 
   def add(account, uid, raw_message)
-    mail = Mail.new(raw_message)
-    from = mail.from ? mail.from.first : nil
-    @model.create! account: account, uid: uid, subject: mail.subject, date: mail.date, from: from
+    mail = MailWrapper.new(raw_message)
+    @model.create! account: account, uid: uid, subject: mail.subject, date: mail.date, from: mail.from
     @store.add account, uid, raw_message
   end
 

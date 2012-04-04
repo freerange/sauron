@@ -14,15 +14,6 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     repository.add('sam@example.com', 123, raw_message)
   end
 
-  test 'adds messages without From: headers' do
-    model = stub('model', create!: nil)
-    store = stub_everything('store')
-    raw_message = Mail.new(subject: 'Subject', date: Date.today).to_s
-    repository = MessageRepository.new(model, store)
-    model.expects(:create!).with(has_entries(from: nil))
-    repository.add('sam@example.com', 123, raw_message)
-  end
-
   test 'adds original message data to message store' do
     model = stub('model', create!: nil)
     store = stub('store')
