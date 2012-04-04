@@ -24,6 +24,11 @@ class MessageRepository
       assert_equal "It costs £20. Bargain!", MailWrapper.new(raw_message).subject
     end
 
+    test "returns nil when the message has an empty Subject header" do
+      raw_message = Mail.new(subject: nil).to_s
+      assert_nil MailWrapper.new(raw_message).subject
+    end
+
     test "returns the date" do
       raw_message = Mail.new(date: "2012-01-01 09:00:00").to_s
       assert_equal Time.parse("2012-01-01 09:00:00"), MailWrapper.new(raw_message).date
