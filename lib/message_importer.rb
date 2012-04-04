@@ -1,5 +1,5 @@
 class MessageImporter
-  class ImportError < RuntimeError
+  class ImportError < StandardError
     attr_reader :uid
 
     def initialize(uid)
