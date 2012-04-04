@@ -24,7 +24,7 @@ class MessageImporterTest < ActiveSupport::TestCase
     importer.import_into(repository)
   end
 
-  test 'raises an exception if importing fails' do
+  test 'raises an exception displaying message UID if importing fails' do
     mailbox = stub('mailbox', email: 'tom@example.com')
     mailbox.stubs(:uids).returns([3])
     mailbox.stubs(:message).with(3).returns(:message1)
@@ -32,32 +32,9 @@ class MessageImporterTest < ActiveSupport::TestCase
     repository = stub('repository', exists?: false)
     repository.stubs(:add).raises(Encoding::UndefinedConversionError)
 
-    assert_raises(MessageImporter::ImportError) do
+    exception = assert_raises(RuntimeError) do
       importer.import_into(repository)
     end
-  end
-
-  test 'stores the UID of the failing message in the exception' do
-    mailbox = stub('mailbox', email: 'tom@example.com')
-    mailbox.stubs(:uids).returns([3])
-    mailbox.stubs(:message).with(3).returns(:message1)
-    importer = MessageImporter.new(mailbox)
-    repository = stub('repository', exists?: false)
-    repository.stubs(:add).raises(Encoding::UndefinedConversionError)
-
-    exception = nil
-    begin
-      importer.import_into(repository)
-    rescue MessageImporter::ImportError => e
-      exception = e
-    end
-
-    assert_equal 3, exception.uid
-  end
-end
-
-class MessageImporterTest::ImportErrorTest < ActiveSupport::TestCase
-  test 'displays the UID as part of its string representation' do
-    assert_match /Failed to import message with UID=3/, MessageImporter::ImportError.new(3).message
+    assert_match "Failed to import message with UID=3", exception.message
   end
 end
