@@ -1,3 +1,4 @@
+# encoding: utf-8
 require "test_helper"
 
 class MessageRepository
@@ -15,6 +16,12 @@ class MessageRepository
     test "returns the subject" do
       raw_message = Mail.new(subject: "email-subject").to_s
       assert_equal "email-subject", MailWrapper.new(raw_message).subject
+    end
+
+    test "handles incorrectly encoded pound signs in the subject" do
+      subject_with_invalid_encoding = "It costs \xA320. Bargain!".force_encoding("ASCII-8BIT")
+      raw_message = "Subject: #{subject_with_invalid_encoding}"
+      assert_equal "It costs £20. Bargain!", MailWrapper.new(raw_message).subject
     end
 
     test "returns the date" do

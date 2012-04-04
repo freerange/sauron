@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'mail'
 
 class MessageRepository
@@ -43,12 +44,18 @@ class MessageRepository
   end
 
   class MailWrapper
-    delegate :subject, :date, to: :@mail
+    delegate :date, to: :@mail
+
     def initialize(raw_message)
       @mail = ::Mail.new(raw_message)
     end
+
     def from
       @mail.from ? @mail.from.first : nil
+    end
+
+    def subject
+      @mail.subject.gsub("\xA3".force_encoding("ASCII-8BIT"), "£")
     end
   end
 
