@@ -24,6 +24,12 @@ class MessageRepository
       assert_equal "It costs £20. Bargain!", MailWrapper.new(raw_message).subject
     end
 
+    test "handles incorrectly encoded next line characters in the subject" do
+      subject_with_invalid_encoding = "Before. \x85After.".force_encoding("ASCII-8BIT")
+      raw_message = "Subject: #{subject_with_invalid_encoding}"
+      assert_equal "Before. After.", MailWrapper.new(raw_message).subject
+    end
+
     test "it doesn't do any conversion for strings that are already UTF-8" do
       utf_8_subject = "Unicode = \u00A3".encode("UTF-8")
       raw_message = "Subject: #{utf_8_subject}"
