@@ -24,6 +24,12 @@ class MessageRepository
       assert_equal "It costs £20. Bargain!", MailWrapper.new(raw_message).subject
     end
 
+    test "it doesn't do any conversion for strings that are already UTF-8" do
+      utf_8_subject = "Unicode = \u00A3".encode("UTF-8")
+      raw_message = "Subject: #{utf_8_subject}"
+      assert_equal "Unicode = £", MailWrapper.new(raw_message).subject
+    end
+
     test "returns nil when the message has an empty Subject header" do
       raw_message = Mail.new(subject: nil).to_s
       assert_nil MailWrapper.new(raw_message).subject

@@ -56,7 +56,11 @@ class MessageRepository
 
     def subject
       if @mail.subject
-        @mail.subject.gsub("\xA3".force_encoding("ASCII-8BIT"), "£")
+        if @mail.subject.encoding == Encoding.find("ASCII-8BIT")
+          @mail.subject.gsub("\xA3".force_encoding("ASCII-8BIT"), "£")
+        else
+          @mail.subject
+        end
       end
     end
   end
