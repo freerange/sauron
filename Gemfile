@@ -27,4 +27,5 @@ group :test do
   gem 'guard'
   gem 'growl'
   gem 'guard-minitest'
+  gem 'launchy'
 end
