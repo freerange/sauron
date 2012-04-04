@@ -30,5 +30,15 @@ class MessageRepository
       assert_match /before-attachment/, Message.new(stub('record'), raw_message).body
       assert_match /after-attachment/, Message.new(stub('record'), raw_message).body
     end
+
+    test "shows text parts that are nested within multipart/alternative parts" do
+      raw_message = Mail.new do
+        part do |p|
+          p.text_part { body 'within-part' }
+        end
+      end.to_s
+
+      assert_match /within-part/, Message.new(stub('record'), raw_message).body
+    end
   end
 end

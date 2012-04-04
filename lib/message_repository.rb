@@ -28,7 +28,7 @@ class MessageRepository
     def body
       mail = Mail.new(@original)
       if mail.multipart?
-        mail.parts.select { |part| part.content_type =~ /text\/plain/ }.map(&:body).join
+        text_part_bodies(mail).join
       else
         mail.body.to_s
       end
@@ -37,6 +37,19 @@ class MessageRepository
     def ==(message)
       message.is_a?(Message) &&
       message.record == record
+    end
+
+    private
+
+    def text_part_bodies(part)
+      part.parts.inject([]) do |bodies, part|
+        if part.multipart?
+          bodies << text_part_bodies(part)
+        elsif part.content_type =~ /text\/plain/
+          bodies << part.body
+        end
+        bodies.flatten
+      end
     end
   end
 
