@@ -1,16 +1,4 @@
 class MessageImporter
-  class ImportError < StandardError
-    attr_reader :uid
-
-    def initialize(uid)
-      @uid = uid
-    end
-
-    def message
-      "Failed to import message with UID=#{@uid.inspect}"
-    end
-  end
-
   attr_reader :mailbox
 
   def initialize(mailbox)
@@ -23,7 +11,7 @@ class MessageImporter
         begin
           repository.add mailbox.email, uid, mailbox.message(uid)
         rescue
-          raise ImportError.new(uid)
+          raise "Failed to import message with UID=#{uid.inspect}"
         end
       end
     end
