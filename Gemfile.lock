@@ -114,6 +114,7 @@ GEM
       net-ssh (>= 1.99.1)
     nokogiri (1.5.2)
     polyglot (0.3.3)
+    promise (0.3.0)
     rack (1.4.1)
     rack-cache (1.2)
       rack (>= 0.4)
@@ -189,6 +190,7 @@ DEPENDENCIES
   guard-minitest
   jquery-rails
   mocha
+  promise
   rails (= 3.2.2)
   recap!
   sass-rails (~> 3.2.3)

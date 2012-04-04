@@ -18,6 +18,7 @@ gem 'recap', git: 'https://github.com/freerange/recap.git'
 gem 'foreman'
 gem 'unicorn'
 gem 'whenever', require: false
+gem 'promise'
 
 group :test do
   gem 'cucumber-rails', require: false

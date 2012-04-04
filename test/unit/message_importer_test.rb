@@ -3,9 +3,7 @@ require 'test_helper'
 class MessageImporterTest < ActiveSupport::TestCase
   test 'imports messages available in the mailbox' do
     mailbox = stub('mailbox', email: 'tom@example.com')
-    mailbox.stubs(:each_uid).multiple_yields([3],[4])
-    mailbox.stubs(:message).with(3).returns(:message1)
-    mailbox.stubs(:message).with(4).returns(:message2)
+    mailbox.stubs(:each_uid_and_message).multiple_yields([3, promise { :message1 }],[4, promise { :message2 }])
     importer = MessageImporter.new(mailbox)
     repository = stub('repository', exists?: false)
     repository.expects(:add).with('tom@example.com', 3, :message1)
@@ -15,8 +13,7 @@ class MessageImporterTest < ActiveSupport::TestCase
 
   test 'skips messages already available in repository' do
     mailbox = stub('mailbox', email: 'tom@example.com')
-    mailbox.stubs(:each_uid).yields(5)
-    mailbox.expects(:message).with(5).never
+    mailbox.stubs(:each_uid_and_message).yields(5, promise { :existing_message })
     importer = MessageImporter.new(mailbox)
     repository = stub('repository')
     repository.stubs(:exists?).with('tom@example.com', 5).returns(true)
@@ -26,8 +23,7 @@ class MessageImporterTest < ActiveSupport::TestCase
 
   test 'raises an exception if importing fails' do
     mailbox = stub('mailbox', email: 'tom@example.com')
-    mailbox.stubs(:each_uid).yields(3)
-    mailbox.stubs(:message).with(3).returns(:message1)
+    mailbox.stubs(:each_uid_and_message).yields(3, promise { :message1 })
     importer = MessageImporter.new(mailbox)
     repository = stub('repository', exists?: false)
     repository.stubs(:add).raises(Encoding::UndefinedConversionError)
@@ -39,8 +35,7 @@ class MessageImporterTest < ActiveSupport::TestCase
 
   test 'stores the UID of the failing message in the exception' do
     mailbox = stub('mailbox', email: 'tom@example.com')
-    mailbox.stubs(:each_uid).yields(3)
-    mailbox.stubs(:message).with(3).returns(:message1)
+    mailbox.stubs(:each_uid_and_message).yields(3, promise { :message1 })
     importer = MessageImporter.new(mailbox)
     repository = stub('repository', exists?: false)
     repository.stubs(:add).raises(Encoding::UndefinedConversionError)

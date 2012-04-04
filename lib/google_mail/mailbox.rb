@@ -44,9 +44,13 @@ module GoogleMail
       end
     end
 
-    def each_uid(&block)
-      connection.uid_search('ALL').each(&block)
+    def each_uid_and_message(&block)
+      connection.uid_search('ALL').each do |uid|
+        block.call(uid, promise { message(uid) })
+      end
     end
+
+    private
 
     def message(uid)
       connection.uid_fetch(uid, 'BODY.PEEK[]').map {|m| m.attr['BODY[]']}.first
