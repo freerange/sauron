@@ -44,8 +44,8 @@ module GoogleMail
       end
     end
 
-    def uids
-      connection.uid_search('ALL')
+    def each_uid(&block)
+      connection.uid_search('ALL').each(&block)
     end
 
     def message(uid)

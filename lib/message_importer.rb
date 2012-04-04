@@ -18,7 +18,7 @@ class MessageImporter
   end
 
   def import_into(repository)
-    mailbox.uids.each do |uid|
+    mailbox.each_uid do |uid|
       unless repository.exists?(mailbox.email, uid)
         begin
           repository.add mailbox.email, uid, mailbox.message(uid)
