@@ -36,6 +36,12 @@ class MessageRepository
       assert_equal "This – that", MailWrapper.new(raw_message).subject
     end
 
+    test "doesn't attempt to handle characters outside of those windows-1252 characters that we've encountered in the wild, so that we fail fast" do
+      subject_with_invalid_encoding = "This \xA6 that".force_encoding("ASCII-8BIT")
+      raw_message = "Subject: #{subject_with_invalid_encoding}"
+      assert_equal "This \xA6 that".force_encoding("ASCII-8BIT"), MailWrapper.new(raw_message).subject # ¦
+    end
+
     test "it doesn't do any conversion for strings that are already UTF-8" do
       utf_8_subject = "Unicode = \u00A3".encode("UTF-8")
       raw_message = "Subject: #{utf_8_subject}"
