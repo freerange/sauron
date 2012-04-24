@@ -18,6 +18,16 @@ class MessageRepository
       refute Record.message_exists?(account, uid)
     end
 
+    test ".highest_uid returns nil if there are no messages" do
+      given_no_messages_exist_in_database(account = "a@b.com")
+      assert_nil Record.highest_uid(account)
+    end
+
+    test ".highest_uid returns highest UID" do
+      given_message_with_highest_uid_exists_in_database(account = "a@b.com", uid = 999)
+      assert_equal uid, Record.highest_uid(account)
+    end
+
     private
 
     def given_message_exists_in_database(account, uid)
@@ -26,6 +36,16 @@ class MessageRepository
 
     def given_message_does_not_exist_in_database(account, uid)
       Record.stubs(:exists?).with(account: account, uid: uid).returns(false)
+    end
+
+    def given_message_with_highest_uid_exists_in_database(account, uid)
+      scope = stub("scope") { stubs(:maximum).with(:uid).returns(uid) }
+      Record.stubs(:where).with(account: account).returns(scope)
+    end
+
+    def given_no_messages_exist_in_database(account)
+      scope = stub("scope") { stubs(:maximum).with(:uid).returns(nil) }
+      Record.stubs(:where).with(account: account).returns(scope)
     end
   end
 end

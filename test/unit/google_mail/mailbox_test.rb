@@ -81,6 +81,20 @@ module GoogleMail
       assert_equal [1, 2, 3, 4], mailbox.uids
     end
 
+    test "returns uids of all messages in the mailbox where uids are at least as big as specified uid" do
+      connection = stub('imap-connection', examine: nil, list: [])
+      connection.stubs(:uid_search).with('UID 3:*').returns [3, 4]
+      mailbox = Mailbox.new(connection)
+      assert_equal [3, 4], mailbox.uids_from(3)
+    end
+
+    test "returns uids of all messages in the mailbox when specified uid is nil" do
+      connection = stub('imap-connection', examine: nil, list: [])
+      connection.stubs(:uid_search).with('ALL').returns [1, 2, 3, 4]
+      mailbox = Mailbox.new(connection)
+      assert_equal [1, 2, 3, 4], mailbox.uids_from(nil)
+    end
+
     test "returns a single message given its uid" do
       connection = stub('imap-connection', examine: nil, list: [])
       connection.stubs(:uid_fetch).with(1, 'BODY.PEEK[]').returns [

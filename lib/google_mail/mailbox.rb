@@ -48,6 +48,14 @@ module GoogleMail
       connection.uid_search('ALL')
     end
 
+    def uids_from(uid)
+      if uid.nil?
+        uids
+      else
+        connection.uid_search("UID #{uid}:*")
+      end
+    end
+
     def raw_message(uid)
       response = connection.uid_fetch(uid, 'BODY.PEEK[]')
       if response

@@ -53,9 +53,15 @@ module FakeGmail
       account.mailboxes.keys.map { |name| Net::IMAP::MailboxList.new([], '/', name) }
     end
 
-    def uid_search(name)
-      raise 'Mock only supports ALL' unless name == 'ALL'
-      account.mailboxes[@mailbox]
+    def uid_search(option)
+      case option
+        when /ALL/
+          account.mailboxes[@mailbox]
+        when /UID (\d+)\:\*/
+          account.mailboxes[@mailbox].select { |uid| uid >= $1.to_i }
+        else
+          raise "Mock does not support: #{option}"
+      end
     end
 
     def uid_fetch(uids, scope)
