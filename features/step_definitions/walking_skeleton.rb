@@ -58,7 +58,6 @@ Then /^all messages from all team members should be viewable$/ do
   page.driver.browser.authorize('admin', 'password')
 
   visit "/"
-  save_and_open_page
   within ".message:first-child" do
     assert page.has_css? ".subject", text: "Hello Bob"
     assert page.has_css? ".date", text: "2012-05-27 12:35:56"
