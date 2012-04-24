@@ -7,7 +7,7 @@ class MessageImporter
 
   def import_into(repository)
     highest_uid = repository.highest_uid(mailbox.email)
-    mailbox.uids_from(highest_uid).each do |uid|
+    mailbox.uids(highest_uid).each do |uid|
       unless repository.exists?(mailbox.email, uid)
         begin
           repository.add mailbox.email, uid, mailbox.raw_message(uid)
