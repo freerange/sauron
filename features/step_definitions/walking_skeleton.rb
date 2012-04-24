@@ -2,6 +2,8 @@ require Rails.root + 'test' + 'fakes' + 'fake_gmail'
 
 After do
   FileUtils.rm_rf 'data/test'
+  MessageRepository::Record.destroy_all
+  FakeGmail.server.reset!
 end
 
 Given /^the email account "([^"]*)" has messages in their Gmail inbox$/ do |account|
@@ -31,5 +33,40 @@ Then /^they should be visible on the messages page$/ do
     assert page.has_css? ".subject", text: "Old message"
     assert page.has_css? ".date", text: "2012-05-23 12:34:45"
     assert page.has_css? ".sender", text: "Dave"
+  end
+end
+
+
+Given /^a team with credentials exists$/ do
+  ENV["TEAM"] = "alice@example.com:bob@example.com"
+  ENV["PASSWORDS"] = "alice-password:bob-password"
+end
+
+Given /^the team have messages in Gmail$/ do
+  message_to_alice = Mail.new("Subject: Hello Alice\nDate: 2012-05-23 12:34:45\nFrom: Bob")
+  FakeGmail.server.accounts["alice@example.com"].add_message(message_to_alice)
+  message_to_bob = Mail.new("Subject: Hello Bob\nDate: 2012-05-27 12:35:56\nFrom: Alice")
+  FakeGmail.server.accounts["bob@example.com"].add_message(message_to_bob)
+end
+
+When /^the periodic message import occurs$/ do
+  TeamMessageImporter.import_for(Team.new)
+end
+
+Then /^all messages from all team members should be viewable$/ do
+  ENV['HTTP_PASSWORD'] = 'password'
+  page.driver.browser.authorize('admin', 'password')
+
+  visit "/"
+  save_and_open_page
+  within ".message:first-child" do
+    assert page.has_css? ".subject", text: "Hello Bob"
+    assert page.has_css? ".date", text: "2012-05-27 12:35:56"
+    assert page.has_css? ".sender", text: "Alice"
+  end
+  within ".message:last-child" do
+    assert page.has_css? ".subject", text: "Hello Alice"
+    assert page.has_css? ".date", text: "2012-05-23 12:34:45"
+    assert page.has_css? ".sender", text: "Bob"
   end
 end
