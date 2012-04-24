@@ -3,7 +3,7 @@ require "team_message_importer"
 
 class TeamMessageImporterTest < ActiveSupport::TestCase
   test "imports messages for all members in a team" do
-    team = stub("team")
+    team = Team.new
     team.stubs(:each_member).multiple_yields(["alice@example.com", "alice-password"],
                                              ["bob@example.com", "bob-password"],
                                              ["clive@example.com", "clive-password"])
