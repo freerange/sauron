@@ -38,8 +38,10 @@ end
 
 
 Given /^a team with credentials exists$/ do
-  ENV["TEAM"] = "alice@example.com:bob@example.com"
-  ENV["PASSWORDS"] = "alice-password:bob-password"
+  @env = Env.new(
+    "TEAM" => "alice@example.com:bob@example.com",
+    "PASSWORDS"=> "alice-password:bob-password"
+  )
 end
 
 Given /^the team have messages in Gmail$/ do
@@ -50,7 +52,7 @@ Given /^the team have messages in Gmail$/ do
 end
 
 When /^the periodic message import occurs$/ do
-  TeamMessageImporter.import_for(Team.new)
+  TeamMessageImporter.import_for(Team.new(@env.emails_vs_passwords))
 end
 
 Then /^all messages from all team members should be viewable$/ do
