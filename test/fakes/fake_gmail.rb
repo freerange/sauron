@@ -25,6 +25,10 @@ module FakeGmail
         hash[key] = Account.new
       end
     end
+
+    def reset!
+      @accounts = nil
+    end
   end
 
   mattr_accessor :server
