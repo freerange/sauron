@@ -28,6 +28,12 @@ class MessageRepository
       assert_equal uid, Record.highest_uid(account)
     end
 
+    test ".add(message) adds message by creating a model" do
+      message = stub('message', account: 'sam@example.com', uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today, message_id: "message-id")
+      Record.expects(:create!).with(account: 'sam@example.com', uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today, message_id: "message-id")
+      Record.add(message)
+    end
+
     private
 
     def given_message_exists_in_database(account, uid)
