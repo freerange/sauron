@@ -53,12 +53,17 @@ module GoogleMail
     end
 
     def raw_message(uid)
-      response = connection.uid_fetch(uid, 'BODY.PEEK[]')
-      if response
-        response.map {|m| m.attr['BODY[]']}.first
-      else
-        response = connection.uid_fetch(uid, '(BODY.PEEK[HEADER] BODY.PEEK[TEXT])')
-        response.first.attr['BODY[HEADER]'] + response.first.attr['BODY[TEXT]']
+      begin
+        response = connection.uid_fetch(uid, 'BODY.PEEK[]')
+        if response
+          response.map {|m| m.attr['BODY[]']}.first
+        else
+          response = connection.uid_fetch(uid, '(BODY.PEEK[HEADER] BODY.PEEK[TEXT])')
+          response.first.attr['BODY[HEADER]'] + response.first.attr['BODY[TEXT]']
+        end
+      rescue Net::IMAP::NoResponseError
+        response = connection.uid_fetch(uid, 'BODY.PEEK[HEADER]')
+        response.first.attr['BODY[HEADER]'] + '\n\nThis message could not be downloaded from the server'
       end
     end
 

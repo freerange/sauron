@@ -113,5 +113,15 @@ module GoogleMail
       mailbox = Mailbox.new(connection)
       assert_equal 'raw-headersraw-message-body-1', mailbox.raw_message(1)
     end
+
+    test "returns a stub message if the body could not be downloaded" do
+      connection = stub('imap-connection', examine: nil, list: [])
+      connection.stubs(:uid_fetch).with(1, 'BODY.PEEK[]').raises(Net::IMAP::NoResponseError.new(stub('response', data: stub(text: nil))))
+      connection.stubs(:uid_fetch).with(1, 'BODY.PEEK[HEADER]').returns([
+        stub(attr: {"BODY[HEADER]" => "raw-headers"})
+      ])
+      mailbox = Mailbox.new(connection)
+      assert_equal 'raw-headers\n\nThis message could not be downloaded from the server', mailbox.raw_message(1)
+    end
   end
 end
