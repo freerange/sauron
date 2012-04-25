@@ -12,7 +12,8 @@ class MessageImporter
         begin
           Rails.logger.info("Importing message UID #{uid} for account #{mailbox.email}")
           repository.add mailbox.email, uid, mailbox.raw_message(uid)
-        rescue
+        rescue => e
+          Rails.logger.error(e.inspect)
           raise "Failed to import message with UID=#{uid.inspect}"
         end
       end
