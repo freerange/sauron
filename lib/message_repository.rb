@@ -83,12 +83,7 @@ class MessageRepository
     def subject
       if @mail.subject
         if @mail.subject.encoding == Encoding.find("ASCII-8BIT")
-          known_windows_1252_characters = ["\x85", "\xA3", "\x96", "\xEB"].map { |s| s.force_encoding("ASCII-8BIT") }
-          if known_windows_1252_characters.any? { |char| @mail.subject.include?(char) }
-            @mail.subject.force_encoding("Windows-1252").encode("UTF-8")
-          else
-            @mail.subject
-          end
+          @mail.subject.force_encoding("Windows-1252").encode("UTF-8")
         else
           @mail.subject
         end
