@@ -44,8 +44,12 @@ module GoogleMail
       end
     end
 
-    def uids
-      connection.uid_search('ALL')
+    def uids(from_uid = nil)
+      if from_uid.nil?
+        connection.uid_search('ALL')
+      else
+        connection.uid_search("UID #{from_uid}:*")
+      end
     end
 
     def raw_message(uid)

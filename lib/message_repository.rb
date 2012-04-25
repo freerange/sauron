@@ -13,6 +13,10 @@ class MessageRepository
       def message_exists?(account_id, uid)
         exists?(account: account_id, uid: uid)
       end
+
+      def highest_uid(account_id)
+        where(account: account_id).maximum(:uid)
+      end
     end
   end
 
@@ -95,7 +99,7 @@ class MessageRepository
   class << self
     attr_writer :instance
 
-    delegate :find, :add, :exists?, :messages, to: :instance
+    delegate :highest_uid, :find, :add, :exists?, :messages, to: :instance
 
     def instance
       @instance ||= new
@@ -107,6 +111,10 @@ class MessageRepository
   def initialize(model = Record, store = CacheBackedMessageStore)
     @model = model
     @store = store
+  end
+
+  def highest_uid(account)
+    @model.highest_uid(account)
   end
 
   def add(account, uid, raw_message)

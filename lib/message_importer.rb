@@ -6,7 +6,8 @@ class MessageImporter
   end
 
   def import_into(repository)
-    mailbox.uids.each do |uid|
+    highest_uid = repository.highest_uid(mailbox.email)
+    mailbox.uids(highest_uid).each do |uid|
       unless repository.exists?(mailbox.email, uid)
         begin
           Rails.logger.info("Importing message UID #{uid} for account #{mailbox.email}")

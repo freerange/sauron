@@ -23,6 +23,13 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     repository.add('sam@example.com', 123, raw_message)
   end
 
+  test 'uses model to obtain highest uid for account' do
+    model = stub('model')
+    model.stubs(:highest_uid).with('sam@example.com').returns(999)
+    repository = MessageRepository.new(model)
+    assert_equal 999, repository.highest_uid('sam@example.com')
+  end
+
   test 'uses model to check if messages already exist' do
     model = stub('model')
     model.stubs(:message_exists?).with('sam@example.com', 1).returns(true)

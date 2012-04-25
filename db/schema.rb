@@ -11,11 +11,11 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120327123609) do
+ActiveRecord::Schema.define(:version => 20120424145323) do
 
   create_table "messages", :force => true do |t|
     t.string   "account"
-    t.string   "uid"
+    t.integer  "uid",     :limit => 255
     t.string   "subject"
     t.datetime "date"
     t.string   "from"

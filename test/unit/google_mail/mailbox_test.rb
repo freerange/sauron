@@ -74,11 +74,25 @@ module GoogleMail
       Mailbox.new(connection)
     end
 
-    test "returns uids of all messages in the mailbox" do
+    test "returns uids of all messages in the mailbox when no from_uid is specified" do
       connection = stub('imap-connection', examine: nil, list: [])
       connection.stubs(:uid_search).with('ALL').returns [1, 2, 3, 4]
       mailbox = Mailbox.new(connection)
       assert_equal [1, 2, 3, 4], mailbox.uids
+    end
+
+    test "returns uids of all messages in the mailbox from from_uid onwards" do
+      connection = stub('imap-connection', examine: nil, list: [])
+      connection.stubs(:uid_search).with('UID 3:*').returns [3, 4]
+      mailbox = Mailbox.new(connection)
+      assert_equal [3, 4], mailbox.uids(3)
+    end
+
+    test "returns uids of all messages in the mailbox when from_uid is nil" do
+      connection = stub('imap-connection', examine: nil, list: [])
+      connection.stubs(:uid_search).with('ALL').returns [1, 2, 3, 4]
+      mailbox = Mailbox.new(connection)
+      assert_equal [1, 2, 3, 4], mailbox.uids(nil)
     end
 
     test "returns a single message given its uid" do
