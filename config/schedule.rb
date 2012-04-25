@@ -19,6 +19,8 @@
 
 # Learn more: http://github.com/javan/whenever
 
+env :MAILTO, 'everyone@gofreerange.com'
+
 # every 15.minutes do
 #   rake "messages:import"
 # end
