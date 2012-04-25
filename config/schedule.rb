@@ -19,6 +19,6 @@
 
 # Learn more: http://github.com/javan/whenever
 
-every 15.minutes do
-  rake "messages:import"
-end
+# every 15.minutes do
+#   rake "messages:import"
+# end
