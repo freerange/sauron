@@ -8,9 +8,9 @@ class MessageRepositoryTest < ActiveSupport::TestCase
 
   test 'adds messages by creating a model' do
     model = stub('model')
-    raw_message = Mail.new(subject: 'Subject', from: 'tom@example.com', date: Date.today).to_s
+    raw_message = Mail.new(subject: 'Subject', from: 'tom@example.com', date: Date.today, message_id: "message-id").to_s
     repository = MessageRepository.new(model)
-    model.expects(:create!).with(account: 'sam@example.com', uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today)
+    model.expects(:create!).with(account: 'sam@example.com', uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today, message_id: "message-id")
     repository.add('sam@example.com', 123, raw_message)
   end
 

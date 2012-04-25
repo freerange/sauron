@@ -1,5 +1,5 @@
 class MessageRepository::MailWrapper
-  delegate :date, to: :@mail
+  delegate :date, :message_id, to: :@mail
 
   def initialize(raw_message)
     @mail = ::Mail.new(raw_message)

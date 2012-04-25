@@ -25,7 +25,7 @@ class MessageRepository
 
   def add(account, uid, raw_message)
     mail = MailWrapper.new(raw_message)
-    @model.create! account: account, uid: uid, subject: mail.subject, date: mail.date, from: mail.from
+    @model.create! account: account, uid: uid, subject: mail.subject, date: mail.date, from: mail.from, message_id: mail.message_id
     @store.add account, uid, raw_message
   end
 

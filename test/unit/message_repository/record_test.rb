@@ -2,9 +2,9 @@ require "test_helper"
 
 class MessageRepository
   class RecordTest < ActiveSupport::TestCase
-    test "returns the 2500 most recent messages" do
+    test "returns the 2500 most recent messages excluding duplicates" do
       most_recent_records = [Record.new]
-      Record.stubs(:all).with(order: "date DESC", limit: 2500).returns(most_recent_records)
+      Record.stubs(:all).with(order: "date DESC", limit: 2500, group: [:subject, :date, :message_id]).returns(most_recent_records)
       assert_equal most_recent_records, Record.most_recent
     end
 
