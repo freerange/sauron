@@ -33,7 +33,7 @@ class MessageRepository
   end
 
   def find(mail_id)
-    record = mail_index.where(id: mail_id).first
+    record = mail_index.find_first(mail_id)
     record && Message.new(record, MailRepository::LazyOriginalMail.new(record.account, record.uid, mail_store))
   end
 

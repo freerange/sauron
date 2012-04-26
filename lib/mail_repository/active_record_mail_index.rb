@@ -14,6 +14,10 @@ class MailRepository::ActiveRecordMailIndex < ActiveRecord::Base
       where(account: account_id).maximum(:uid)
     end
 
+    def find_first(id)
+      where(id: id).first
+    end
+
     def add(mail)
       create! account: mail.account, uid: mail.uid, subject: mail.subject, date: mail.date, from: mail.from, message_id: mail.message_id
     end

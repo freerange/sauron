@@ -28,6 +28,12 @@ class MailRepository
       assert_equal uid, ActiveRecordMailIndex.highest_uid(account)
     end
 
+    test ".find_first(id) returns the first mail matching that id" do
+      mail = stub('mail')
+      given_mail_exists_in_the_database_with_id(123, mail)
+      assert_equal mail, ActiveRecordMailIndex.find_first(123)
+    end
+
     test ".add(mail) adds message by creating a model" do
       mail = stub('mail', account: 'sam@example.com', uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today, message_id: "message-id")
       ActiveRecordMailIndex.expects(:create!).with(account: 'sam@example.com', uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today, message_id: "message-id")
@@ -52,6 +58,11 @@ class MailRepository
     def given_no_mails_exist_in_database(account)
       scope = stub("scope") { stubs(:maximum).with(:uid).returns(nil) }
       ActiveRecordMailIndex.stubs(:where).with(account: account).returns(scope)
+    end
+
+    def given_mail_exists_in_the_database_with_id(id, mail)
+      scope = stub("scope") { stubs(:first).returns(mail) }
+      ActiveRecordMailIndex.stubs(:where).with(id: id).returns(scope)
     end
   end
 end

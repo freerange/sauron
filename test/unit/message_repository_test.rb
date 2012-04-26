@@ -53,11 +53,9 @@ class MessageRepositoryTest < ActiveSupport::TestCase
 
   test 'finds a single message from the model' do
     model = stub('model')
-    scope = stub('scope')
     repository = MessageRepository.new(model)
     message_record = stub('message_record', account: 'tom@example.com', uid: 123)
-    model.stubs(:where).with(id: '123').returns(scope)
-    scope.stubs(:first).returns(message_record)
+    model.stubs(:find_first).with('123').returns(message_record)
     assert_equal MessageRepository::Message.new(message_record), repository.find('123')
   end
 end
