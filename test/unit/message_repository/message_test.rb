@@ -3,7 +3,7 @@ require 'test_helper'
 class MessageRepository
   class MessageTest < ActiveSupport::TestCase
     test "returns the body of the raw message" do
-      raw_message = Mail.new(body: "message-body").to_s
+      raw_message = Mail.new(body: "message-body").encoded
       message = Message.new(stub('record'), raw_message)
       assert_equal "message-body", message.body
     end
@@ -15,7 +15,7 @@ class MessageRepository
           content_type 'text/html; charset=UTF-8'
           body '<h1>This is HTML</h1>'
         end
-      end.to_s
+      end.encoded
       message = Message.new(stub('record'), raw_message)
       assert_equal 'plain-text-message-body', message.body
     end
@@ -25,7 +25,7 @@ class MessageRepository
         text_part { body 'before-attachment' }
         add_file(__FILE__)
         text_part { body 'after-attachment' }
-      end.to_s
+      end.encoded
       message = Message.new(stub('record'), raw_message)
       assert_match /before-attachment/, message.body
       assert_match /after-attachment/, message.body
@@ -36,7 +36,7 @@ class MessageRepository
         part do |p|
           p.text_part { body 'within-part' }
         end
-      end.to_s
+      end.encoded
       message = Message.new(stub('record'), raw_message)
       assert_match /within-part/, message.body
     end
