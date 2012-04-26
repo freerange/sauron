@@ -3,7 +3,7 @@ class MessageRepository::ActiveRecordMessageIndex < ActiveRecord::Base
 
   class << self
     def most_recent
-      all(order: "date DESC", limit: 2500, group: :message_id)
+      all(order: "date DESC", limit: 500, group: :message_id)
     end
 
     def message_exists?(account_id, uid)
