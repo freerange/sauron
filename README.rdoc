@@ -10,3 +10,24 @@ We believe it would be better for any member of GFR to view all email traffic as
 It should also be possible for us to efficiently find past conversations where we might need to remind ourselves what was discussed.
 
 Finally, giving each email a URL will make it easier to discuss specific conversations in other mediums, such as Campfire, or indeed other emails.
+
+Installing Elastic Search
+=========================
+
+On ubuntu:
+
+    Download the latest deb from elasticsearch.org:
+
+        wget https://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-0.19.2.deb
+
+    Install the downloaded deb
+
+        sudo dpkg -i elasticsearch-0.19.2.deb
+
+    Check it's working
+
+        curl localhost:9200
+
+On OS X:
+
+    brew update && brew install elasticsearch
