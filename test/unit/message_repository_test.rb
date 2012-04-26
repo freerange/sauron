@@ -3,44 +3,44 @@ require 'test_helper'
 class MessageRepositoryTest < ActiveSupport::TestCase
   test 'uses MailRepository::ActiveRecordMailIndex as default index' do
     model = stub('model')
-    assert_equal MailRepository::ActiveRecordMailIndex, MessageRepository.new.index
+    assert_equal MailRepository::ActiveRecordMailIndex, MessageRepository.new.mail_index
   end
 
   test 'uses MailRepository::CacheBackedMailStore as default store' do
     model = stub('model')
-    assert_equal CacheBackedMailStore, MessageRepository.new.store
+    assert_equal CacheBackedMailStore, MessageRepository.new.mail_store
   end
 
-  test 'adds message to record index' do
+  test 'adds mail to record index' do
     model = stub('model')
     store = stub('store', add: nil)
-    message = stub('message', account: 'sam@example.com', uid: 123, raw: 'raw-message')
+    mail = stub('mail', account: 'sam@example.com', uid: 123, raw: 'raw-message')
     repository = MessageRepository.new(model, store)
-    model.expects(:add).with(message)
-    repository.add(message)
+    model.expects(:add).with(mail)
+    repository.add_mail(mail)
   end
 
-  test 'adds message to message store' do
+  test 'adds mail to message store' do
     model = stub('model', add: nil)
     store = stub('store')
-    message = stub('message', account: 'sam@example.com', uid: 123, raw: 'raw-message')
+    mail = stub('mail', account: 'sam@example.com', uid: 123, raw: 'raw-message')
     repository = MessageRepository.new(model, store)
-    store.expects(:add).with(message)
-    repository.add(message)
+    store.expects(:add).with(mail)
+    repository.add_mail(mail)
   end
 
-  test 'uses model to obtain highest uid for account' do
+  test 'uses model to obtain highest mail uid for account' do
     model = stub('model')
     model.stubs(:highest_uid).with('sam@example.com').returns(999)
     repository = MessageRepository.new(model)
-    assert_equal 999, repository.highest_uid('sam@example.com')
+    assert_equal 999, repository.highest_mail_uid('sam@example.com')
   end
 
-  test 'uses model to check if messages already exist' do
+  test 'uses model to check if a mail already exists' do
     model = stub('model')
     model.stubs(:mail_exists?).with('sam@example.com', 1).returns(true)
     repository = MessageRepository.new(model)
-    assert repository.exists?('sam@example.com', 1)
+    assert repository.mail_exists?('sam@example.com', 1)
   end
 
   test 'retrieves the most recent messages from the model' do

@@ -7,9 +7,9 @@ class MailImporterTest < ActiveSupport::TestCase
     mailbox.stubs(:mail).with(3).returns(:mail1)
     mailbox.stubs(:mail).with(4).returns(:mail2)
     importer = MailImporter.new(mailbox)
-    repository = stub('repository', highest_uid: 3, exists?: false)
-    repository.expects(:add).with(:mail1)
-    repository.expects(:add).with(:mail2)
+    repository = stub('repository', highest_mail_uid: 3, mail_exists?: false)
+    repository.expects(:add_mail).with(:mail1)
+    repository.expects(:add_mail).with(:mail2)
     importer.import_into(repository)
   end
 
@@ -19,8 +19,8 @@ class MailImporterTest < ActiveSupport::TestCase
     mailbox.stubs(:mail).returns(:mail_to_import)
     mailbox.stubs(:mail).with(2).returns(:mail2)
     importer = MailImporter.new(mailbox)
-    repository = stub('repository', highest_uid: 2, exists?: false)
-    repository.expects(:add).with(:mail2)
+    repository = stub('repository', highest_mail_uid: 2, mail_exists?: false)
+    repository.expects(:add_mail).with(:mail2)
     importer.import_into(repository)
   end
 
@@ -29,9 +29,9 @@ class MailImporterTest < ActiveSupport::TestCase
     mailbox.stubs(:uids).returns([5])
     mailbox.expects(:mail).with(5).never
     importer = MailImporter.new(mailbox)
-    repository = stub('repository', highest_uid: 5)
-    repository.stubs(:exists?).with('tom@example.com', 5).returns(true)
-    repository.expects(:add).never
+    repository = stub('repository', highest_mail_uid: 5)
+    repository.stubs(:mail_exists?).with('tom@example.com', 5).returns(true)
+    repository.expects(:add_mail).never
     importer.import_into(repository)
   end
 
@@ -40,8 +40,8 @@ class MailImporterTest < ActiveSupport::TestCase
     mailbox.stubs(:uids).returns([3])
     mailbox.stubs(:mail).with(3).returns(:mail1)
     importer = MailImporter.new(mailbox)
-    repository = stub('repository', highest_uid: 3, exists?: false)
-    repository.stubs(:add).raises(Encoding::UndefinedConversionError)
+    repository = stub('repository', highest_mail_uid: 3, mail_exists?: false)
+    repository.stubs(:add_mail).raises(Encoding::UndefinedConversionError)
 
     exception = assert_raises(RuntimeError) do
       importer.import_into(repository)
