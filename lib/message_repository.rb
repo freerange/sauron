@@ -12,33 +12,33 @@ class MessageRepository
     end
   end
 
-  attr_reader :model
+  attr_reader :index
 
-  def initialize(model = Record, store = CacheBackedMessageStore)
-    @model = model
+  def initialize(index = ActiveRecordMessageIndex, store = CacheBackedMessageStore)
+    @index = index
     @store = store
   end
 
   def highest_uid(account)
-    @model.highest_uid(account)
+    @index.highest_uid(account)
   end
 
   def add(message)
-    @model.add message
+    @index.add message
     @store.add message
   end
 
   def exists?(account, uid)
-    @model.message_exists?(account, uid)
+    @index.message_exists?(account, uid)
   end
 
   def find(id)
-    record = @model.where(id: id).first
+    record = @index.where(id: id).first
     record && Message.new(record, LazyOriginalMessage.new(record.account, record.uid, @store))
   end
 
   def messages
-    @model.most_recent.map do |record|
+    @index.most_recent.map do |record|
       Message.new record, LazyOriginalMessage.new(record.account, record.uid, @store)
     end
   end

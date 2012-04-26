@@ -1,9 +1,9 @@
 require 'test_helper'
 
 class MessageRepositoryTest < ActiveSupport::TestCase
-  test 'uses MessageRepository::Record by default' do
+  test 'uses MessageRepository::ActiveRecordMessageIndex by default' do
     model = stub('model')
-    assert_equal MessageRepository::Record, MessageRepository.new.model
+    assert_equal MessageRepository::ActiveRecordMessageIndex, MessageRepository.new.index
   end
 
   test 'adds message to record index' do
