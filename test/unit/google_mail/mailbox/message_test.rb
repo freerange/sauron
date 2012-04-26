@@ -4,7 +4,7 @@ class GoogleMail::Mailbox
   class MessageTest < ActiveSupport::TestCase
     test "builds a MailWrapper with the raw message content" do
       wrapper = stub('wrapper')
-      MailWrapper.expects(:new).with(:raw_message_content).returns(wrapper)
+      MailWrapper.stubs(:new).with(:raw_message_content).returns(wrapper)
       message = Message.new('tom@example.com', 1, :raw_message_content)
       assert_equal wrapper, message.wrapper
     end
