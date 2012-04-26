@@ -4,7 +4,7 @@ class CacheBackedMessageStore
   end
 
   def add(message)
-    @cache.write [message.account, message.uid], message
+    @cache.write [message.account, message.uid], message.raw
   end
 
   def find(account, uid)
