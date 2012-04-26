@@ -14,7 +14,7 @@ class MessageRepository
 
   attr_reader :index, :store
 
-  def initialize(index = ActiveRecordMessageIndex, store = CacheBackedMessageStore)
+  def initialize(index = MailRepository::ActiveRecordMailIndex, store = CacheBackedMailStore)
     @index = index
     @store = store
   end
@@ -23,23 +23,23 @@ class MessageRepository
     index.highest_uid(account)
   end
 
-  def add(message)
-    index.add message
-    store.add message
+  def add(mail)
+    index.add mail
+    store.add mail
   end
 
   def exists?(account, uid)
-    index.message_exists?(account, uid)
+    index.mail_exists?(account, uid)
   end
 
   def find(id)
     record = index.where(id: id).first
-    record && Message.new(record, LazyOriginalMessage.new(record.account, record.uid, store))
+    record && Message.new(record, MailRepository::LazyOriginalMail.new(record.account, record.uid, store))
   end
 
   def messages
     index.most_recent.map do |record|
-      Message.new record, LazyOriginalMessage.new(record.account, record.uid, store)
+      Message.new record, MailRepository::LazyOriginalMail.new(record.account, record.uid, store)
     end
   end
 end

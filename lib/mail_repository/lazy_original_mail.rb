@@ -1,4 +1,4 @@
-class MessageRepository::LazyOriginalMessage
+class MailRepository::LazyOriginalMail
   def initialize(account, uid, store)
     @account = account
     @uid = uid
@@ -6,6 +6,6 @@ class MessageRepository::LazyOriginalMessage
   end
 
   def to_s
-    @message ||= @store.find(@account, @uid)
+    @mail ||= @store.find(@account, @uid)
   end
 end

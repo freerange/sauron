@@ -1,7 +1,7 @@
 require 'fileutils'
 require 'base64'
 
-class FileBasedMessageStore
+class FileBasedMailStore
   attr_reader :root_path
 
   def initialize(root_path = Rails.root + 'data' + Rails.env + 'messages')

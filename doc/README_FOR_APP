@@ -1,2 +1,8 @@
-Use this README file to introduce your application and point to useful places in the API for learning more.
-Run "rake doc:app" to generate API documentation for your models, controllers, helpers, and libraries.
+Mail vs Message
+---------------
+
+A `Mail` is what is stored in the IMAP server. It has headers, and a UID, and belongs to the account (the recipient or perhaps the sender) whose mailbox contains it.
+
+A `Message` is the the content (and most of the headers) of a `Mail` as identified uniquely by its `Message-ID` header. More than one `Mail` can have the same `Message-ID`, and those `Mail`s are all effectively partial instances of the same `Message`.
+
+A `Message` is what the sender writes; each recipient has their own stored (and slightly differing) copy of the `Message`, and those stored copies are `Mail`s.

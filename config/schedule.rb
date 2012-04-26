@@ -22,5 +22,5 @@
 env :MAILTO, 'everyone@gofreerange.com'
 
 every 1.minute do
-  rake "messages:import"
+  rake "mail:import"
 end

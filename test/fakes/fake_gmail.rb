@@ -3,10 +3,10 @@ require 'net/imap'
 module FakeGmail
   class Server
     class Account
-      def add_message(message)
+      def add_mail(mail)
         mailboxes['[Gmail]']
-        mailboxes['[Gmail]/All Mail'] << message.object_id
-        messages[message.object_id] = message.to_s
+        mailboxes['[Gmail]/All Mail'] << mail.object_id
+        mails[mail.object_id] = mail.to_s
       end
 
       def mailboxes
@@ -15,8 +15,8 @@ module FakeGmail
         end
       end
 
-      def messages
-        @messages ||= {}
+      def mails
+        @mails ||= {}
       end
     end
 
@@ -68,7 +68,7 @@ module FakeGmail
       uids = [*uids]
       raise 'Mock only supports BODY.PEEK[]' unless scope == 'BODY.PEEK[]'
       uids.map do |uid|
-        Net::IMAP::FetchData.new(1, 'UID' => uid, 'BODY[]' => account.messages[uid])
+        Net::IMAP::FetchData.new(1, 'UID' => uid, 'BODY[]' => account.mails[uid])
       end
     end
 

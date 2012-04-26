@@ -1,10 +1,10 @@
-class CacheBackedMessageStore
+class CacheBackedMailStore
   def initialize(cache = ActiveSupport::Cache::FileStore.new(Rails.root + 'data' + Rails.env + 'messages'))
     @cache = cache
   end
 
-  def add(message)
-    @cache.write [message.account, message.uid], message.raw
+  def add(mail)
+    @cache.write [mail.account, mail.uid], mail.raw
   end
 
   def find(account, uid)

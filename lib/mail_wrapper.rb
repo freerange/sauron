@@ -1,8 +1,8 @@
 class MailWrapper
   delegate :date, :message_id, to: :@mail
 
-  def initialize(raw_message)
-    @mail = ::Mail.new(raw_message)
+  def initialize(raw_mail)
+    @mail = ::Mail.new(raw_mail)
   end
 
   def from

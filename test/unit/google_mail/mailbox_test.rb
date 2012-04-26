@@ -74,55 +74,55 @@ module GoogleMail
       Mailbox.new(connection)
     end
 
-    test "returns uids of all messages in the mailbox when no from_uid is specified" do
+    test "returns uids of all mails in the mailbox when no from_uid is specified" do
       connection = stub('imap-connection', examine: nil, list: [])
       connection.stubs(:uid_search).with('ALL').returns [1, 2, 3, 4]
       mailbox = Mailbox.new(connection)
       assert_equal [1, 2, 3, 4], mailbox.uids
     end
 
-    test "returns uids of all messages in the mailbox from from_uid onwards" do
+    test "returns uids of all mails in the mailbox from from_uid onwards" do
       connection = stub('imap-connection', examine: nil, list: [])
       connection.stubs(:uid_search).with('UID 3:*').returns [3, 4]
       mailbox = Mailbox.new(connection)
       assert_equal [3, 4], mailbox.uids(3)
     end
 
-    test "returns uids of all messages in the mailbox when from_uid is nil" do
+    test "returns uids of all mails in the mailbox when from_uid is nil" do
       connection = stub('imap-connection', examine: nil, list: [])
       connection.stubs(:uid_search).with('ALL').returns [1, 2, 3, 4]
       mailbox = Mailbox.new(connection)
       assert_equal [1, 2, 3, 4], mailbox.uids(nil)
     end
 
-    test "returns a single message given its uid" do
+    test "returns a single mail given its uid" do
       connection = stub('imap-connection', examine: nil, list: [], email: 'tom@example.com')
       connection.stubs(:uid_fetch).with(1, 'BODY.PEEK[]').returns [
-        stub(attr: {"BODY[]" => "raw-message-body-1"})
+        stub(attr: {"BODY[]" => "raw-mail-body-1"})
       ]
       mailbox = Mailbox.new(connection)
 
-      assert_equal Mailbox::Message.new('tom@example.com', 1, "raw-message-body-1"), mailbox.message(1)
+      assert_equal Mailbox::Mail.new('tom@example.com', 1, "raw-mail-body-1"), mailbox.mail(1)
     end
 
-    test "requests the message using a more explicit set of commands if BODY.PEEK[] is empty" do
+    test "requests the mail using a more explicit set of commands if BODY.PEEK[] is empty" do
       connection = stub('imap-connection', examine: nil, list: [])
       connection.stubs(:uid_fetch).with(1, 'BODY.PEEK[]').returns(nil)
       connection.stubs(:uid_fetch).with(1, '(BODY.PEEK[HEADER] BODY.PEEK[TEXT])').returns([
-        stub(attr: {"BODY[HEADER]" => "raw-headers", "BODY[TEXT]" => "raw-message-body-1"})
+        stub(attr: {"BODY[HEADER]" => "raw-headers", "BODY[TEXT]" => "raw-mail-body-1"})
       ])
       mailbox = Mailbox.new(connection)
-      assert_equal 'raw-headersraw-message-body-1', mailbox.raw_message(1)
+      assert_equal 'raw-headersraw-mail-body-1', mailbox.raw_mail(1)
     end
 
-    test "returns a stub message if the body could not be downloaded" do
+    test "returns a stub mail if the body could not be downloaded" do
       connection = stub('imap-connection', examine: nil, list: [])
       connection.stubs(:uid_fetch).with(1, 'BODY.PEEK[]').raises(Net::IMAP::NoResponseError.new(stub('response', data: stub(text: nil))))
       connection.stubs(:uid_fetch).with(1, 'BODY.PEEK[HEADER]').returns([
         stub(attr: {"BODY[HEADER]" => "raw-headers"})
       ])
       mailbox = Mailbox.new(connection)
-      assert_equal 'raw-headers\n\nThis message could not be downloaded from the server', mailbox.raw_message(1)
+      assert_equal 'raw-headers\n\nThis mail could not be downloaded from the server', mailbox.raw_mail(1)
     end
   end
 end

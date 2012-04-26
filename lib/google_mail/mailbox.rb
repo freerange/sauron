@@ -28,7 +28,7 @@ module GoogleMail
       end
     end
 
-    class Message
+    class Mail
       attr_reader :account, :uid, :raw, :wrapper
       delegate :from, :subject, :date, :message_id, to: :wrapper
 
@@ -39,8 +39,8 @@ module GoogleMail
         @wrapper = MailWrapper.new(raw)
       end
 
-      def ==(message)
-        message.is_a?(self.class) && message.account == account && message.uid == uid && message.raw == raw
+      def ==(mail)
+        mail.is_a?(self.class) && mail.account == account && mail.uid == uid && mail.raw == raw
       end
     end
 
@@ -68,7 +68,7 @@ module GoogleMail
       end
     end
 
-    def raw_message(uid)
+    def raw_mail(uid)
       begin
         response = connection.uid_fetch(uid, 'BODY.PEEK[]')
         if response
@@ -79,12 +79,12 @@ module GoogleMail
         end
       rescue Net::IMAP::NoResponseError
         response = connection.uid_fetch(uid, 'BODY.PEEK[HEADER]')
-        response.first.attr['BODY[HEADER]'] + '\n\nThis message could not be downloaded from the server'
+        response.first.attr['BODY[HEADER]'] + '\n\nThis mail could not be downloaded from the server'
       end
     end
 
-    def message(uid)
-      Message.new(email, uid, raw_message(uid))
+    def mail(uid)
+      Mailbox::Mail.new(email, uid, raw_mail(uid))
     end
 
     class << self

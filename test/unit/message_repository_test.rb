@@ -1,14 +1,14 @@
 require 'test_helper'
 
 class MessageRepositoryTest < ActiveSupport::TestCase
-  test 'uses MessageRepository::ActiveRecordMessageIndex as default index' do
+  test 'uses MailRepository::ActiveRecordMailIndex as default index' do
     model = stub('model')
-    assert_equal MessageRepository::ActiveRecordMessageIndex, MessageRepository.new.index
+    assert_equal MailRepository::ActiveRecordMailIndex, MessageRepository.new.index
   end
 
-  test 'uses MessageRepository::CacheBackedMessageStore as default store' do
+  test 'uses MailRepository::CacheBackedMailStore as default store' do
     model = stub('model')
-    assert_equal CacheBackedMessageStore, MessageRepository.new.store
+    assert_equal CacheBackedMailStore, MessageRepository.new.store
   end
 
   test 'adds message to record index' do
@@ -38,7 +38,7 @@ class MessageRepositoryTest < ActiveSupport::TestCase
 
   test 'uses model to check if messages already exist' do
     model = stub('model')
-    model.stubs(:message_exists?).with('sam@example.com', 1).returns(true)
+    model.stubs(:mail_exists?).with('sam@example.com', 1).returns(true)
     repository = MessageRepository.new(model)
     assert repository.exists?('sam@example.com', 1)
   end
