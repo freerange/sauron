@@ -1,4 +1,4 @@
-class MessageRepository::Record < ActiveRecord::Base
+class MessageRepository::ActiveRecordMessageIndex < ActiveRecord::Base
   self.table_name = :messages
 
   class << self
