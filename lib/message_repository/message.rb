@@ -12,7 +12,7 @@ class MessageRepository::Message
     if mail.multipart?
       text_part_bodies(mail).join
     else
-      mail.body.to_s
+      mail.body.decoded.encode('UTF-8', mail.charset)
     end
   end
 
@@ -28,7 +28,7 @@ class MessageRepository::Message
       if part.multipart?
         bodies << text_part_bodies(part)
       elsif part.content_type =~ /text\/plain/
-        bodies << part.body
+        bodies << part.body.decoded.encode('UTF-8', part.charset)
       end
       bodies.flatten
     end

@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'test_helper'
 
 class MessageRepository
@@ -6,6 +7,24 @@ class MessageRepository
       raw_message = Mail.new(body: "message-body").encoded
       message = Message.new(stub('record'), raw_message)
       assert_equal "message-body", message.body
+    end
+
+    test "body should be in UTF-8 even if raw message is in non UTF-8 encoding" do
+      raw_message = Mail.new(
+        charset: 'ISO-8859-1',
+        body: 'Telefónica'.encode('ISO-8859-1', 'UTF-8')
+      ).encoded
+      assert_equal 'Telefónica', Message.new(stub('record'), raw_message).body
+    end
+
+    test "body should be in UTF-8 even if raw message contains text part which is in non UTF-8 encoding" do
+      raw_message = Mail.new do
+        text_part do
+          content_type 'text/plain; charset=ISO-8859-1'
+          body 'Telefónica'.encode('ISO-8859-1', 'UTF-8')
+        end
+      end.encoded
+      assert_equal 'Telefónica', Message.new(stub('record'), raw_message).body
     end
 
     test "prefers the plain text body part" do
