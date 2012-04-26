@@ -3,10 +3,18 @@ require 'test_helper'
 
 class MessageRepository
   class MessageTest < ActiveSupport::TestCase
-    test "returns the body of the raw message" do
-      raw_message = Mail.new(body: "message-body").encoded
-      message = Message.new(stub('record'), raw_message)
-      assert_equal "message-body", message.body
+
+    test "returns the body of the raw message using the store" do
+      raw_message = Mail.new(body: "message-body").to_s
+      index_record, store = given_stored_message(raw_message)
+      assert_equal "message-body", Message.new(index_record, store).body
+    end
+
+    test "doesn't load the message body from the store if it is not requested" do
+      index_record = stub('index-record', account: 'account', uid: 'uid')
+      store = stub('store')
+      store.expects(:find).never
+      Message.new(index_record, store)
     end
 
     test "body should be in UTF-8 even if raw message is in non UTF-8 encoding" do
@@ -14,7 +22,9 @@ class MessageRepository
         charset: 'ISO-8859-1',
         body: 'Telefónica'.encode('ISO-8859-1', 'UTF-8')
       ).encoded
-      assert_equal 'Telefónica', Message.new(stub('record'), raw_message).body
+
+      index_record, store = given_stored_message(raw_message)
+      assert_equal 'Telefónica', Message.new(index_record, store).body
     end
 
     test "body should not fail decoding if charset unknown" do
@@ -22,7 +32,9 @@ class MessageRepository
         charset: 'unknown',
         body: 'Anything'
       ).encoded
-      assert_nothing_raised { Message.new(stub('record'), raw_message).body }
+
+      index_record, store = given_stored_message(raw_message)
+      assert_nothing_raised { Message.new(index_record, store).body }
     end
 
     test "body should be in UTF-8 even if raw message contains text part which is in non UTF-8 encoding" do
@@ -32,7 +44,9 @@ class MessageRepository
           body 'Telefónica'.encode('ISO-8859-1', 'UTF-8')
         end
       end.encoded
-      assert_equal 'Telefónica', Message.new(stub('record'), raw_message).body
+
+      index_record, store = given_stored_message(raw_message)
+      assert_equal 'Telefónica', Message.new(index_record, store).body
     end
 
     test "prefers the plain text body part" do
@@ -43,8 +57,9 @@ class MessageRepository
           body '<h1>This is HTML</h1>'
         end
       end.encoded
-      message = Message.new(stub('record'), raw_message)
-      assert_equal 'plain-text-message-body', message.body
+
+      index_record, store = given_stored_message(raw_message)
+      assert_equal 'plain-text-message-body', Message.new(index_record, store).body
     end
 
     test "shows all text parts when they are separated by an attachment" do
@@ -53,9 +68,10 @@ class MessageRepository
         add_file(__FILE__)
         text_part { body 'after-attachment' }
       end.encoded
-      message = Message.new(stub('record'), raw_message)
-      assert_match /before-attachment/, message.body
-      assert_match /after-attachment/, message.body
+
+      index_record, store = given_stored_message(raw_message)
+      assert_match /before-attachment/, Message.new(index_record, store).body
+      assert_match /after-attachment/, Message.new(index_record, store).body
     end
 
     test "shows text parts that are nested within multipart/alternative parts" do
@@ -64,8 +80,18 @@ class MessageRepository
           p.text_part { body 'within-part' }
         end
       end.encoded
-      message = Message.new(stub('record'), raw_message)
-      assert_match /within-part/, message.body
+
+      index_record, store = given_stored_message(raw_message)
+      assert_match /within-part/, Message.new(index_record, store).body
+    end
+
+    private
+
+    def given_stored_message(raw_message)
+      store = stub('store')
+      index_record = stub('index-record', account: 'account', uid: 'uid')
+      store.stubs(:find).with('account', 'uid').returns(raw_message)
+      [index_record, store]
     end
   end
 end

@@ -34,12 +34,12 @@ class MessageRepository
 
   def find(mail_id)
     record = mail_index.find_first(mail_id)
-    record && Message.new(record, MailRepository::LazyOriginalMail.new(record.account, record.uid, mail_store))
+    record && Message.new(record, mail_store)
   end
 
   def messages
     mail_index.most_recent.map do |record|
-      Message.new record, MailRepository::LazyOriginalMail.new(record.account, record.uid, mail_store)
+      Message.new(record, mail_store)
     end
   end
 end

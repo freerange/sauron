@@ -45,17 +45,19 @@ class MessageRepositoryTest < ActiveSupport::TestCase
 
   test 'retrieves the most recent messages from the index' do
     index = stub('index')
-    repository = MessageRepository.new(index)
-    message_record = stub('message_record', account: 'tom@example.com', uid: 123)
-    index.stubs(:most_recent).returns([message_record])
-    assert_equal [MessageRepository::Message.new(message_record)], repository.messages
+    store = stub('store', find: '')
+    repository = MessageRepository.new(index, store)
+    index_record = stub('index_record', account: 'tom@example.com', uid: 123)
+    index.stubs(:most_recent).returns([index_record])
+    assert_equal [MessageRepository::Message.new(index_record, store)], repository.messages
   end
 
   test 'finds a single message from the index' do
     index = stub('index')
-    repository = MessageRepository.new(index)
-    message_record = stub('message_record', account: 'tom@example.com', uid: 123)
-    index.stubs(:find_first).with('123').returns(message_record)
-    assert_equal MessageRepository::Message.new(message_record), repository.find('123')
+    store = stub('store', find: '')
+    repository = MessageRepository.new(index, store)
+    index_record = stub('index_record', account: 'tom@example.com', uid: 123)
+    index.stubs(:find_first).with('123').returns(index_record)
+    assert_equal MessageRepository::Message.new(index_record, store), repository.find('123')
   end
 end
