@@ -23,10 +23,9 @@ class MessageRepository
     @model.highest_uid(account)
   end
 
-  def add(account, uid, raw_message)
-    mail = MailWrapper.new(raw_message)
-    @model.create! account: account, uid: uid, subject: mail.subject, date: mail.date, from: mail.from, message_id: mail.message_id
-    @store.add account, uid, raw_message
+  def add(message)
+    @model.add message
+    @store.add message
   end
 
   def exists?(account, uid)

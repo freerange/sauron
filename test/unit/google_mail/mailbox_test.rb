@@ -96,12 +96,13 @@ module GoogleMail
     end
 
     test "returns a single message given its uid" do
-      connection = stub('imap-connection', examine: nil, list: [])
+      connection = stub('imap-connection', examine: nil, list: [], email: 'tom@example.com')
       connection.stubs(:uid_fetch).with(1, 'BODY.PEEK[]').returns [
         stub(attr: {"BODY[]" => "raw-message-body-1"})
       ]
       mailbox = Mailbox.new(connection)
-      assert_equal 'raw-message-body-1', mailbox.raw_message(1)
+
+      assert_equal Mailbox::Message.new('tom@example.com', 1, "raw-message-body-1"), mailbox.message(1)
     end
 
     test "requests the message using a more explicit set of commands if BODY.PEEK[] is empty" do

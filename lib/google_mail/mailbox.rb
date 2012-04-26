@@ -28,6 +28,22 @@ module GoogleMail
       end
     end
 
+    class Message
+      attr_reader :account, :uid, :raw, :wrapper
+      delegate :from, :subject, :date, :message_id, to: :wrapper
+
+      def initialize(account, uid, raw)
+        @account = account
+        @uid = uid
+        @raw = raw
+        @wrapper = MailWrapper.new(raw)
+      end
+
+      def ==(message)
+        message.is_a?(self.class) && message.account == account && message.uid == uid && message.raw == raw
+      end
+    end
+
     cattr_accessor :connection_class
     self.connection_class = CachedConnection
 
@@ -65,6 +81,10 @@ module GoogleMail
         response = connection.uid_fetch(uid, 'BODY.PEEK[HEADER]')
         response.first.attr['BODY[HEADER]'] + '\n\nThis message could not be downloaded from the server'
       end
+    end
+
+    def message(uid)
+      Message.new(email, uid, raw_message(uid))
     end
 
     class << self

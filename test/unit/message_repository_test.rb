@@ -6,21 +6,22 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     assert_equal MessageRepository::Record, MessageRepository.new.model
   end
 
-  test 'adds messages by creating a model' do
+  test 'adds message to record index' do
     model = stub('model')
-    raw_message = Mail.new(subject: 'Subject', from: 'tom@example.com', date: Date.today, message_id: "message-id").to_s
-    repository = MessageRepository.new(model)
-    model.expects(:create!).with(account: 'sam@example.com', uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today, message_id: "message-id")
-    repository.add('sam@example.com', 123, raw_message)
+    store = stub('store', add: nil)
+    message = stub('message', account: 'sam@example.com', uid: 123, raw: 'raw-message')
+    repository = MessageRepository.new(model, store)
+    model.expects(:add).with(message)
+    repository.add(message)
   end
 
-  test 'adds original message data to message store' do
-    model = stub('model', create!: nil)
+  test 'adds message to message store' do
+    model = stub('model', add: nil)
     store = stub('store')
-    raw_message = Mail.new(subject: 'Subject', from: 'tom@example.com', date: Date.today).to_s
+    message = stub('message', account: 'sam@example.com', uid: 123, raw: 'raw-message')
     repository = MessageRepository.new(model, store)
-    store.expects(:add).with('sam@example.com', 123, raw_message)
-    repository.add('sam@example.com', 123, raw_message)
+    store.expects(:add).with(message)
+    repository.add(message)
   end
 
   test 'uses model to obtain highest uid for account' do

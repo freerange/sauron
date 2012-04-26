@@ -1,4 +1,4 @@
-class MessageRepository::MailWrapper
+class MailWrapper
   delegate :date, :message_id, to: :@mail
 
   def initialize(raw_message)
