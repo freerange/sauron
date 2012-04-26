@@ -8,7 +8,7 @@ class MessageRepositoryTest < ActiveSupport::TestCase
 
   test 'uses MessageRepository::CacheBackedMessageStore as default store' do
     model = stub('model')
-    assert_equal MessageRepository::CacheBackedMessageStore, MessageRepository.new.store
+    assert_equal CacheBackedMessageStore, MessageRepository.new.store
   end
 
   test 'adds message to record index' do
