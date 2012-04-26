@@ -1,5 +1,5 @@
 class MessageRepository::ActiveRecordMessageIndex < ActiveRecord::Base
-  self.table_name = :messages
+  self.table_name = :mail_index
 
   class << self
     def most_recent

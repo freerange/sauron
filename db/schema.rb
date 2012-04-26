@@ -11,9 +11,9 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120425162103) do
+ActiveRecord::Schema.define(:version => 20120426103206) do
 
-  create_table "messages", :force => true do |t|
+  create_table "mail_index", :force => true do |t|
     t.string   "account"
     t.integer  "uid",        :limit => 255
     t.string   "subject"
