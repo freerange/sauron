@@ -5,6 +5,11 @@ Scenario: Display messages which have been imported from the server
   When the mails for account "bob@example.com" are imported
   Then they should be visible on the messages page
 
+Scenario: Displaying individual messages
+  Given the email account "bob@example.com" has mails in their Gmail inbox
+  When the mails for account "bob@example.com" are imported
+  Then the individual messages should be viewable
+
 Scenario: Import messages from multiple accounts
   Given a team with credentials exists
   And the team have mails in Gmail

@@ -24,7 +24,12 @@ class MessageRepository
   end
 
   def add_mail(mail)
-    mail_index.add mail
+    hash = if mail.message_id
+      Digest::SHA1.hexdigest(mail.message_id)
+    else
+      Digest::SHA1.hexdigest(mail.from.join + mail.date.to_s + mail.subject)
+    end
+    mail_index.add mail, hash
     mail_store.add mail
   end
 
@@ -32,8 +37,8 @@ class MessageRepository
     mail_index.mail_exists?(account, uid)
   end
 
-  def find(mail_id)
-    record = mail_index.find_first(mail_id)
+  def find(message_hash)
+    record = mail_index.find_first_by_message_hash(message_hash)
     record && Message.new(record, mail_store)
   end
 
@@ -43,3 +48,4 @@ class MessageRepository
     end
   end
 end
+

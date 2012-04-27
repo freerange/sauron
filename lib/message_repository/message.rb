@@ -1,6 +1,6 @@
 class MessageRepository::Message
   attr_reader :index_record
-  delegate :subject, :date, :from, :to_param, to: :index_record
+  delegate :subject, :date, :from, :message_id, :message_hash, to: :index_record
 
   def initialize(index_record, store)
     @index_record = index_record
@@ -21,11 +21,15 @@ class MessageRepository::Message
     message.index_record == index_record
   end
 
-  private
+  def to_param
+    message_hash
+  end
 
   def raw_message
     @raw_message ||= @store.find(index_record.account, index_record.uid)
   end
+
+  private
 
   def text_part_bodies(part)
     part.parts.inject([]) do |bodies, part|

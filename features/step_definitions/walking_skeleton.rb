@@ -36,6 +36,14 @@ Then /^they should be visible on the messages page$/ do
   end
 end
 
+Then /^the individual messages should be viewable$/ do
+  ENV['HTTP_PASSWORD'] = 'password'
+  page.driver.browser.authorize('admin', 'password')
+
+  visit "/"
+  click_link "Old message"
+  assert page.has_css? ".subject", text: "Old message"
+end
 
 Given /^a team with credentials exists$/ do
   ENV["TEAM"] = "alice@example.com:bob@example.com"

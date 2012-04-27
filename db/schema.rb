@@ -11,15 +11,16 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120426103206) do
+ActiveRecord::Schema.define(:version => 20120427135609) do
 
   create_table "mail_index", :force => true do |t|
     t.string   "account"
-    t.integer  "uid",        :limit => 255
+    t.integer  "uid",          :limit => 255
     t.string   "subject"
     t.datetime "date"
     t.string   "from"
     t.string   "message_id"
+    t.string   "message_hash"
   end
 
 end

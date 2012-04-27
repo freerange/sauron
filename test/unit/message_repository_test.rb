@@ -11,19 +11,29 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     assert_equal CacheBackedMailStore, MessageRepository.new.mail_store
   end
 
-  test 'adds mail to record index' do
+  test 'adds mail to record index with a hash of the message ID' do
     index = stub('index')
     store = stub('store', add: nil)
-    mail = stub('mail', account: 'sam@example.com', uid: 123, raw: 'raw-message')
+    mail = stub('mail', account: 'sam@example.com', uid: 123, raw: 'raw-message', message_id: '<abc123@example.com>')
     repository = MessageRepository.new(index, store)
-    index.expects(:add).with(mail)
+    index.expects(:add).with(mail, Digest::SHA1.hexdigest('<abc123@example.com>'))
+    repository.add_mail(mail)
+  end
+
+  test 'adds mail to record index with a hash of date, subject and recipients if message_id is missing' do
+    index = stub('index')
+    store = stub('store', add: nil)
+    now = Time.now
+    mail = stub('mail', account: 'sam@example.com', uid: 123, raw: 'raw-message', message_id: nil, from: ['bob'], date: now, subject: 'Hello')
+    repository = MessageRepository.new(index, store)
+    index.expects(:add).with(mail, Digest::SHA1.hexdigest('bob' + now.to_s + 'Hello'))
     repository.add_mail(mail)
   end
 
   test 'adds mail to message store' do
     index = stub('index', add: nil)
     store = stub('store')
-    mail = stub('mail', account: 'sam@example.com', uid: 123, raw: 'raw-message')
+    mail = stub('mail', account: 'sam@example.com', uid: 123, raw: 'raw-message', message_id: '<abc123@example.com>')
     repository = MessageRepository.new(index, store)
     store.expects(:add).with(mail)
     repository.add_mail(mail)
@@ -57,7 +67,7 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     store = stub('store', find: '')
     repository = MessageRepository.new(index, store)
     index_record = stub('index_record', account: 'tom@example.com', uid: 123)
-    index.stubs(:find_first).with('123').returns(index_record)
-    assert_equal MessageRepository::Message.new(index_record, store), repository.find('123')
+    index.stubs(:find_first_by_message_hash).with('message-hash').returns(index_record)
+    assert_equal MessageRepository::Message.new(index_record, store), repository.find('message-hash')
   end
 end

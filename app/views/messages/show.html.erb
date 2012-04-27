@@ -1,11 +1,11 @@
 <ul>
-<li><%= @message.subject %></li>
-<li><%= @message.date %></li>
-<li><%= @message.from %></li>
+<li class="subject"><%= @message.subject %></li>
+<li class="date"><%= @message.date %></li>
+<li class="from"><%= @message.from %></li>
 </ul>
 <pre class="body">
 <%= @message.body %>
 </pre>
 <!---
-  <%= @message.original.to_s %>
+  <%= @message.raw_message %>
 --->

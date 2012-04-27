@@ -28,16 +28,16 @@ class MailRepository
       assert_equal uid, ActiveRecordMailIndex.highest_uid(account)
     end
 
-    test ".find_first(id) returns the first mail matching that id" do
+    test ".find_first_by_message_hash(hash) returns the first mail with that message hash" do
       mail = stub('mail')
-      given_mail_exists_in_the_database_with_id(123, mail)
-      assert_equal mail, ActiveRecordMailIndex.find_first(123)
+      given_mail_exists_in_the_database_with_message_hash('abcdef123456', mail)
+      assert_equal mail, ActiveRecordMailIndex.find_first_by_message_hash('abcdef123456')
     end
 
-    test ".add(mail) adds message by creating a model" do
+    test ".add(mail, hash) adds message by creating a model" do
       mail = stub('mail', account: 'sam@example.com', uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today, message_id: "message-id")
-      ActiveRecordMailIndex.expects(:create!).with(account: 'sam@example.com', uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today, message_id: "message-id")
-      ActiveRecordMailIndex.add(mail)
+      ActiveRecordMailIndex.expects(:create!).with(account: 'sam@example.com', uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today, message_id: "message-id", message_hash: "message-hash")
+      ActiveRecordMailIndex.add(mail, "message-hash")
     end
 
     private
@@ -60,9 +60,9 @@ class MailRepository
       ActiveRecordMailIndex.stubs(:where).with(account: account).returns(scope)
     end
 
-    def given_mail_exists_in_the_database_with_id(id, mail)
+    def given_mail_exists_in_the_database_with_message_hash(hash, mail)
       scope = stub("scope") { stubs(:first).returns(mail) }
-      ActiveRecordMailIndex.stubs(:where).with(id: id).returns(scope)
+      ActiveRecordMailIndex.stubs(:where).with(message_hash: hash).returns(scope)
     end
   end
 end
