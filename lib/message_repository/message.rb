@@ -8,7 +8,7 @@ class MessageRepository::Message
   end
 
   def recipients
-    parsed_mails.map(&:to).flatten
+    parsed_mails.map { |m| m["Delivered-To"] }.compact.map(&:to_s)
   end
 
   def body
