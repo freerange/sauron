@@ -2,7 +2,7 @@ require Rails.root + 'test' + 'fakes' + 'fake_gmail'
 
 After do
   FileUtils.rm_rf 'data/test'
-  MailRepository::ActiveRecordMailIndex.destroy_all
+  MessageRepository::ActiveRecordMailIndex.destroy_all
   FakeGmail.server.reset!
 end
 

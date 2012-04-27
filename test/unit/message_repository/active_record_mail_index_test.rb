@@ -1,6 +1,6 @@
 require "test_helper"
 
-class MailRepository
+class MessageRepository
   class ActiveRecordMailIndexTest < ActiveSupport::TestCase
     test "returns the 2500 most recent mails excluding duplicates" do
       most_recent_records = [ActiveRecordMailIndex.new]

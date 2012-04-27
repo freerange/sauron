@@ -14,7 +14,7 @@ class MessageRepository
 
   attr_reader :mail_index, :mail_store
 
-  def initialize(mail_index = MailRepository::ActiveRecordMailIndex, mail_store = CacheBackedMailStore)
+  def initialize(mail_index = MessageRepository::ActiveRecordMailIndex, mail_store = CacheBackedMailStore)
     @mail_index = mail_index
     @mail_store = mail_store
   end

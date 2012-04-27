@@ -1,4 +1,4 @@
-MailRepository::ActiveRecordMailIndex.where("message_hash IS NULL").find_each do |record|
+MessageRepository::ActiveRecordMailIndex.where("message_hash IS NULL").find_each do |record|
   hash = if record.message_id
     Digest::SHA1.hexdigest(record.message_id)
   else
