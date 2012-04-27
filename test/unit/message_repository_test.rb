@@ -30,6 +30,43 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     repository.add_mail(mail)
   end
 
+  test 'adds mail to record index with a hash when subject is missing' do
+    index = stub('index')
+    store = stub('store', add: nil)
+    now = Time.now
+    repository = MessageRepository.new(index, store)
+    mail = stub('mail', account: 'sam@example.com', uid: 123, raw: 'raw-message', message_id: nil, from: ['bob'], date: now, subject: nil)
+    index.expects(:add).with(mail, Digest::SHA1.hexdigest('bob' + now.to_s))
+    repository.add_mail(mail)
+  end
+
+  test 'adds mail to record index with a hash when date is missing' do
+    index = stub('index')
+    store = stub('store', add: nil)
+    repository = MessageRepository.new(index, store)
+    mail = stub('mail', account: 'sam@example.com', uid: 123, raw: 'raw-message', message_id: nil, from: ['bob'], date: nil, subject: 'Hello')
+    index.expects(:add).with(mail, Digest::SHA1.hexdigest('bob' + 'Hello'))
+    repository.add_mail(mail)
+  end
+
+  test 'adds mail to record index with a hash when sender is missing' do
+    index = stub('index')
+    store = stub('store', add: nil)
+    now = Time.now
+    repository = MessageRepository.new(index, store)
+    mail = stub('mail', account: 'sam@example.com', uid: 123, raw: 'raw-message', message_id: nil, from: [], date: now, subject: 'Hello')
+    index.expects(:add).with(mail, Digest::SHA1.hexdigest(now.to_s + 'Hello'))
+    repository.add_mail(mail)
+  end
+
+  test 'adds mail to record index with a hash when date and subject and sender are missing' do
+    index = stub('index')
+    store = stub('store', add: nil)
+    repository = MessageRepository.new(index, store)
+    mail = stub('mail', account: 'sam@example.com', uid: 123, raw: 'raw-message', message_id: nil, from: [], date: nil, subject: nil)
+    index.expects(:add).with(mail, Digest::SHA1.hexdigest(''))
+    repository.add_mail(mail)
+  end
   test 'adds mail to message store' do
     index = stub('index', add: nil)
     store = stub('store')

@@ -27,7 +27,7 @@ class MessageRepository
     hash = if mail.message_id
       Digest::SHA1.hexdigest(mail.message_id)
     else
-      Digest::SHA1.hexdigest(mail.from.join + mail.date.to_s + mail.subject)
+      Digest::SHA1.hexdigest(mail.from.join + mail.date.to_s + mail.subject.to_s)
     end
     mail_index.add mail, hash
     mail_store.add mail
