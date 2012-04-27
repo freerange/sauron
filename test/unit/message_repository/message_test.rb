@@ -67,5 +67,15 @@ class MessageRepository
       message = Message.new(stub('record'), raw_message)
       assert_match /within-part/, message.body
     end
+
+    [:account, :uid].each do |method|
+      test "delegates #{method} to the record" do
+        record = stub('record')
+        result = stub('record-response')
+        record.stubs(method).returns(result)
+        message = Message.new(record, :raw_message_content)
+        assert_equal result, message.__send__(method)
+      end
+    end
   end
 end

@@ -19,6 +19,8 @@ gem 'foreman'
 gem 'unicorn'
 gem 'whenever', require: false
 
+gem 'httparty'
+
 group :test do
   gem 'cucumber-rails', require: false
   gem 'database_cleaner'

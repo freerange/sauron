@@ -14,7 +14,7 @@ class MessageRepository
 
   attr_reader :index, :store
 
-  def initialize(index = ActiveRecordMessageIndex, store = CacheBackedMessageStore)
+  def initialize(index = ElasticSearchMessageIndex, store = CacheBackedMessageStore)
     @index = index
     @store = store
   end

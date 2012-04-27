@@ -1,6 +1,6 @@
 class MessageRepository::Message
   attr_reader :record, :original
-  delegate :subject, :date, :from, :to_param, to: :record
+  delegate :account, :uid, :subject, :date, :from, :to_param, to: :record
 
   def initialize(record, original = "")
     @record = record

@@ -1,9 +1,9 @@
 require 'test_helper'
 
 class MessageRepositoryTest < ActiveSupport::TestCase
-  test 'uses MessageRepository::ActiveRecordMessageIndex as default index' do
+  test 'uses MessageRepository::ElasticSearchMessageStore as default index' do
     model = stub('model')
-    assert_equal MessageRepository::ActiveRecordMessageIndex, MessageRepository.new.index
+    assert_equal MessageRepository::ElasticSearchMessageIndex, MessageRepository.new.index
   end
 
   test 'uses MessageRepository::CacheBackedMessageStore as default store' do
