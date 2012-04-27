@@ -13,4 +13,13 @@ class TeamTest < ActiveSupport::TestCase
 
     assert_equal [["alice@example.com", "alice-password"], ["bob@example.com", "bob-password"]], members
   end
+
+  test "indicate whether a specified email address represents a member of the team" do
+    ENV["TEAM"] = "alice@example.com:bob@example.com"
+
+    team = Team.new
+    assert team.has_member?("alice@example.com")
+    assert team.has_member?("bob@example.com")
+    refute team.has_member?("imposter@example.com")
+  end
 end
