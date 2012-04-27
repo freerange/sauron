@@ -17,6 +17,14 @@ class MessageRepository
       assert_equal 'Telefónica', Message.new(stub('record'), raw_message).body
     end
 
+    test "body should not fail decoding if charset unknown" do
+      raw_message = Mail.new(
+        charset: 'unknown',
+        body: 'Anything'
+      ).encoded
+      assert_nothing_raised { Message.new(stub('record'), raw_message).body }
+    end
+
     test "body should be in UTF-8 even if raw message contains text part which is in non UTF-8 encoding" do
       raw_message = Mail.new do
         text_part do
