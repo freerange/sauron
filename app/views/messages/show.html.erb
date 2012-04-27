@@ -1,19 +1,17 @@
 <div class="message">
-  <ul>
-  <li class="subject"><%= @message.subject %></li>
-  <li class="date"><%= @message.date %></li>
-  <li class="from"><%= @message.from %></li>
-  <li>
-    <ul class="recipients">
+  <h1 class="subject"><%= @message.subject %></h1>
+  <dl class="dl-horizontal">
+    <dt>From</dt><dd class="from"><%= @message.from %></dd>
+    <dt>Date</dt><dd class="date"><%= @message.date %></dd>
+    <dt>Recipients</dt><dd class="recipients">
+      <ul>
       <% @message.recipients.each do |recipient| %>
         <li class="recipient"><%= recipient %></li>
       <% end %>
-    </ul>
-  </li>
-  </ul>
-  <pre class="body">
-  <%= @message.body %>
-  </pre>
+      </ul>
+    </dd>
+  </dl>
+  <pre class="body"><%= @message.body %></pre>
 </div>
 
 <!--
