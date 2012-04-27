@@ -7,11 +7,6 @@ class MessagesControllerTest < ActionController::TestCase
     @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("alice@example.com:password")
   end
 
-  test "#index displays currently logged in username" do
-    get :index
-    assert_select "#session .username", text: "alice@example.com"
-  end
-
   test "#index indicates which messages were and were not received by the current user" do
     received = stub_everything("received", subject: "received", received_by?: true)
     not_received = stub_everything("not-received", subject: "not-received", received_by?: false)

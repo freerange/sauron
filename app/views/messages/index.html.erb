@@ -1,7 +1,5 @@
 <h1>Messages</h1>
 
-<p id="session">Logged in as <span class="username"><%= current_username %></span></p>
-
 <ul>
   <% @messages.each do |message| %>
     <%= content_tag(:li, class: message_class(message, current_username)) do %>

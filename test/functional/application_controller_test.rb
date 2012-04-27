@@ -2,7 +2,7 @@ require 'test_helper'
 
 class TestController < ApplicationController
   def index
-    head status: 200
+    render inline: '', layout: 'application'
   end
 end
 
@@ -44,5 +44,13 @@ class ApplicationControllerTest < ActionController::TestCase
     @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("alice@example.com:password")
     get :index
     assert_equal "alice@example.com", assigns(:current_username)
+  end
+
+  test "displays currently logged in username" do
+    ENV["TEAM"] = "alice@example.com"
+    ENV["HTTP_PASSWORD"] = "password"
+    @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("alice@example.com:password")
+    get :index
+    assert_select "#session .username", text: "alice@example.com"
   end
 end
