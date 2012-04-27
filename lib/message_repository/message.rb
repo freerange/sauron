@@ -11,6 +11,10 @@ class MessageRepository::Message
     parsed_mails.map { |m| m["Delivered-To"] }.compact.map(&:to_s)
   end
 
+  def received_by?(email)
+    recipients.include?(email)
+  end
+
   def body
     if parsed_mails.first.multipart?
       text_part_bodies(parsed_mails.first).join

@@ -10,18 +10,29 @@ class MessageRepository
       assert_equal "message-body", Message.new(index_records, store).body
     end
 
-    test "returns the recipient of the mail as who it was delivered to" do
+    test "returns the recipient of the mail" do
       raw_message = Mail.new(body: "message-body", delivered_to: "email-address").to_s
       index_records, store = given_stored_message(raw_message)
       assert_equal ["email-address"], Message.new(index_records, store).recipients
     end
 
-    test "returns the recipients of all mails in a message" do
-      raw_message_1 = Mail.new(body: "message-body", delivered_to: "recipient-1").to_s
-      raw_message_2 = Mail.new(body: "message-body", delivered_to: "recipient-2").to_s
-      raw_sent_message = Mail.new(body: "message-body").to_s
-      index_records, store = given_stored_message(raw_message_1, raw_message_2, raw_sent_message)
-      assert_equal ["recipient-1", "recipient-2"], Message.new(index_records, store).recipients
+    test "returns all recipients of all mails" do
+      raw_message_1 = Mail.new(body: "message-body", delivered_to: "email-address-1").to_s
+      raw_message_2 = Mail.new(body: "message-body", delivered_to: "email-address-2").to_s
+      index_records, store = given_stored_message(raw_message_1, raw_message_2)
+      assert_equal ["email-address-1", "email-address-2"], Message.new(index_records, store).recipients
+    end
+
+    test "indicates that the message was delivered to the specified email address" do
+      raw_message = Mail.new(body: "message-body", delivered_to: "email-address").to_s
+      index_records, store = given_stored_message(raw_message)
+      assert Message.new(index_records, store).received_by?("email-address")
+    end
+
+    test "indicates that the message was not delivered to the specified email address" do
+      raw_message = Mail.new(body: "message-body", delivered_to: "other-email-address").to_s
+      index_records, store = given_stored_message(raw_message)
+      refute Message.new(index_records, store).received_by?("email-address")
     end
 
     test "doesn't load the message body from the store if it is not requested" do
