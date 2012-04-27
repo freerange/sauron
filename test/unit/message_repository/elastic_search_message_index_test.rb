@@ -2,7 +2,7 @@ require "test_helper"
 
 class MessageRepository
   class ElasticSearchMessageIndexTest < ActiveSupport::TestCase
-    teardown do
+    setup do
       ElasticSearchMessageIndex.destroy
     end
 

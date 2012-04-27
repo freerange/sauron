@@ -42,6 +42,7 @@ class MessageRepository::ElasticSearchMessageIndex
 
     def message_exists?(account, uid)
       result = get(messages_path + '/_search', body: {size: 1, query: {term: {uid: uid, account: account}}}.to_json)
+      p result
       result["hits"]["total"] == 1
     end
 
@@ -62,6 +63,7 @@ class MessageRepository::ElasticSearchMessageIndex
 
     def destroy
       delete messages_path
+      put root_path
       put "#{messages_path}/_mapping", :body => {
         nodes: {
           properties: {
