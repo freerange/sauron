@@ -10,9 +10,7 @@ Given /^the same message was received by multiple people in the team$/ do
 end
 
 When /^the messages index is viewed$/ do
-  ENV['HTTP_PASSWORD'] = 'password'
-  page.driver.browser.authorize('admin', 'password')
-
+  login
   visit "/"
 end
 

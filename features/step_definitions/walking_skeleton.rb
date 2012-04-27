@@ -20,9 +20,7 @@ When /^the mails for account "([^"]*)" are imported$/ do |account|
 end
 
 Then /^they should be visible on the messages page$/ do
-  ENV['HTTP_PASSWORD'] = 'password'
-  page.driver.browser.authorize('admin', 'password')
-
+  login
   visit "/"
   within ".message:first-child" do
     assert page.has_css? ".subject", text: "New message"
@@ -37,9 +35,7 @@ Then /^they should be visible on the messages page$/ do
 end
 
 Then /^the individual messages should be viewable$/ do
-  ENV['HTTP_PASSWORD'] = 'password'
-  page.driver.browser.authorize('admin', 'password')
-
+  login
   visit "/"
   click_link "Old message"
   assert page.has_css? ".subject", text: "Old message"
@@ -62,9 +58,7 @@ When /^the periodic mail import occurs$/ do
 end
 
 Then /^all messages from all team members should be viewable$/ do
-  ENV['HTTP_PASSWORD'] = 'password'
-  page.driver.browser.authorize('admin', 'password')
-
+  login
   visit "/"
   within ".message:first-child" do
     assert page.has_css? ".subject", text: "Hello Bob"
