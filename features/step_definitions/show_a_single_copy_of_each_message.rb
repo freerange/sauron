@@ -19,3 +19,10 @@ end
 Then /^the message should only appear once$/ do
   assert page.has_css? ".message .subject", text: "Exciting message", count: 1
 end
+
+Then /^all recipients of the message should be shown$/ do
+  click_link "Exciting message"
+  assert page.has_css? ".message .recipients .recipient", count: 2
+  assert page.has_css? ".message .recipients .recipient", text: 'alice@example.com'
+  assert page.has_css? ".message .recipients .recipient", text: 'bob@example.com'
+end

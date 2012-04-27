@@ -38,13 +38,13 @@ class MessageRepository
   end
 
   def find(message_hash)
-    record = mail_index.find_first_by_message_hash(message_hash)
-    record && Message.new(record, mail_store)
+    records = mail_index.find_all_by_message_hash(message_hash)
+    records.any? && Message.new(records, mail_store)
   end
 
   def messages
     mail_index.most_recent.map do |record|
-      Message.new(record, mail_store)
+      Message.new([record], mail_store)
     end
   end
 end

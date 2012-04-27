@@ -1,32 +1,45 @@
 class MessageRepository::Message
-  attr_reader :index_record
+  attr_reader :index_records
   delegate :subject, :date, :from, :message_id, :message_hash, to: :index_record
 
-  def initialize(index_record, store)
-    @index_record = index_record
+  def initialize(index_records, store)
+    @index_records = index_records
     @store = store
   end
 
+  def recipients
+    parsed_mails.map(&:to).flatten
+  end
+
   def body
-    parsed_mail = Mail.new(raw_message)
-    if parsed_mail.multipart?
-      text_part_bodies(parsed_mail).join
+    if parsed_mails.first.multipart?
+      text_part_bodies(parsed_mails.first).join
     else
-      parsed_mail.decoded
+      parsed_mails.first.decoded
     end
   end
 
   def ==(message)
     message.is_a?(MessageRepository::Message) &&
-    message.index_record == index_record
+    message.index_records == index_records
+  end
+
+  def raw_messages
+    @raw_messages ||= @index_records.map do |record|
+      @store.find(record.account, record.uid)
+    end
   end
 
   def to_param
     message_hash
   end
 
-  def raw_message
-    @raw_message ||= @store.find(index_record.account, index_record.uid)
+  def index_record
+    index_records.first
+  end
+
+  def parsed_mails
+    @parsed_mails ||= raw_messages.map { |rm| Mail.new(rm) }
   end
 
   private

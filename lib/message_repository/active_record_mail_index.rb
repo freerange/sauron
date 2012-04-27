@@ -14,8 +14,8 @@ class MessageRepository::ActiveRecordMailIndex < ActiveRecord::Base
       where(account: account_id).maximum(:uid)
     end
 
-    def find_first_by_message_hash(hash)
-      where(message_hash: hash).first
+    def find_all_by_message_hash(hash)
+      where(message_hash: hash).all
     end
 
     def add(mail, hash)

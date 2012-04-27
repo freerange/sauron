@@ -1,11 +1,21 @@
-<ul>
-<li class="subject"><%= @message.subject %></li>
-<li class="date"><%= @message.date %></li>
-<li class="from"><%= @message.from %></li>
-</ul>
-<pre class="body">
-<%= @message.body %>
-</pre>
-<!---
-  <%= @message.raw_message %>
---->
+<div class="message">
+  <ul>
+  <li class="subject"><%= @message.subject %></li>
+  <li class="date"><%= @message.date %></li>
+  <li class="from"><%= @message.from %></li>
+  <li>
+    <ul class="recipients">
+      <% @message.recipients.each do |recipient| %>
+        <li class="recipient"><%= recipient %></li>
+      <% end %>
+    </ul>
+  </li>
+  </ul>
+  <pre class="body">
+  <%= @message.body %>
+  </pre>
+</div>
+
+<!--
+<%= @message.raw_messages.first %>
+-->
