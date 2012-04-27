@@ -2,8 +2,9 @@ require 'test_helper'
 
 class MessagesControllerTest < ActionController::TestCase
   setup do
+    ENV["TEAM"] = "alice@example.com"
     ENV["HTTP_PASSWORD"] = "password"
-    @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("admin:password")
+    @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("alice@example.com:password")
   end
 
   test "#index finds messages via repository" do

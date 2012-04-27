@@ -7,4 +7,9 @@ class Team
       yield email, password
     end
   end
+
+  def has_member?(email)
+    emails = ENV["TEAM"].split(":")
+    emails.include?(email)
+  end
 end
