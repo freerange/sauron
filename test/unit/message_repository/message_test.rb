@@ -20,7 +20,7 @@ class MessageRepository
       raw_message_1 = Mail.new(body: "message-body", delivered_to: "recipient-1").to_s
       raw_message_2 = Mail.new(body: "message-body", delivered_to: "recipient-2").to_s
       raw_sent_message = Mail.new(body: "message-body").to_s
-      index_records, store = given_stored_message(raw_message_1, raw_message_2, raw_send_message)
+      index_records, store = given_stored_message(raw_message_1, raw_message_2, raw_sent_message)
       assert_equal ["recipient-1", "recipient-2"], Message.new(index_records, store).recipients
     end
 
