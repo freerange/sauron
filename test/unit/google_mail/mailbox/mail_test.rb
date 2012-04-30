@@ -46,22 +46,6 @@ class GoogleMail::Mailbox
       refute_equal mail, object
     end
 
-    test "builds a MailWrapper with the raw message content" do
-      wrapper = stub('wrapper')
-      MailWrapper.stubs(:new).with(:raw_message_content).returns(wrapper)
-      message = Mail.new('tom@example.com', 1, :raw_message_content)
-      assert_equal wrapper, message.wrapper
-    end
-
-    [:from, :subject, :message_id, :date].each do |method|
-      test "delegates #{method} to the MailWrapper" do
-        message = Mail.new('tom@example.com', 1, :raw_message_content)
-        result = stub('wrapper-response')
-        message.wrapper.stubs(method).returns(result)
-        assert_equal result, message.__send__(method)
-      end
-    end
-
     test "returns the sender defined by the From: header" do
       raw_message = ::Mail.new(from: "bob@example.com").to_s
       assert_equal "bob@example.com", Mail.new(anything, anything, raw_message).from
@@ -109,6 +93,11 @@ class GoogleMail::Mailbox
     test "returns the date" do
       raw_message = ::Mail.new(date: "2012-01-01 09:00:00").to_s
       assert_equal Time.parse("2012-01-01 09:00:00"), Mail.new(anything, anything, raw_message).date
+    end
+
+    test "returns the message_id" do
+      raw_message = ::Mail.new(message_id: "message-123").to_s
+      assert_equal "message-123", Mail.new(anything, anything, raw_message).message_id
     end
   end
 end
