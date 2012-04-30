@@ -24,7 +24,7 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     index = stub('index')
     store = stub('store', add: nil)
     now = Time.now
-    mail = stub('mail', account: 'sam@example.com', uid: 123, raw: 'raw-message', message_id: nil, from: ['bob'], date: now, subject: 'Hello')
+    mail = stub('mail', account: 'sam@example.com', uid: 123, raw: 'raw-message', message_id: nil, from: 'bob', date: now, subject: 'Hello')
     repository = MessageRepository.new(index, store)
     index.expects(:add).with(mail, Digest::SHA1.hexdigest('bob' + now.to_s + 'Hello'))
     repository.add_mail(mail)
@@ -35,7 +35,7 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     store = stub('store', add: nil)
     now = Time.now
     repository = MessageRepository.new(index, store)
-    mail = stub('mail', account: 'sam@example.com', uid: 123, raw: 'raw-message', message_id: nil, from: ['bob'], date: now, subject: nil)
+    mail = stub('mail', account: 'sam@example.com', uid: 123, raw: 'raw-message', message_id: nil, from: 'bob', date: now, subject: nil)
     index.expects(:add).with(mail, Digest::SHA1.hexdigest('bob' + now.to_s))
     repository.add_mail(mail)
   end
@@ -44,7 +44,7 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     index = stub('index')
     store = stub('store', add: nil)
     repository = MessageRepository.new(index, store)
-    mail = stub('mail', account: 'sam@example.com', uid: 123, raw: 'raw-message', message_id: nil, from: ['bob'], date: nil, subject: 'Hello')
+    mail = stub('mail', account: 'sam@example.com', uid: 123, raw: 'raw-message', message_id: nil, from: 'bob', date: nil, subject: 'Hello')
     index.expects(:add).with(mail, Digest::SHA1.hexdigest('bob' + 'Hello'))
     repository.add_mail(mail)
   end
@@ -54,7 +54,7 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     store = stub('store', add: nil)
     now = Time.now
     repository = MessageRepository.new(index, store)
-    mail = stub('mail', account: 'sam@example.com', uid: 123, raw: 'raw-message', message_id: nil, from: [], date: now, subject: 'Hello')
+    mail = stub('mail', account: 'sam@example.com', uid: 123, raw: 'raw-message', message_id: nil, from: nil, date: now, subject: 'Hello')
     index.expects(:add).with(mail, Digest::SHA1.hexdigest(now.to_s + 'Hello'))
     repository.add_mail(mail)
   end
@@ -63,7 +63,7 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     index = stub('index')
     store = stub('store', add: nil)
     repository = MessageRepository.new(index, store)
-    mail = stub('mail', account: 'sam@example.com', uid: 123, raw: 'raw-message', message_id: nil, from: [], date: nil, subject: nil)
+    mail = stub('mail', account: 'sam@example.com', uid: 123, raw: 'raw-message', message_id: nil, from: nil, date: nil, subject: nil)
     index.expects(:add).with(mail, Digest::SHA1.hexdigest(''))
     repository.add_mail(mail)
   end
