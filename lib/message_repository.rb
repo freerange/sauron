@@ -44,7 +44,7 @@ class MessageRepository
 
   def messages
     mail_index.most_recent.map do |record|
-      Message.new([record], mail_store)
+      Message.new(mail_index.find_all_by_message_hash(record.message_hash), mail_store)
     end
   end
 end
