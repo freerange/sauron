@@ -2,6 +2,13 @@ body {
   padding-top: 20px;
 }
 
-.message.not-received {
-  font-weight: bold;
+ul#messages {
+  list-style: none;
+  margin-left: 0;
+}
+.icon-flag {
+  margin-left: -18px;
+}
+.message.received .icon-flag {
+  display: none;
 }
