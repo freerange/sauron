@@ -1,4 +1,4 @@
-require "recap/ruby"
+require "recap/recipes/rails"
 
 server "gofreerange.com", :app
 set :application, "sauron"
@@ -27,20 +27,11 @@ namespace :whenever do
   end
 end
 
-namespace :database do
-  namespace :migrate do
-    desc "Run database migrations only if new migrations exist"
-    task :if_changed do
-      if deployed_file_changed?('db')
-        top.database.migrate.default
-      end
-    end
-
-    desc "Run database migrations"
-    task :default do
-      as_app "bundle exec rake db:migrate"
+# Recap doesn't (yet) let us disable asset precompilation in rails projects.
+namespace :rails do
+  namespace :assets do
+    task :precompile do
+      # NOOP
     end
   end
 end
-
-after "deploy:update_code", "database:migrate:if_changed"

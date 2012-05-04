@@ -14,8 +14,7 @@ end
 
 gem 'jquery-rails'
 
-gem 'recap', git: 'https://github.com/freerange/recap.git'
-gem 'foreman'
+gem 'recap', '~> 1.0.0'
 gem 'unicorn'
 gem 'whenever', require: false
 
