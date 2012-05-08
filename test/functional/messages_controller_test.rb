@@ -24,14 +24,14 @@ class MessagesControllerTest < ActionController::TestCase
   end
 
   test "#show finds message via repository" do
-    message = stub_everything('message', recipients: [], raw_messages: [])
+    message = stub_everything('message', recipients: [])
     MessageRepository.stubs(:find).with('1234').returns(message)
     get :show, id: '1234'
     assert_equal message, assigns[:message]
   end
 
   test "#show displays the body of the message" do
-    message = stub_everything(body: 'message-body', recipients: [], raw_messages: [])
+    message = stub_everything(body: 'message-body', recipients: [])
     MessageRepository.stubs(:find).returns(message)
     get :show, id: '1'
     assert_select '.body', text: /message-body/

@@ -16,10 +16,10 @@ class MessageRepository::Message
   end
 
   def body
-    if parsed_mails.first.multipart?
-      text_part_bodies(parsed_mails.first).join
+    if parsed_mail.multipart?
+      text_part_bodies(parsed_mail).join
     else
-      parsed_mails.first.decoded
+      parsed_mail.decoded
     end
   end
 
@@ -28,10 +28,9 @@ class MessageRepository::Message
     message.index_records == index_records
   end
 
-  def raw_messages
-    @raw_messages ||= @index_records.map do |record|
-      @store.find(record.account, record.uid)
-    end
+  def raw_message
+    record = @index_records.first
+    @raw_message ||= @store.find(record.account, record.uid)
   end
 
   def to_param
@@ -42,8 +41,8 @@ class MessageRepository::Message
     index_records.first
   end
 
-  def parsed_mails
-    @parsed_mails ||= raw_messages.map { |rm| Mail.new(rm) }
+  def parsed_mail
+    @parsed_mail ||= Mail.new(raw_message)
   end
 
   private
