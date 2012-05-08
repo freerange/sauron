@@ -3,7 +3,7 @@ class MessageRepository::ActiveRecordMailIndex < ActiveRecord::Base
 
   class << self
     def most_recent
-      all(order: "date DESC", limit: 25, group: :message_id)
+      all(order: "date DESC", limit: 500, group: :message_id)
     end
 
     def find_all_by_message_hash(hash)
