@@ -15,6 +15,7 @@ end
 gem 'jquery-rails'
 
 gem 'recap', '~> 1.0.0'
+gem 'foreman'
 gem 'unicorn'
 gem 'whenever', require: false
 
