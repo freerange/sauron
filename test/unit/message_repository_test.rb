@@ -1,9 +1,9 @@
 require 'test_helper'
 
 class MessageRepositoryTest < ActiveSupport::TestCase
-  test 'uses MessageRepository::ActiveRecordMailIndex as default index' do
+  test 'uses MessageRepository::ActiveRecordMessageIndex as default index' do
     index = stub('index')
-    assert_equal MessageRepository::ActiveRecordMailIndex, MessageRepository.new.mail_index
+    assert_equal MessageRepository::ActiveRecordMessageIndex, MessageRepository.new.message_index
   end
 
   test 'uses CacheBackedMailStore as default store' do
