@@ -6,16 +6,16 @@ class MessageRepository::ActiveRecordMailIndex < ActiveRecord::Base
       all(order: "date DESC", limit: 25, group: :message_id)
     end
 
+    def find_all_by_message_hash(hash)
+      where(message_hash: hash).all
+    end
+
     def mail_exists?(account_id, uid)
       exists?(account: account_id, uid: uid)
     end
 
     def highest_uid(account_id)
       where(account: account_id).maximum(:uid)
-    end
-
-    def find_all_by_message_hash(hash)
-      where(message_hash: hash).all
     end
 
     def add(mail, hash)
