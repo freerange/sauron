@@ -104,5 +104,24 @@ class GoogleMail::Mailbox
       raw_message = ::Mail.new(delivered_to: "alice@example.com").to_s
       assert_equal "alice@example.com", Mail.new(anything, anything, raw_message).delivered_to
     end
+
+    test "returns the message id in the presence of messed up headers" do
+      raw_message = %{Date: Sat, 21 Apr 2012 22:20:07 +0000
+From: Pivotal Tracker <tracker-noreply@pivotaltracker.com>
+To: jase@example.com,
+   james.adam@example.com,
+   chris.roos@example.com,
+   Peter.herlihy@example.com,
+   tom.ward@example.com,
+   james.mead@example.com,
+
+  jamie.arnold@example.com,
+   neil.williams@example.com,
+   frances@example.com,
+   ben.terrett@example.com
+Message-Id: <4f9332975cb42_1df7ab6da78652@prod-app1.c44903.blueboxgrid.com.tmail>
+Subject: Joe Bloggs has requested to be a member of an excitin project on Pivotal Tracker}
+      assert_equal "<4f9332975cb42_1df7ab6da78652@prod-app1.c44903.blueboxgrid.com.tmail>", Mail.new(anything, anything, raw_message).message_id
+    end
   end
 end

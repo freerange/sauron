@@ -2,7 +2,7 @@ module GoogleMail
   class Mailbox
     class Mail
       attr_reader :account, :uid, :raw
-      delegate :date, :message_id, to: :@mail
+      delegate :date, to: :@mail
 
       def initialize(account, uid, raw)
         @account = account
@@ -27,6 +27,10 @@ module GoogleMail
 
       def delivered_to
         @mail["Delivered-To"].to_s
+      end
+
+      def message_id
+        @mail.message_id || raw.match(/^Message-Id\:(.*)$/i)[1].strip
       end
 
       def ==(mail)
