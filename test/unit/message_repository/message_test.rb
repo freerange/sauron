@@ -117,7 +117,8 @@ class MessageRepository
       store = stub('store')
       index_records = raw_messages.map.with_index do |raw_message, index|
         store.stubs(:find).with('account', index).returns(raw_message)
-        stub('index-record', account: 'account', uid: index)
+        delivered_to = Mail.new(raw_message)['Delivered-To'].to_s
+        stub('index-record', account: 'account', uid: index, delivered_to: delivered_to)
       end
       [index_records, store]
     end
