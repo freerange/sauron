@@ -25,6 +25,10 @@ module GoogleMail
         end
       end
 
+      def delivered_to
+        @mail["Delivered-To"].to_s
+      end
+
       def ==(mail)
         mail.is_a?(self.class) && mail.account == account && mail.uid == uid && mail.raw == raw
       end

@@ -19,7 +19,7 @@ class MessageRepository::ActiveRecordMailIndex < ActiveRecord::Base
     end
 
     def add(mail, hash)
-      create! account: mail.account, uid: mail.uid, subject: mail.subject, date: mail.date, from: mail.from, message_id: mail.message_id, message_hash: hash
+      create! account: mail.account, uid: mail.uid, subject: mail.subject, date: mail.date, from: mail.from, message_id: mail.message_id, message_hash: hash, delivered_to: mail.delivered_to
     end
   end
 end

@@ -36,8 +36,8 @@ class MessageRepository
     end
 
     test ".add(mail, hash) adds message by creating a model" do
-      mail = stub('mail', account: 'sam@example.com', uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today, message_id: "message-id")
-      ActiveRecordMailIndex.expects(:create!).with(account: 'sam@example.com', uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today, message_id: "message-id", message_hash: "message-hash")
+      mail = stub('mail', account: 'sam@example.com', uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today, message_id: "message-id", delivered_to: 'sam@example.com')
+      ActiveRecordMailIndex.expects(:create!).with(account: 'sam@example.com', uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today, message_id: "message-id", message_hash: "message-hash", delivered_to: 'sam@example.com')
       ActiveRecordMailIndex.add(mail, "message-hash")
     end
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120427135609) do
+ActiveRecord::Schema.define(:version => 20120508114826) do
 
   create_table "mail_index", :force => true do |t|
     t.string   "account"
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(:version => 20120427135609) do
     t.string   "from"
     t.string   "message_id"
     t.string   "message_hash"
+    t.string   "delivered_to"
   end
 
 end

@@ -99,5 +99,10 @@ class GoogleMail::Mailbox
       raw_message = ::Mail.new(message_id: "message-123").to_s
       assert_equal "message-123", Mail.new(anything, anything, raw_message).message_id
     end
+
+    test "returns the delivered-to address" do
+      raw_message = ::Mail.new(delivered_to: "alice@example.com").to_s
+      assert_equal "alice@example.com", Mail.new(anything, anything, raw_message).delivered_to
+    end
   end
 end
