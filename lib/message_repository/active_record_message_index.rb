@@ -27,7 +27,7 @@ class MessageRepository::ActiveRecordMessageIndex < ActiveRecord::Base
     end
 
     def find_primary_message_index_record(hash)
-      where(message_hash: hash).order("id ASC").first
+      where(message_hash: hash).includes(:mail_index_records).order("id ASC").first
     end
   end
 end

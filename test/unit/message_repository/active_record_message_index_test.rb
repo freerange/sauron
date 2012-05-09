@@ -51,8 +51,10 @@ class MessageRepository
 
     test ".find_primary_message_index_record(hash) finds the message_index record with the lowest id, for the message that this mail represents" do
       message_index_record = stub('message-index-record')
-      scope = stub('scope') { stubs(:order).with("id ASC").returns([message_index_record]) }
-      ActiveRecordMessageIndex.stubs(:where).with(message_hash: 'message-hash').returns(scope)
+      scope_after_includes = stub('scope-after-includes')
+      scope_after_includes.stubs(:order).with("id ASC").returns([message_index_record])
+      scope_after_where = stub('scope-after-where', includes: scope_after_includes)
+      ActiveRecordMessageIndex.stubs(:where).with(message_hash: 'message-hash').returns(scope_after_where)
       assert_equal message_index_record, ActiveRecordMessageIndex.find_primary_message_index_record('message-hash')
     end
 
