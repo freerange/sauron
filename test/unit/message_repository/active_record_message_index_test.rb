@@ -68,21 +68,21 @@ class MessageRepository
     private
 
     def given_mail_exists_in_database(account, uid)
-      ActiveRecordMessageIndex.stubs(:exists?).with(account: account, uid: uid).returns(true)
+      ActiveRecordMailIndex.stubs(:exists?).with(account: account, uid: uid).returns(true)
     end
 
     def given_mail_does_not_exist_in_database(account, uid)
-      ActiveRecordMessageIndex.stubs(:exists?).with(account: account, uid: uid).returns(false)
+      ActiveRecordMailIndex.stubs(:exists?).with(account: account, uid: uid).returns(false)
     end
 
     def given_mail_with_highest_uid_exists_in_database(account, uid)
       scope = stub("scope") { stubs(:maximum).with(:uid).returns(uid) }
-      ActiveRecordMessageIndex.stubs(:where).with(account: account).returns(scope)
+      ActiveRecordMailIndex.stubs(:where).with(account: account).returns(scope)
     end
 
     def given_no_mails_exist_in_database(account)
       scope = stub("scope") { stubs(:maximum).with(:uid).returns(nil) }
-      ActiveRecordMessageIndex.stubs(:where).with(account: account).returns(scope)
+      ActiveRecordMailIndex.stubs(:where).with(account: account).returns(scope)
     end
 
     def given_mails_exist_in_the_database_with_message_hash(hash, mails)

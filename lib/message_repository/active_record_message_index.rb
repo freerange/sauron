@@ -13,11 +13,11 @@ class MessageRepository::ActiveRecordMessageIndex < ActiveRecord::Base
     end
 
     def mail_exists?(account_id, uid)
-      exists?(account: account_id, uid: uid)
+      MessageRepository::ActiveRecordMailIndex.exists?(account: account_id, uid: uid)
     end
 
     def highest_uid(account_id)
-      where(account: account_id).maximum(:uid)
+      MessageRepository::ActiveRecordMailIndex.where(account: account_id).maximum(:uid)
     end
 
     def add(mail, hash)
@@ -31,3 +31,4 @@ class MessageRepository::ActiveRecordMessageIndex < ActiveRecord::Base
     end
   end
 end
+
