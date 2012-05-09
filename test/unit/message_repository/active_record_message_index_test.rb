@@ -1,6 +1,17 @@
 require "test_helper"
 
 class MessageRepository
+  class ActiveRecordMessageIndexDatabaseTest < ActiveSupport::TestCase
+    test "has many mail index records" do
+      message_index_record = ActiveRecordMessageIndex.create!
+      mail_index_record_1 = ActiveRecordMailIndex.create!(message_index_id: message_index_record.id)
+      mail_index_record_2 = ActiveRecordMailIndex.create!(message_index_id: message_index_record.id)
+      mail_index_records = message_index_record.mail_index_records
+      assert mail_index_records.include?(mail_index_record_1)
+      assert mail_index_records.include?(mail_index_record_2)
+    end
+  end
+
   class ActiveRecordMessageIndexTest < ActiveSupport::TestCase
     test "returns the most recent mails excluding duplicates" do
       most_recent_records = [ActiveRecordMessageIndex.new]
@@ -50,6 +61,15 @@ class MessageRepository
       scope = stub('scope') { stubs(:order).with("id ASC").returns([message_index_record]) }
       ActiveRecordMessageIndex.stubs(:where).with(message_hash: 'message-hash').returns(scope)
       assert_equal message_index_record, ActiveRecordMessageIndex.find_primary_message_index_record('message-hash')
+    end
+
+    test "#recipients returns delivered_to addresses for all its mail index records" do
+      message_index_record = ActiveRecordMessageIndex.new
+      mail_index_record_1 = stub('mail-index-1', delivered_to: 'alice@example.com')
+      mail_index_record_2 = stub('mail-index-2', delivered_to: 'bob@example.com')
+      message_index_record.stubs(:mail_index_records).returns([mail_index_record_1, mail_index_record_2])
+      assert message_index_record.recipients.include?('alice@example.com')
+      assert message_index_record.recipients.include?('bob@example.com')
     end
 
     private

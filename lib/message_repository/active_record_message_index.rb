@@ -1,6 +1,12 @@
 class MessageRepository::ActiveRecordMessageIndex < ActiveRecord::Base
   self.table_name = :message_index
 
+  has_many :mail_index_records, class_name: 'ActiveRecordMailIndex', foreign_key: :message_index_id
+
+  def recipients
+    mail_index_records.map(&:delivered_to)
+  end
+
   class << self
     def most_recent
       all(order: "date DESC", limit: 500, group: :message_id)
