@@ -47,19 +47,19 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     index = stub('index')
     store = stub('store', find: '')
     repository = MessageRepository.new(index, store)
-    index_record_1 = stub('index_record_1', account: 'alice@example.com', uid: 123, message_hash: 'message-hash')
-    index_record_2 = stub('index_record_2', account: 'bob@example.com', uid: 456, message_hash: 'message-hash')
-    index.stubs(:most_recent).returns([index_record_1])
-    index.stubs(:find_all_by_message_hash).with('message-hash').returns([index_record_1, index_record_2])
-    assert_equal [MessageRepository::Message.build([index_record_1, index_record_2], store)], repository.messages
+    most_recent_index_record = stub('most-recent-index-record', account: 'alice@example.com', uid: 123, message_hash: 'message-hash')
+    primary_index_record = stub('primary-index-record', account: 'bob@example.com', uid: 456, message_hash: 'message-hash')
+    index.stubs(:most_recent).returns([most_recent_index_record])
+    index.stubs(:find_primary_message_index_record).with('message-hash').returns(primary_index_record)
+    assert_equal [MessageRepository::Message.new(primary_index_record, store)], repository.messages
   end
 
   test 'finds a single message from the index' do
     index = stub('index')
     store = stub('store', find: '')
     repository = MessageRepository.new(index, store)
-    index_record = stub('index_record', account: 'tom@example.com', uid: 123)
-    index.stubs(:find_all_by_message_hash).with('message-hash').returns([index_record])
-    assert_equal MessageRepository::Message.build([index_record], store), repository.find('message-hash')
+    primary_index_record = stub('primary-index-record', account: 'tom@example.com', uid: 123)
+    index.stubs(:find_primary_message_index_record).with('message-hash').returns(primary_index_record)
+    assert_equal MessageRepository::Message.new(primary_index_record, store), repository.find('message-hash')
   end
 end

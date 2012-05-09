@@ -39,14 +39,6 @@ class MessageRepository
       assert_equal uid, ActiveRecordMessageIndex.highest_uid(account)
     end
 
-    test ".find_all_by_message_hash(hash) finds all message_index records for the message that this mail represents, with lowest id first" do
-      all = [stub('message-index-record-1'), stub('message-index-record-2')]
-      message_index_records = stub('message_index_records', all: all)
-      scope = stub('scope') { stubs(:order).with("id ASC").returns(message_index_records) }
-      ActiveRecordMessageIndex.stubs(:where).with(message_hash: 'message-hash').returns(scope)
-      assert_equal all, ActiveRecordMessageIndex.find_all_by_message_hash('message-hash')
-    end
-
     test ".add(mail, hash) creates a new message_index record and mail_index record and adds the new mail_index record to the primary message_index record" do
       mail = stub('mail', account: 'sam@example.com', uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today, message_id: "message-id", delivered_to: 'sam@example.com')
       primary_message_index_record = stub('primary-message-index', id: 456)

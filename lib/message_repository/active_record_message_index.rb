@@ -12,10 +12,6 @@ class MessageRepository::ActiveRecordMessageIndex < ActiveRecord::Base
       all(order: "date DESC", limit: 500, group: :message_id)
     end
 
-    def find_all_by_message_hash(hash)
-      where(message_hash: hash).order("id ASC").all
-    end
-
     def mail_exists?(account_id, uid)
       exists?(account: account_id, uid: uid)
     end
