@@ -10,6 +10,16 @@ class MessageRepository
       assert mail_index_records.include?(mail_index_record_1)
       assert mail_index_records.include?(mail_index_record_2)
     end
+
+    test "recipients includes the delivered_to addresses for all its constituent mails" do
+      mail_1 = GoogleMail::Mailbox::Mail.new('account-1', 1, Mail.new(delivered_to: 'delivered-to-1').to_s)
+      mail_2 = GoogleMail::Mailbox::Mail.new('account-2', 2, Mail.new(delivered_to: 'delivered-to-2').to_s)
+      ActiveRecordMessageIndex.add(mail_1, 'message-hash')
+      ActiveRecordMessageIndex.add(mail_2, 'message-hash')
+      record = ActiveRecordMessageIndex.find_primary_message_index_record('message-hash')
+      assert record.recipients.include?('delivered-to-1')
+      assert record.recipients.include?('delivered-to-2')
+    end
   end
 
   class ActiveRecordMessageIndexTest < ActiveSupport::TestCase
@@ -37,16 +47,6 @@ class MessageRepository
     test ".highest_uid returns highest UID" do
       given_mail_with_highest_uid_exists_in_database(account = "a@b.com", uid = 999)
       assert_equal uid, ActiveRecordMessageIndex.highest_uid(account)
-    end
-
-    test ".add(mail, hash) creates a new message_index record and mail_index record and adds the new mail_index record to the primary message_index record" do
-      mail = stub('mail', account: 'sam@example.com', uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today, message_id: "message-id", delivered_to: 'sam@example.com')
-      primary_message_index_record = stub('primary-message-index', id: 456)
-      new_message_index_record = stub('message-index', id: 789)
-      ActiveRecordMessageIndex.expects(:create!).with(account: 'sam@example.com', uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today, message_id: "message-id", message_hash: "message-hash", delivered_to: 'sam@example.com').returns(new_message_index_record)
-      ActiveRecordMessageIndex.stubs(:find_primary_message_index_record).with('message-hash').returns(primary_message_index_record)
-      ActiveRecordMailIndex.expects(:create!).with(message_index_id: 456, account: 'sam@example.com', uid: 123, delivered_to: 'sam@example.com')
-      ActiveRecordMessageIndex.add(mail, "message-hash")
     end
 
     test ".find_primary_message_index_record(hash) finds the message_index record with the lowest id, for the message that this mail represents" do
