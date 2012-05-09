@@ -35,12 +35,12 @@ class MessageRepository
 
   def find(message_hash)
     records = message_index.find_all_by_message_hash(message_hash)
-    records.any? && Message.new(records, mail_store)
+    records.any? && Message.build(records, mail_store)
   end
 
   def messages
     message_index.most_recent.map do |record|
-      Message.new(message_index.find_all_by_message_hash(record.message_hash), mail_store)
+      Message.build(message_index.find_all_by_message_hash(record.message_hash), mail_store)
     end
   end
 end

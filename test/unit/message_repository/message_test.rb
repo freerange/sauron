@@ -7,13 +7,13 @@ class MessageRepository
     test "returns the body of the raw message using the store" do
       raw_message = Mail.new(body: "message-body").to_s
       index_records, store = given_stored_message(raw_message)
-      assert_equal "message-body", Message.new(index_records, store).body
+      assert_equal "message-body", Message.build(index_records, store).body
     end
 
     test "returns the recipient of the mail as who it was delivered to" do
       raw_message = Mail.new(body: "message-body", delivered_to: "email-address").to_s
       index_records, store = given_stored_message(raw_message)
-      assert_equal ["email-address"], Message.new(index_records, store).recipients
+      assert_equal ["email-address"], Message.build(index_records, store).recipients
     end
 
     test "returns all recipients of all mails in a message" do
@@ -21,26 +21,26 @@ class MessageRepository
       raw_message_2 = Mail.new(body: "message-body", delivered_to: "recipient-2").to_s
       raw_sent_message = Mail.new(body: "message-body").to_s
       index_records, store = given_stored_message(raw_message_1, raw_message_2, raw_sent_message)
-      assert_equal ["recipient-1", "recipient-2"], Message.new(index_records, store).recipients
+      assert_equal ["recipient-1", "recipient-2"], Message.build(index_records, store).recipients
     end
 
     test "indicates that the message was delivered to the specified email address" do
       raw_message = Mail.new(body: "message-body", delivered_to: "email-address").to_s
       index_records, store = given_stored_message(raw_message)
-      assert Message.new(index_records, store).received_by?("email-address")
+      assert Message.build(index_records, store).received_by?("email-address")
     end
 
     test "indicates that the message was not delivered to the specified email address" do
       raw_message = Mail.new(body: "message-body", delivered_to: "other-email-address").to_s
       index_records, store = given_stored_message(raw_message)
-      refute Message.new(index_records, store).received_by?("email-address")
+      refute Message.build(index_records, store).received_by?("email-address")
     end
 
     test "doesn't load the message body from the store if it is not requested" do
       index_record = stub('index-record', account: 'account', uid: 'uid')
       store = stub('store')
       store.expects(:find).never
-      Message.new([index_record], store)
+      Message.build([index_record], store)
     end
 
     test "body should be in UTF-8 even if raw message is in non UTF-8 encoding" do
@@ -50,7 +50,7 @@ class MessageRepository
       ).encoded
 
       index_record, store = given_stored_message(raw_message)
-      assert_equal 'Telefónica', Message.new(index_record, store).body
+      assert_equal 'Telefónica', Message.build(index_record, store).body
     end
 
     test "body should not fail decoding if charset unknown" do
@@ -60,7 +60,7 @@ class MessageRepository
       ).encoded
 
       index_record, store = given_stored_message(raw_message)
-      assert_nothing_raised { Message.new(index_record, store).body }
+      assert_nothing_raised { Message.build(index_record, store).body }
     end
 
     test "body should be in UTF-8 even if raw message contains text part which is in non UTF-8 encoding" do
@@ -72,7 +72,7 @@ class MessageRepository
       end.encoded
 
       index_record, store = given_stored_message(raw_message)
-      assert_equal 'Telefónica', Message.new(index_record, store).body
+      assert_equal 'Telefónica', Message.build(index_record, store).body
     end
 
     test "prefers the plain text body part" do
@@ -85,7 +85,7 @@ class MessageRepository
       end.encoded
 
       index_records, store = given_stored_message(raw_message)
-      assert_equal 'plain-text-message-body', Message.new(index_records, store).body
+      assert_equal 'plain-text-message-body', Message.build(index_records, store).body
     end
 
     test "shows all text parts when they are separated by an attachment" do
@@ -96,8 +96,8 @@ class MessageRepository
       end.encoded
 
       index_records, store = given_stored_message(raw_message)
-      assert_match /before-attachment/, Message.new(index_records, store).body
-      assert_match /after-attachment/, Message.new(index_records, store).body
+      assert_match /before-attachment/, Message.build(index_records, store).body
+      assert_match /after-attachment/, Message.build(index_records, store).body
     end
 
     test "shows text parts that are nested within multipart/alternative parts" do
@@ -108,7 +108,7 @@ class MessageRepository
       end.encoded
 
       index_records, store = given_stored_message(raw_message)
-      assert_match /within-part/, Message.new(index_records, store).body
+      assert_match /within-part/, Message.build(index_records, store).body
     end
 
     private

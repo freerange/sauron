@@ -1,9 +1,15 @@
 class MessageRepository::Message
-  attr_reader :index_records
+  attr_reader :index_record
   delegate :subject, :date, :from, :message_id, :message_hash, to: :index_record
 
-  def initialize(index_records, store)
-    @index_records = index_records
+  class << self
+    def build(index_records, store)
+      new(index_records.first, store)
+    end
+  end
+
+  def initialize(index_record, store)
+    @index_record = index_record
     @store = store
   end
 
@@ -25,7 +31,7 @@ class MessageRepository::Message
 
   def ==(message)
     message.is_a?(MessageRepository::Message) &&
-    message.index_records == index_records
+    message.index_record == index_record
   end
 
   def raw_message
@@ -34,10 +40,6 @@ class MessageRepository::Message
 
   def to_param
     message_hash
-  end
-
-  def index_record
-    index_records.first
   end
 
   def parsed_mail
