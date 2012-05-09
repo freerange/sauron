@@ -29,8 +29,7 @@ class MessageRepository::Message
   end
 
   def raw_message
-    record = @index_records.first
-    @raw_message ||= @store.find(record.account, record.uid)
+    @raw_message ||= @store.find(index_record.account, index_record.uid)
   end
 
   def to_param
