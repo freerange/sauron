@@ -14,7 +14,8 @@ class MailImporter
           repository.add_mail mailbox.mail(uid)
         rescue => e
           Rails.logger.error(e.inspect)
-          raise "Failed to import mail with UID=#{uid.inspect} (#{e.message})"
+          Rails.logger.error(e.backtrace.join("\n"))
+          raise "Failed to import mail with UID=#{uid.inspect} (#{e.inspect}). See log for details."
         end
       end
     end
