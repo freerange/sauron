@@ -13,7 +13,7 @@ class MessageRepository::ActiveRecordMessageIndex < ActiveRecord::Base
     end
 
     def find_all_by_message_hash(hash)
-      where(message_hash: hash).all
+      where(message_hash: hash).order("id ASC").all
     end
 
     def mail_exists?(account_id, uid)

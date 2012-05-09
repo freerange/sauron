@@ -115,12 +115,15 @@ class MessageRepository
 
     def given_stored_message(*raw_messages)
       store = stub('store')
-      index_records = raw_messages.map.with_index do |raw_message, index|
+      recipients = []
+      message_index_records = raw_messages.map.with_index do |raw_message, index|
         store.stubs(:find).with('account', index).returns(raw_message)
-        delivered_to = Mail.new(raw_message)['Delivered-To'].to_s
-        stub('index-record', account: 'account', uid: index, delivered_to: delivered_to)
+        recipients << Mail.new(raw_message)['Delivered-To'].to_s
+        stub('index-record', account: 'account', uid: index)
       end
-      [index_records, store]
+      primary_message_index_record = message_index_records.first
+      primary_message_index_record.stubs(:recipients).returns(recipients)
+      [message_index_records, store]
     end
   end
 end

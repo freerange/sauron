@@ -8,7 +8,7 @@ class MessageRepository::Message
   end
 
   def recipients
-    @index_records.map { |record| record.delivered_to }.reject(&:blank?)
+    index_record.recipients.reject(&:blank?)
   end
 
   def received_by?(email)

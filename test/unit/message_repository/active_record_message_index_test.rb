@@ -39,11 +39,12 @@ class MessageRepository
       assert_equal uid, ActiveRecordMessageIndex.highest_uid(account)
     end
 
-    test ".find_all_by_message_hash(hash) returns all mails with that message hash" do
-      mail1 = stub('mail-1')
-      mail2 = stub('mail-2')
-      given_mails_exist_in_the_database_with_message_hash('abcdef123456', [mail1, mail2])
-      assert_equal [mail1, mail2], ActiveRecordMessageIndex.find_all_by_message_hash('abcdef123456')
+    test ".find_all_by_message_hash(hash) finds all message_index records for the message that this mail represents, with lowest id first" do
+      all = [stub('message-index-record-1'), stub('message-index-record-2')]
+      message_index_records = stub('message_index_records', all: all)
+      scope = stub('scope') { stubs(:order).with("id ASC").returns(message_index_records) }
+      ActiveRecordMessageIndex.stubs(:where).with(message_hash: 'message-hash').returns(scope)
+      assert_equal all, ActiveRecordMessageIndex.find_all_by_message_hash('message-hash')
     end
 
     test ".add(mail, hash) creates a new message_index record and mail_index record and adds the new mail_index record to the primary message_index record" do
@@ -56,7 +57,7 @@ class MessageRepository
       ActiveRecordMessageIndex.add(mail, "message-hash")
     end
 
-    test ".find_primary_message_index_record(mail) finds the message_index record with the lowest id, for the message that this mail represents" do
+    test ".find_primary_message_index_record(hash) finds the message_index record with the lowest id, for the message that this mail represents" do
       message_index_record = stub('message-index-record')
       scope = stub('scope') { stubs(:order).with("id ASC").returns([message_index_record]) }
       ActiveRecordMessageIndex.stubs(:where).with(message_hash: 'message-hash').returns(scope)
