@@ -49,6 +49,17 @@ class MessageRepository
       ActiveRecordMessageIndex.add(mail, "message-hash")
     end
 
+    test ".add(mail, hash) returns the message corresponding to that mail" do
+      mail = stub('mail', account: 'sam@example.com', uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today, message_id: "message-id", delivered_to: 'sam@example.com')
+      primary_message_index_record = stub('primary-message-index', id: 456, message_id: "message-id")
+      new_message_index_record = stub('message-index', id: 789)
+      ActiveRecordMessageIndex.stubs(:create!)
+      ActiveRecordMessageIndex.stubs(:find_primary_message_index_record).with('message-hash').returns(primary_message_index_record)
+      ActiveRecordMailIndex.stubs(:create!)
+      message = ActiveRecordMessageIndex.add(mail, "message-hash")
+      assert_equal "message-id", message.message_id
+    end
+
     test ".find_primary_message_index_record(hash) finds the message_index record with the lowest id, for the message that this mail represents" do
       message_index_record = stub('message-index-record')
       scope_after_includes = stub('scope-after-includes')

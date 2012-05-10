@@ -25,8 +25,9 @@ class MessageRepository
 
   def add_mail(mail)
     hash = Digest::SHA1.hexdigest(mail.message_id)
-    message_index.add mail, hash
     mail_store.add mail
+    record = message_index.add mail, hash
+    Message.new(record, mail_store)
   end
 
   def mail_exists?(account, uid)
