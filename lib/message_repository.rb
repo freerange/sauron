@@ -34,7 +34,7 @@ class MessageRepository
   end
 
   def find(message_hash)
-    record = message_index.find_primary_message_index_record(message_hash)
+    record = message_index.find_by_message_hash(message_hash)
     Message.new(record, mail_store)
   end
 

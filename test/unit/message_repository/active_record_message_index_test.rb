@@ -16,7 +16,7 @@ class MessageRepository
       mail_2 = GoogleMail::Mailbox::Mail.new('account-2', 2, Mail.new(delivered_to: 'delivered-to-2').to_s)
       ActiveRecordMessageIndex.add(mail_1, 'message-hash')
       ActiveRecordMessageIndex.add(mail_2, 'message-hash')
-      record = ActiveRecordMessageIndex.find_primary_message_index_record('message-hash')
+      record = ActiveRecordMessageIndex.find_by_message_hash('message-hash')
       assert record.recipients.include?('delivered-to-1')
       assert record.recipients.include?('delivered-to-2')
     end
@@ -26,7 +26,7 @@ class MessageRepository
       mail_2 = GoogleMail::Mailbox::Mail.new('account-2', 2, Mail.new(delivered_to: 'delivered-to-2').to_s)
       ActiveRecordMessageIndex.add(mail_1, 'message-hash')
       ActiveRecordMessageIndex.add(mail_2, 'message-hash')
-      record = ActiveRecordMessageIndex.find_primary_message_index_record('message-hash')
+      record = ActiveRecordMessageIndex.find_by_message_hash('message-hash')
       assert_equal ['account-1', 1], record.mail_identifier
     end
   end
@@ -58,13 +58,11 @@ class MessageRepository
       assert_equal uid, ActiveRecordMessageIndex.highest_uid(account)
     end
 
-    test ".find_primary_message_index_record(hash) finds the message_index record with the lowest id, for the message that this mail represents" do
+    test ".find_by_message_hash(hash) finds the message_index record with the specified message hash" do
       message_index_record = stub('message-index-record')
-      scope_after_includes = stub('scope-after-includes')
-      scope_after_includes.stubs(:order).with("id ASC").returns([message_index_record])
-      scope_after_where = stub('scope-after-where', includes: scope_after_includes)
-      ActiveRecordMessageIndex.stubs(:where).with(message_hash: 'message-hash').returns(scope_after_where)
-      assert_equal message_index_record, ActiveRecordMessageIndex.find_primary_message_index_record('message-hash')
+      scope = stub('scope', includes: [message_index_record])
+      ActiveRecordMessageIndex.stubs(:where).with(message_hash: 'message-hash').returns(scope)
+      assert_equal message_index_record, ActiveRecordMessageIndex.find_by_message_hash('message-hash')
     end
 
     test "#recipients returns delivered_to addresses for all its mail index records" do

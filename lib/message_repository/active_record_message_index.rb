@@ -25,14 +25,14 @@ class MessageRepository::ActiveRecordMessageIndex < ActiveRecord::Base
     end
 
     def add(mail, hash)
-      unless primary_message_index = find_primary_message_index_record(hash)
-        primary_message_index = create!(subject: mail.subject, date: mail.date, from: mail.from, message_id: mail.message_id, message_hash: hash)
+      unless message_index_record = find_by_message_hash(hash)
+        message_index_record = create!(subject: mail.subject, date: mail.date, from: mail.from, message_id: mail.message_id, message_hash: hash)
       end
-      MessageRepository::ActiveRecordMailIndex.create!(message_index_id: primary_message_index.id, account: mail.account, uid: mail.uid, delivered_to: mail.delivered_to)
+      MessageRepository::ActiveRecordMailIndex.create!(message_index_id: message_index_record.id, account: mail.account, uid: mail.uid, delivered_to: mail.delivered_to)
     end
 
-    def find_primary_message_index_record(hash)
-      where(message_hash: hash).includes(:mail_index_records).order("id ASC").first
+    def find_by_message_hash(hash)
+      where(message_hash: hash).includes(:mail_index_records).first
     end
   end
 end
