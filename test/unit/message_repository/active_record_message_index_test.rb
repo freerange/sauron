@@ -3,21 +3,22 @@ require "test_helper"
 class MessageRepository
   class ActiveRecordMessageIndexDatabaseTest < ActiveSupport::TestCase
     test "recipients includes the delivered_to addresses for all its constituent mails" do
-      mail_1 = GoogleMail::Mailbox::Mail.new('account-1', 1, Mail.new(delivered_to: 'delivered-to-1').to_s)
-      mail_2 = GoogleMail::Mailbox::Mail.new('account-2', 2, Mail.new(delivered_to: 'delivered-to-2').to_s)
-      ActiveRecordMessageIndex.add(mail_1, 'message-hash')
-      ActiveRecordMessageIndex.add(mail_2, 'message-hash')
-      record = ActiveRecordMessageIndex.find_by_message_hash('message-hash')
+      mail_1 = GoogleMail::Mailbox::Mail.new('account-1', 1, Mail.new(delivered_to: 'delivered-to-1', message_id: 'abc123').to_s)
+      mail_2 = GoogleMail::Mailbox::Mail.new('account-2', 2, Mail.new(delivered_to: 'delivered-to-2', message_id: 'abc123').to_s)
+      first_hash = ActiveRecordMessageIndex.add(mail_1)
+      second_hash = ActiveRecordMessageIndex.add(mail_2)
+      record = ActiveRecordMessageIndex.find_by_message_hash(first_hash)
+      assert_equal first_hash, second_hash
       assert record.recipients.include?('delivered-to-1')
       assert record.recipients.include?('delivered-to-2')
     end
 
     test "identifies first mail for this message" do
-      mail_1 = GoogleMail::Mailbox::Mail.new('account-1', 1, Mail.new(delivered_to: 'delivered-to-1').to_s)
-      mail_2 = GoogleMail::Mailbox::Mail.new('account-2', 2, Mail.new(delivered_to: 'delivered-to-2').to_s)
-      ActiveRecordMessageIndex.add(mail_1, 'message-hash')
-      ActiveRecordMessageIndex.add(mail_2, 'message-hash')
-      record = ActiveRecordMessageIndex.find_by_message_hash('message-hash')
+      mail_1 = GoogleMail::Mailbox::Mail.new('account-1', 1, Mail.new(delivered_to: 'delivered-to-1', message_id: 'abc123').to_s)
+      mail_2 = GoogleMail::Mailbox::Mail.new('account-2', 2, Mail.new(delivered_to: 'delivered-to-2', message_id: 'abc123').to_s)
+      message_hash = ActiveRecordMessageIndex.add(mail_1)
+      ActiveRecordMessageIndex.add(mail_2)
+      record = ActiveRecordMessageIndex.find_by_message_hash(message_hash)
       assert_equal ['account-1', 1], record.mail_identifier
     end
   end

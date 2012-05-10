@@ -24,8 +24,7 @@ class MessageRepository
   end
 
   def add_mail(mail)
-    hash = Digest::SHA1.hexdigest(mail.message_id)
-    message_index.add mail, hash
+    message_index.add mail
     mail_store.add mail
   end
 

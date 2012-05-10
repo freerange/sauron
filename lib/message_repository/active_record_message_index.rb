@@ -24,11 +24,13 @@ class MessageRepository::ActiveRecordMessageIndex < ActiveRecord::Base
       MessageRepository::ActiveRecordMailIndex.where(account: account_id).maximum(:uid)
     end
 
-    def add(mail, hash)
+    def add(mail)
+      hash = Digest::SHA1.hexdigest(mail.message_id)
       unless message_index_record = find_by_message_hash(hash)
         message_index_record = create!(subject: mail.subject, date: mail.date, from: mail.from, message_id: mail.message_id, message_hash: hash)
       end
       MessageRepository::ActiveRecordMailIndex.create!(message_index_id: message_index_record.id, account: mail.account, uid: mail.uid, delivered_to: mail.delivered_to)
+      hash
     end
 
     def find_by_message_hash(hash)

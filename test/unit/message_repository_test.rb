@@ -16,7 +16,7 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     store = stub('store', add: nil)
     mail = stub('mail', account: 'sam@example.com', uid: 123, raw: 'raw-message', message_id: '<abc123@example.com>')
     repository = MessageRepository.new(index, store)
-    index.expects(:add).with(mail, Digest::SHA1.hexdigest('<abc123@example.com>'))
+    index.expects(:add).with(mail)
     repository.add_mail(mail)
   end
 
