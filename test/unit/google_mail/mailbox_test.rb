@@ -74,27 +74,6 @@ module GoogleMail
       Mailbox.new(connection)
     end
 
-    test "returns uids of all mails in the mailbox when no from_uid is specified" do
-      connection = stub('imap-connection', examine: nil, list: [])
-      connection.stubs(:uid_search).with('ALL').returns [1, 2, 3, 4]
-      mailbox = Mailbox.new(connection)
-      assert_equal [1, 2, 3, 4], mailbox.uids
-    end
-
-    test "returns uids of all mails in the mailbox from from_uid onwards" do
-      connection = stub('imap-connection', examine: nil, list: [])
-      connection.stubs(:uid_search).with('UID 3:*').returns [3, 4]
-      mailbox = Mailbox.new(connection)
-      assert_equal [3, 4], mailbox.uids(3)
-    end
-
-    test "returns uids of all mails in the mailbox when from_uid is nil" do
-      connection = stub('imap-connection', examine: nil, list: [])
-      connection.stubs(:uid_search).with('ALL').returns [1, 2, 3, 4]
-      mailbox = Mailbox.new(connection)
-      assert_equal [1, 2, 3, 4], mailbox.uids(nil)
-    end
-
     test "returns a single mail given its uid" do
       connection = stub('imap-connection', examine: nil, list: [], email: 'tom@example.com')
       connection.stubs(:uid_fetch).with(1, 'BODY.PEEK[]').returns [
@@ -123,6 +102,37 @@ module GoogleMail
       ])
       mailbox = Mailbox.new(connection)
       assert_equal 'raw-headers\n\nThis mail could not be downloaded from the server', mailbox.raw_mail(1)
+    end
+  end
+
+  class MailboxWithFakeServerTest < ActiveSupport::TestCase
+    setup do
+      email = "alice@example.com"
+      @account = FakeGmail.server.accounts[email]
+      @mailbox = Mailbox.connect(email, "password")
+    end
+
+    test "returns UIDs of all messages excluding those that are drafts" do
+      mail_uid = @account.add_mail(Mail.new)
+      draft_mail_uid = @account.add_draft_mail(Mail.new)
+
+      uids = @mailbox.uids
+
+      assert uids.include?(mail_uid), "should contain UID for non-draft mail"
+      refute uids.include?(draft_mail_uid), "should not contain UID for draft mail"
+    end
+
+    test "returns UIDs of all messages from the given UID excluding those that are drafts" do
+      mail_1_uid = @account.add_mail(Mail.new)
+      mail_2_uid = @account.add_mail(Mail.new)
+      draft_mail_uid = @account.add_draft_mail(Mail.new)
+      from_uid = mail_2_uid
+
+      uids = @mailbox.uids(from_uid)
+
+      refute uids.include?(mail_1_uid), "should not contain UID lower than from_uid"
+      assert uids.include?(mail_2_uid), "should contain UID for non-draft mail"
+      refute uids.include?(draft_mail_uid), "should not contain UID for draft mail"
     end
   end
 end

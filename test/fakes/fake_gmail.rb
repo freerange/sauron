@@ -3,10 +3,26 @@ require 'net/imap'
 module FakeGmail
   class Server
     class Account
-      def add_mail(mail)
+      def initialize
+        @uid = 0
         mailboxes['[Gmail]']
-        mailboxes['[Gmail]/All Mail'] << mail.object_id
-        mails[mail.object_id] = mail.to_s
+      end
+
+      def next_uid
+        @uid += 1
+      end
+
+      def add_mail(mail)
+        uid = next_uid
+        mailboxes['[Gmail]/All Mail'] << uid
+        uids_vs_mails[uid] = mail.to_s
+        uid
+      end
+
+      def add_draft_mail(mail)
+        uid = add_mail(mail)
+        draft_uids << uid
+        uid
       end
 
       def mailboxes
@@ -15,8 +31,12 @@ module FakeGmail
         end
       end
 
-      def mails
+      def uids_vs_mails
         @mails ||= {}
+      end
+
+      def draft_uids
+        @draft_uids ||= []
       end
     end
 
@@ -55,8 +75,12 @@ module FakeGmail
 
     def uid_search(option)
       case option
+        when /ALL X-GM-LABELS Draft/
+          account.mailboxes[@mailbox].select { |uid| account.draft_uids.include?(uid) }
         when /ALL/
           account.mailboxes[@mailbox]
+        when /UID (\d+)\:\* X-GM-LABELS Draft/
+          account.mailboxes[@mailbox].select { |uid| uid >= $1.to_i && account.draft_uids.include?(uid) }
         when /UID (\d+)\:\*/
           account.mailboxes[@mailbox].select { |uid| uid >= $1.to_i }
         else
@@ -68,7 +92,7 @@ module FakeGmail
       uids = [*uids]
       raise 'Mock only supports BODY.PEEK[]' unless scope == 'BODY.PEEK[]'
       uids.map do |uid|
-        Net::IMAP::FetchData.new(1, 'UID' => uid, 'BODY[]' => account.mails[uid])
+        Net::IMAP::FetchData.new(1, 'UID' => uid, 'BODY[]' => account.uids_vs_mails[uid])
       end
     end
 

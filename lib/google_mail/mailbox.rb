@@ -48,9 +48,9 @@ module GoogleMail
 
     def uids(from_uid = nil)
       if from_uid.nil?
-        connection.uid_search('ALL')
+        connection.uid_search('ALL') - connection.uid_search('ALL X-GM-LABELS Draft')
       else
-        connection.uid_search("UID #{from_uid}:*")
+        connection.uid_search("UID #{from_uid}:*") - connection.uid_search("UID #{from_uid}:* X-GM-LABELS Draft")
       end
     end
 
