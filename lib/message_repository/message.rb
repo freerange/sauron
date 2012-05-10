@@ -28,8 +28,8 @@ class MessageRepository::Message
     message.index_record == index_record
   end
 
-  def raw_message
-    @raw_message ||= @store.find(index_record.account, index_record.uid)
+  def raw_mail
+    @raw_mail ||= @store.find(index_record.account, index_record.uid)
   end
 
   def to_param
@@ -37,7 +37,7 @@ class MessageRepository::Message
   end
 
   def parsed_mail
-    @parsed_mail ||= Mail.new(raw_message)
+    @parsed_mail ||= Mail.new(raw_mail)
   end
 
   private
