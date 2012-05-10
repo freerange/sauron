@@ -2,15 +2,6 @@ require "test_helper"
 
 class MessageRepository
   class ActiveRecordMessageIndexDatabaseTest < ActiveSupport::TestCase
-    test "has many mail index records" do
-      message_index_record = ActiveRecordMessageIndex.create!
-      mail_index_record_1 = ActiveRecordMailIndex.create!(message_index_id: message_index_record.id)
-      mail_index_record_2 = ActiveRecordMailIndex.create!(message_index_id: message_index_record.id)
-      mail_index_records = message_index_record.mail_index_records
-      assert mail_index_records.include?(mail_index_record_1)
-      assert mail_index_records.include?(mail_index_record_2)
-    end
-
     test "recipients includes the delivered_to addresses for all its constituent mails" do
       mail_1 = GoogleMail::Mailbox::Mail.new('account-1', 1, Mail.new(delivered_to: 'delivered-to-1').to_s)
       mail_2 = GoogleMail::Mailbox::Mail.new('account-2', 2, Mail.new(delivered_to: 'delivered-to-2').to_s)
