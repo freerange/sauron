@@ -36,6 +36,18 @@ class MessageRepository
       refute Message.new(index_record, store).received_by?("email-address")
     end
 
+    test "indicates that the message was sent by the specified email address" do
+      raw_mail = Mail.new(body: "message-body", from: "email-address").to_s
+      index_record, store = given_stored_message(raw_mail)
+      assert Message.new(index_record, store).sent_by?("email-address")
+    end
+
+    test "indicates that the message was not sent by the specified email address" do
+      raw_mail = Mail.new(body: "message-body", from: "other-email-address").to_s
+      index_record, store = given_stored_message(raw_mail)
+      refute Message.new(index_record, store).sent_by?("email-address")
+    end
+
     test "doesn't load the message body from the store if it is not requested" do
       index_record = stub('index-record', account: 'account', uid: 'uid')
       store = stub('store')
@@ -115,12 +127,15 @@ class MessageRepository
 
     def given_stored_message(*raw_mails)
       store = stub('store')
+      from = nil
       recipients = []
       raw_mails.map.with_index do |raw_mail, index|
         store.stubs(:find).with('account', index).returns(raw_mail)
-        recipients << Mail.new(raw_mail)['Delivered-To'].to_s
+        mail = Mail.new(raw_mail)
+        from = mail.from ? mail.from.first : nil
+        recipients << mail['Delivered-To'].to_s
       end
-      primary_message_index_record = stub('index-record', recipients: recipients, mail_identifier: ['account', 0])
+      primary_message_index_record = stub('index-record', from: from, recipients: recipients, mail_identifier: ['account', 0])
       [primary_message_index_record, store]
     end
   end

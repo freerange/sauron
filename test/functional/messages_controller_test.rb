@@ -7,13 +7,25 @@ class MessagesControllerTest < ActionController::TestCase
     @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("alice@example.com:password")
   end
 
-  test "#index indicates which messages were and were not received by the current user" do
-    received = stub_everything("received", subject: "received", received_by?: true)
+  test "#index indicates which messages were not received by the current user" do
     not_received = stub_everything("not-received", subject: "not-received", received_by?: false)
-    MessageRepository.stubs(:messages).with().returns([received, not_received])
+    MessageRepository.stubs(:messages).with().returns([not_received])
+    get :index
+    assert_select ".message.not-received .subject", text: "not-received"
+  end
+
+  test "#index indicates which messages were received by the current user" do
+    received = stub_everything("received", subject: "received", received_by?: true)
+    MessageRepository.stubs(:messages).with().returns([received])
     get :index
     assert_select ".message.received .subject", text: "received"
-    assert_select ".message.not-received .subject", text: "not-received"
+  end
+
+  test "#index indicates which messages were sent by the current user" do
+    sent = stub_everything("sent", subject: "sent", sent_by?: true)
+    MessageRepository.stubs(:messages).with().returns([sent])
+    get :index
+    assert_select ".message.received .subject", text: "sent"
   end
 
   test "#index finds messages via repository" do

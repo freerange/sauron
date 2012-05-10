@@ -15,6 +15,10 @@ class MessageRepository::Message
     recipients.include?(email)
   end
 
+  def sent_by?(email)
+    email == from
+  end
+
   def body
     if parsed_mail.multipart?
       text_part_bodies(parsed_mail).join
