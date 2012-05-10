@@ -120,7 +120,7 @@ class MessageRepository
         store.stubs(:find).with('account', index).returns(raw_mail)
         recipients << Mail.new(raw_mail)['Delivered-To'].to_s
       end
-      primary_message_index_record = stub('index-record', account: 'account', uid: 0, recipients: recipients)
+      primary_message_index_record = stub('index-record', recipients: recipients, mail_identifier: ['account', 0])
       [primary_message_index_record, store]
     end
   end

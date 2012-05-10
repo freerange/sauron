@@ -29,7 +29,7 @@ class MessageRepository::Message
   end
 
   def raw_mail
-    @raw_mail ||= @store.find(index_record.account, index_record.uid)
+    @raw_mail ||= @store.find(*index_record.mail_identifier)
   end
 
   def to_param
