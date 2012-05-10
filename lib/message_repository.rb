@@ -38,6 +38,11 @@ class MessageRepository
     Message.new(record, mail_store)
   end
 
+  def find_by_message_id(message_id)
+    record = message_index.find_by_message_id(message_id)
+    Message.new(record, mail_store)
+  end
+
   def messages
     message_index.most_recent.map do |record|
       Message.new(message_index.find_primary_message_index_record(record.message_hash), mail_store)

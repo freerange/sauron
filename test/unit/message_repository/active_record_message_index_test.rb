@@ -58,6 +58,13 @@ class MessageRepository
       assert_equal message_index_record, ActiveRecordMessageIndex.find_primary_message_index_record('message-hash')
     end
 
+    test ".find_by_message_id(message_id) returns the message_index record with the corresponding message_id" do
+      message_index_record = stub('message-index-record')
+      where_scope = stub('where-scope', first: message_index_record)
+      ActiveRecordMessageIndex.stubs(:where).with(message_id: 'message-id').returns(where_scope)
+      assert_equal message_index_record, ActiveRecordMessageIndex.find_by_message_id('message-id')
+    end
+
     test "#recipients returns delivered_to addresses for all its mail index records" do
       message_index_record = ActiveRecordMessageIndex.new
       mail_index_record_1 = stub('mail-index-1', delivered_to: 'alice@example.com')

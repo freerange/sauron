@@ -62,4 +62,14 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     index.stubs(:find_primary_message_index_record).with('message-hash').returns(primary_index_record)
     assert_equal MessageRepository::Message.new(primary_index_record, store), repository.find('message-hash')
   end
+
+  test 'finds a message by its message id' do
+    index = stub('index')
+    store = stub('store', find: '')
+    repository = MessageRepository.new(index, store)
+    index_record = stub('index-record', account: 'tom@example.com', uid: 123, message_id: 'message-id')
+    index.expects(:find_by_message_id).with('message-id').returns(index_record)
+    message = repository.find_by_message_id('message-id')
+    assert_equal 'message-id', message.message_id
+  end
 end
