@@ -49,6 +49,14 @@ class MessageRepository
       assert_equal "message-id-abc@123.example.com", Message.new(index_record, store).in_reply_to
     end
 
+    test "#related_message_ids returns message ids for referenced message and replied to messages" do
+      raw_mail = Mail.new(in_reply_to: "<message-id-abc@123.example.com>",
+                          references: "<message-id-def@123.example.com> <message-id-ghi@456.example.com>").to_s
+      index_record, store = given_stored_message(raw_mail)
+      assert_equal ["message-id-abc@123.example.com", "message-id-def@123.example.com",
+                    "message-id-ghi@456.example.com"], Message.new(index_record, store).related_message_ids
+    end
+
     test "body should be in UTF-8 even if raw message is in non UTF-8 encoding" do
       raw_mail = Mail.new(
         charset: 'ISO-8859-1',

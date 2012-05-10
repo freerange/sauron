@@ -27,6 +27,10 @@ class MessageRepository::Message
     parsed_mail.in_reply_to
   end
 
+  def related_message_ids
+    ([in_reply_to] + parsed_mail.references).uniq
+  end
+
   def ==(message)
     message.is_a?(MessageRepository::Message) &&
     message.index_record == index_record
