@@ -40,7 +40,7 @@ class MessageRepository
 
   def messages
     message_index.most_recent.map do |record|
-      Message.new(message_index.find_primary_message_index_record(record.message_hash), mail_store)
+      Message.new(record, mail_store)
     end
   end
 end

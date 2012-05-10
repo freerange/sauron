@@ -47,10 +47,8 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     index = stub('index')
     store = stub('store', find: '')
     repository = MessageRepository.new(index, store)
-    most_recent_index_record = stub('most-recent-index-record', account: 'alice@example.com', uid: 123, message_hash: 'message-hash')
     primary_index_record = stub('primary-index-record', account: 'bob@example.com', uid: 456, message_hash: 'message-hash')
-    index.stubs(:most_recent).returns([most_recent_index_record])
-    index.stubs(:find_primary_message_index_record).with('message-hash').returns(primary_index_record)
+    index.stubs(:most_recent).returns([primary_index_record])
     assert_equal [MessageRepository::Message.new(primary_index_record, store)], repository.messages
   end
 
