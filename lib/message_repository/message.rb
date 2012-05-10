@@ -19,6 +19,10 @@ class MessageRepository::Message
     email == from
   end
 
+  def sent_or_received_by?(email)
+    received_by?(email) || sent_by?(email)
+  end
+
   def body
     if parsed_mail.multipart?
       text_part_bodies(parsed_mail).join

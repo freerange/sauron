@@ -9,6 +9,6 @@ ul#messages {
 .icon-flag {
   margin-left: -18px;
 }
-.message.received .icon-flag {
+.message.sent-or-received .icon-flag {
   display: none;
 }

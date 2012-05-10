@@ -12,5 +12,5 @@ When /^the messages index is viewed by the user who did not receive a message$/ 
 end
 
 Then /^the message should be marked as not received$/ do
-  assert page.has_css? '.message.not-received', text: /Secret message/
+  assert page.has_css? '.message.neither-sent-nor-received', text: /Secret message/
 end

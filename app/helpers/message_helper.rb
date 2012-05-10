@@ -1,5 +1,5 @@
 module MessageHelper
   def message_class(message, username)
-    message.received_by?(username) || message.sent_by?(username) ? "message received" : "message not-received"
+    message.sent_or_received_by?(username) ? "message sent-or-received" : "message neither-sent-nor-received"
   end
 end
