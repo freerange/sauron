@@ -43,6 +43,12 @@ class MessageRepository
       Message.new([index_record], store)
     end
 
+    test "#in_reply_to returns the In Reply To from the mail" do
+      raw_mail = Mail.new(in_reply_to: "message-id-abc@123.example.com").to_s
+      index_record, store = given_stored_message(raw_mail)
+      assert_equal "message-id-abc@123.example.com", Message.new(index_record, store).in_reply_to
+    end
+
     test "body should be in UTF-8 even if raw message is in non UTF-8 encoding" do
       raw_mail = Mail.new(
         charset: 'ISO-8859-1',

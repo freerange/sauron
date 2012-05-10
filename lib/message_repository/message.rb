@@ -23,6 +23,10 @@ class MessageRepository::Message
     end
   end
 
+  def in_reply_to
+    parsed_mail.in_reply_to
+  end
+
   def ==(message)
     message.is_a?(MessageRepository::Message) &&
     message.index_record == index_record
