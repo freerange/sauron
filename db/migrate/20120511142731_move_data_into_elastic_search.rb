@@ -2,9 +2,9 @@ class MoveDataIntoElasticSearch < ActiveRecord::Migration
   def up
     MessageRepository::ElasticSearchMessageIndex.new.reset!
 
-    index = Tire::Index.new("sauron-#{Rails.env}")
+    MessageRepository::ActiveRecordMessageIndex.find_each(batch_size: 100) do |message|
+      index = Tire::Index.new("sauron-#{Rails.env}")
 
-    MessageRepository::ActiveRecordMessageIndex.all.each do |message|
       index.store(
         id: message.message_hash,
         type: 'message',
