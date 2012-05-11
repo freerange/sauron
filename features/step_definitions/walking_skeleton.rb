@@ -24,12 +24,10 @@ Then /^they should be visible on the messages page$/ do
   visit "/"
   within ".message:first-child" do
     assert page.has_css? ".subject", text: "New message"
-    assert page.has_css? ".date", text: "2012-06-22 09:21:31"
     assert page.has_css? ".sender", text: "Barry"
   end
   within ".message:last-child" do
     assert page.has_css? ".subject", text: "Old message"
-    assert page.has_css? ".date", text: "2012-05-23 12:34:45"
     assert page.has_css? ".sender", text: "Dave"
   end
 end
@@ -62,12 +60,10 @@ Then /^all messages from all team members should be viewable$/ do
   visit "/"
   within ".message:first-child" do
     assert page.has_css? ".subject", text: "Hello Bob"
-    assert page.has_css? ".date", text: "2012-05-27 12:35:56"
     assert page.has_css? ".sender", text: "Alice"
   end
   within ".message:last-child" do
     assert page.has_css? ".subject", text: "Hello Alice"
-    assert page.has_css? ".date", text: "2012-05-23 12:34:45"
     assert page.has_css? ".sender", text: "Bob"
   end
 end

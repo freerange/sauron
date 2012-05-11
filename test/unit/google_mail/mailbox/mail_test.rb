@@ -100,9 +100,11 @@ class GoogleMail::Mailbox
       assert_equal "message-123", Mail.new(anything, anything, raw_message).message_id
     end
 
-    test "returns the delivered-to address" do
+    test "returns the delivered-to address as a string" do
       raw_message = ::Mail.new(delivered_to: "alice@example.com").to_s
-      assert_equal "alice@example.com", Mail.new(anything, anything, raw_message).delivered_to
+      delivered_to = Mail.new(anything, anything, raw_message).delivered_to
+      assert_equal String, delivered_to.class
+      assert_equal "alice@example.com", delivered_to
     end
 
     test "returns the message id in the presence of messed up headers" do
