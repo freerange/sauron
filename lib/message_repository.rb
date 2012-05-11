@@ -44,6 +44,11 @@ class MessageRepository
     Message.new(record, mail_store)
   end
 
+  def find_replies_to(message_id)
+    records = message_index.find_replies_to(message_id)
+    records.map { |r| Message.new(r, mail_store) }
+  end
+
   def messages
     message_index.most_recent.map do |record|
       Message.new(message_index.find_primary_message_index_record(record.message_hash), mail_store)

@@ -82,4 +82,14 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     message = repository.find_by_message_id('message-id')
     assert_equal 'message-id', message.message_id
   end
+
+  test 'finds replies to a message by its message id' do
+    index = stub('index')
+    store = stub('store', find: '')
+    repository = MessageRepository.new(index, store)
+    index_record = stub('index-record', account: 'tom@example.com', uid: 123, message_id: 'message-id')
+    index.expects(:find_replies_to).with('message-id').returns([index_record])
+    messages = repository.find_replies_to('message-id')
+    assert_equal ['message-id'], messages.map(&:message_id)
+  end
 end

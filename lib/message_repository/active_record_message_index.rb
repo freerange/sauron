@@ -21,7 +21,7 @@ class MessageRepository::ActiveRecordMessageIndex < ActiveRecord::Base
     end
 
     def add(mail, hash)
-      message_index = create!(account: mail.account, uid: mail.uid, subject: mail.subject, date: mail.date, from: mail.from, message_id: mail.message_id, message_hash: hash, delivered_to: mail.delivered_to)
+      message_index = create!(account: mail.account, uid: mail.uid, subject: mail.subject, date: mail.date, from: mail.from, message_id: mail.message_id, message_hash: hash, delivered_to: mail.delivered_to, in_reply_to: mail.in_reply_to)
       primary_message_index = find_primary_message_index_record(hash)
       MessageRepository::ActiveRecordMailIndex.create!(message_index_id: primary_message_index.id, account: mail.account, uid: mail.uid, delivered_to: mail.delivered_to)
       primary_message_index
@@ -33,6 +33,10 @@ class MessageRepository::ActiveRecordMessageIndex < ActiveRecord::Base
 
     def find_by_message_id(message_id)
       where(message_id: message_id).first
+    end
+
+    def find_replies_to(message_id)
+      where(in_reply_to: message_id).all
     end
   end
 end

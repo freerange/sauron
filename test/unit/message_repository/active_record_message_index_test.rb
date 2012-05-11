@@ -40,17 +40,17 @@ class MessageRepository
     end
 
     test ".add(mail, hash) creates a new message_index record and mail_index record and adds the new mail_index record to the primary message_index record" do
-      mail = stub('mail', account: 'sam@example.com', uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today, message_id: "message-id", delivered_to: 'sam@example.com')
+      mail = stub('mail', account: 'sam@example.com', uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today, message_id: "message-id", delivered_to: 'sam@example.com', in_reply_to: 'other-message-id')
       primary_message_index_record = stub('primary-message-index', id: 456)
       new_message_index_record = stub('message-index', id: 789)
-      ActiveRecordMessageIndex.expects(:create!).with(account: 'sam@example.com', uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today, message_id: "message-id", message_hash: "message-hash", delivered_to: 'sam@example.com').returns(new_message_index_record)
+      ActiveRecordMessageIndex.expects(:create!).with(account: 'sam@example.com', uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today, message_id: "message-id", message_hash: "message-hash", delivered_to: 'sam@example.com', in_reply_to: 'other-message-id').returns(new_message_index_record)
       ActiveRecordMessageIndex.stubs(:find_primary_message_index_record).with('message-hash').returns(primary_message_index_record)
       ActiveRecordMailIndex.expects(:create!).with(message_index_id: 456, account: 'sam@example.com', uid: 123, delivered_to: 'sam@example.com')
       ActiveRecordMessageIndex.add(mail, "message-hash")
     end
 
     test ".add(mail, hash) returns the message corresponding to that mail" do
-      mail = stub('mail', account: 'sam@example.com', uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today, message_id: "message-id", delivered_to: 'sam@example.com')
+      mail = stub('mail', account: 'sam@example.com', uid: 123, subject: 'Subject', from: 'tom@example.com', date: Date.today, message_id: "message-id", delivered_to: 'sam@example.com', in_reply_to: nil)
       primary_message_index_record = stub('primary-message-index', id: 456, message_id: "message-id")
       new_message_index_record = stub('message-index', id: 789)
       ActiveRecordMessageIndex.stubs(:create!)
@@ -74,6 +74,13 @@ class MessageRepository
       where_scope = stub('where-scope', first: message_index_record)
       ActiveRecordMessageIndex.stubs(:where).with(message_id: 'message-id').returns(where_scope)
       assert_equal message_index_record, ActiveRecordMessageIndex.find_by_message_id('message-id')
+    end
+
+    test ".find_replies_to(message_id) returns message_index records which are replies to the given message id" do
+      where_scope = stub('where-scope')
+      where_scope.stubs(:all).returns([:message_id, :message_id])
+      ActiveRecordMessageIndex.stubs(:where).with(in_reply_to: 'message-id').returns(where_scope)
+      assert_equal [:message_id, :message_id], ActiveRecordMessageIndex.find_replies_to('message-id')
     end
 
     test "#recipients returns delivered_to addresses for all its mail index records" do
