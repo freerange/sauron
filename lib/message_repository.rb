@@ -41,7 +41,7 @@ class MessageRepository
 
   def find_by_message_id(message_id)
     record = message_index.find_by_message_id(message_id)
-    Message.new(record, mail_store)
+    Message.new(record, mail_store) if record
   end
 
   def find_replies_to(message_id)

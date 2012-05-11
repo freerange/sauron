@@ -83,6 +83,14 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     assert_equal 'message-id', message.message_id
   end
 
+  test 'returns in if no matching message was found in the index' do
+    index = stub('index')
+    store = stub('store', find: '')
+    repository = MessageRepository.new(index, store)
+    index.expects(:find_by_message_id).with('message-id').returns(nil)
+    assert_nil repository.find_by_message_id('message-id')
+  end
+
   test 'finds replies to a message by its message id' do
     index = stub('index')
     store = stub('store', find: '')
