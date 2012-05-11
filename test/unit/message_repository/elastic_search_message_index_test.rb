@@ -18,7 +18,7 @@ class MessageRepository
       stub("GoogleMail::Mailbox::Mail", {
         account: 'james@example.com',
         uid: rand(100000),
-        message_id: rand(1000000).to_s(16),
+        message_id: SecureRandom.hex,
         subject: 'an-example-email',
         from: 'liam@example.com',
         date: Time.utc(2012, 7, 27, 20, 00, 00),
