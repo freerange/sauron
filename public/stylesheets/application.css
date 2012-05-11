@@ -6,9 +6,12 @@ ul#messages {
   list-style: none;
   margin-left: 0;
 }
-.icon-flag {
+.icon-flag, .icon-hand-right {
   margin-left: -18px;
 }
 .message.received .icon-flag {
+  display: none;
+}
+.message.responded .icon-hand-right {
   display: none;
 }

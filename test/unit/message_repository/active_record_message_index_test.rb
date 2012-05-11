@@ -15,7 +15,7 @@ class MessageRepository
   class ActiveRecordMessageIndexTest < ActiveSupport::TestCase
     test "returns the most recent mails excluding duplicates" do
       most_recent_records = [ActiveRecordMessageIndex.new]
-      ActiveRecordMessageIndex.stubs(:all).with(order: "date DESC", limit: 500, group: :message_id).returns(most_recent_records)
+      ActiveRecordMessageIndex.stubs(:all).with(order: "date DESC", limit: 20, group: :message_id).returns(most_recent_records)
       assert_equal most_recent_records, ActiveRecordMessageIndex.most_recent
     end
 
