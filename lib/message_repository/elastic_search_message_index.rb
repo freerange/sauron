@@ -101,7 +101,6 @@ class MessageRepository
       index.create mappings: {
         message: {
           properties: {
-            mail_keys: { type: 'string', index: 'not_analyzed' },
             message_id: { type: 'string', index: 'not_analyzed' },
             date: { type: 'date' },
             recipients: { type: 'string', index: 'not_analyzed' }
@@ -111,7 +110,7 @@ class MessageRepository
         mail_import: {
           properties: {
             account: { type: 'string', index: 'not_analyzed' },
-            uid: { type: 'string', index: 'not_analyzed' }
+            uid: { type: 'long' }
           }
         }
       }
