@@ -7,7 +7,7 @@ class MessagesController < ApplicationController
 
   def show
     unless @message = MessageRepository.find(params[:id])
-      render nothing: true, status: :not_found
+      render_not_found
     end
   end
 end
