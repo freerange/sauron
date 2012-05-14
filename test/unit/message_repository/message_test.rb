@@ -133,7 +133,7 @@ class MessageRepository
         store.stubs(:find).with('account', index).returns(raw_mail)
         mail = Mail.new(raw_mail)
         from = mail.from ? mail.from.first : nil
-        recipients << mail['Delivered-To'].to_s
+        recipients += [mail['Delivered-To']].flatten.map { |x| x.to_s.to_s }
       end
       primary_message_index_record = stub('index-record', from: from, recipients: recipients, mail_identifier: ['account', 0])
       [primary_message_index_record, store]

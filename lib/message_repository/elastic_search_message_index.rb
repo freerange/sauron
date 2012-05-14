@@ -40,7 +40,7 @@ class MessageRepository
       attributes[:from] = mail.from
       attributes[:mail_identifier] ||= [mail.account, mail.uid]
       attributes[:recipients] ||= []
-      attributes[:recipients] << mail.delivered_to
+      attributes[:recipients] += mail.delivered_to
 
       index.store attributes
       index.store type: 'mail_import', account: mail.account, uid: mail.uid

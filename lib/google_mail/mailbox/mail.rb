@@ -27,7 +27,7 @@ module GoogleMail
 
       def delivered_to
         # The mail gem seems reluctant to return a real string, hence the double #to_s
-        @mail["Delivered-To"].to_s.to_s
+        [@mail["Delivered-To"]].flatten.map { |x| x.to_s.to_s }
       end
 
       def message_id

@@ -22,7 +22,7 @@ class MessageRepository
         subject: 'an-example-email',
         from: 'liam@example.com',
         date: Time.utc(2012, 7, 27, 20, 00, 00),
-        delivered_to: 'james@example.com'
+        delivered_to: ['james@example.com']
       }.merge(attributes))
     end
 
@@ -41,13 +41,13 @@ class MessageRepository
       index.add(mail_stub(
         account: 'chris@example.com',
         message_id: 'unique-message-id',
-        delivered_to: 'chris@example.com'
+        delivered_to: ['chris@example.com']
       ))
 
       id = index.add(mail_stub(
         account: 'tom@example.com',
         message_id: 'unique-message-id',
-        delivered_to: 'tom@example.com'
+        delivered_to: ['tom@example.com']
       ))
 
       message = index.find(id)
