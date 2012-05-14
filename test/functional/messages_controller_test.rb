@@ -41,4 +41,10 @@ class MessagesControllerTest < ActionController::TestCase
     get :show, id: '1'
     assert_select '.body', text: /message-body/
   end
+
+  test "#show responds with 404 for non-existent messages" do
+    MessageRepository.stubs(:find).returns(nil)
+    get :show, id: 'non-existent-message'
+    assert_response :not_found
+  end
 end
