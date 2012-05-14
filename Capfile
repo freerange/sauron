@@ -35,3 +35,9 @@ namespace :rails do
     end
   end
 end
+
+namespace :log do
+  task :tail do
+    as_app "tail -500 log/$RAILS_ENV.log"
+  end
+end
