@@ -117,6 +117,16 @@ class MessageRepository
       assert_equal recent.to_a.last.message_id, mails[499].message_id
     end
 
+    test "#search returns messages containing the search term in their subject" do
+      index.add(mail_stub(subject: 'llama zebra tiger'))
+      index.add(mail_stub(subject: 'zebra rabbit koala'))
+      index.add(mail_stub(subject: 'marmoset adder penguin'))
+      results = index.search('zebra')
+      assert_equal 2, results.length
+      assert results.detect {|r| r.subject == 'llama zebra tiger'}
+      assert results.detect {|r| r.subject == 'zebra rabbit koala'}
+    end
+
     # Non-core behaviour (bonus features!)
 
     test "#add uses identifiers that respect our existing urls" do

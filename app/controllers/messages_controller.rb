@@ -5,6 +5,11 @@ class MessagesController < ApplicationController
     @messages = MessageRepository.messages
   end
 
+  def search
+    @messages = MessageRepository.search(params[:q])
+    render :index
+  end
+
   def show
     unless @message = MessageRepository.find(params[:id])
       render_not_found

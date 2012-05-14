@@ -1,5 +1,9 @@
 <h1>Messages</h1>
-
+<%= form_tag search_messages_url, method: :get do %>
+<%= label_tag :q, 'Search' %>
+<%= text_field_tag :q %>
+<%= submit_tag 'Search' %>
+<% end %>
 <ul id="messages">
   <% @messages.each do |message| %>
     <%= content_tag(:li, class: message_class(message, current_username)) do %>

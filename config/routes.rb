@@ -1,6 +1,10 @@
 Sauron::Application.routes.draw do
   root to: "messages#index"
-  resources :messages, only: [:show]
+  resources :messages, only: [:show] do
+    collection do
+      get :search
+    end
+  end
 
   if Rails.env.test?
     # So that we can test arbitrary test controllers but avoid exposing this catch-all route in production

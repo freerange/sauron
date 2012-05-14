@@ -47,4 +47,11 @@ class MessagesControllerTest < ActionController::TestCase
     get :show, id: 'non-existent-message'
     assert_response :not_found
   end
+
+  test "#search finds messages via repository" do
+    messages = [stub_everything("message-1"), stub_everything("message-2")]
+    MessageRepository.stubs(:search).with('search-term').returns(messages)
+    get :search, q: 'search-term'
+    assert_equal messages, assigns[:messages]
+  end
 end

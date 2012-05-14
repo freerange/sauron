@@ -96,6 +96,18 @@ class MessageRepository
       end
     end
 
+    def search(q)
+      search = search_messages do
+        query do
+          string q
+        end
+      end
+
+      search.results.map do |result|
+        SearchResult.new(result)
+      end
+    end
+
     def reset!
       index.delete
       index.create mappings: {

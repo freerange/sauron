@@ -5,7 +5,7 @@ class MessageRepository
   class << self
     attr_writer :instance
 
-    delegate :highest_mail_uid, :find, :add_mail, :mail_exists?, :messages, to: :instance
+    delegate :highest_mail_uid, :find, :add_mail, :mail_exists?, :messages, :search, to: :instance
 
     def instance
       @instance ||= new
@@ -39,6 +39,12 @@ class MessageRepository
 
   def messages
     message_index.most_recent.map do |record|
+      Message.new(record, mail_store)
+    end
+  end
+
+  def search(query)
+    message_index.search(query).map do |record|
       Message.new(record, mail_store)
     end
   end
