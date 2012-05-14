@@ -60,4 +60,11 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     index.stubs(:find_by_message_hash).with('message-hash').returns(primary_index_record)
     assert_equal MessageRepository::Message.new(primary_index_record, store), repository.find('message-hash')
   end
+
+  test 'find returns nil if message does not exist' do
+    index = stub('index', find_by_message_hash: nil)
+    store = stub('store', find: '')
+    repository = MessageRepository.new(index, store)
+    assert_nil repository.find('hash-for-message-that-does-not-exist')
+  end
 end
