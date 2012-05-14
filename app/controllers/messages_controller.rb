@@ -6,7 +6,11 @@ class MessagesController < ApplicationController
   end
 
   def search
-    @messages = MessageRepository.search(params[:q])
+    if params[:q].present?
+      @messages = MessageRepository.search(params[:q])
+    else
+      @messages = []
+    end
     render :index
   end
 

@@ -54,4 +54,16 @@ class MessagesControllerTest < ActionController::TestCase
     get :search, q: 'search-term'
     assert_equal messages, assigns[:messages]
   end
+
+  test "#search handles empty query by bypassing repository and showing empty list" do
+    MessageRepository.expects(:search).never
+    get :search, q: ''
+    assert_equal [], assigns[:messages]
+  end
+
+  test "#search displays previous query in search input" do
+    MessageRepository.stubs(:search).returns([])
+    get :search, q: 'a-query-string'
+    assert_select '#q[value=a-query-string]'
+  end
 end
