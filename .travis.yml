@@ -3,4 +3,4 @@ rvm:
 before_install:
   - sudo service elasticsearch start
 before_script:
-  - "bundle exec rake db:migrate db:test:prepare"
+  - "bundle exec rake db:schema:load db:test:prepare"
