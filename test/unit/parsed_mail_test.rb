@@ -85,4 +85,65 @@ Subject: Joe Bloggs has requested to be a member of an excitin project on Pivota
     assert_equal ["recipient-1", "recipient-A"], ParsedMail.new(raw_mail).delivered_to
   end
 
+  test "body should be in UTF-8 even if raw message is in non UTF-8 encoding" do
+    raw_mail = Mail.new(
+      charset: 'ISO-8859-1',
+      body: 'Telefónica'.encode('ISO-8859-1', 'UTF-8')
+    ).encoded
+
+    assert_equal 'Telefónica', ParsedMail.new(raw_mail).body
+  end
+
+  test "body should not fail decoding if charset unknown" do
+    raw_mail = Mail.new(
+      charset: 'unknown',
+      body: 'Anything'
+    ).encoded
+
+    assert_nothing_raised { ParsedMail.new(raw_mail).body }
+  end
+
+  test "body should be in UTF-8 even if raw message contains text part which is in non UTF-8 encoding" do
+    raw_mail = Mail.new do
+      text_part do
+        content_type 'text/plain; charset=ISO-8859-1'
+        body 'Telefónica'.encode('ISO-8859-1', 'UTF-8')
+      end
+    end.encoded
+
+    assert_equal 'Telefónica', ParsedMail.new(raw_mail).body
+  end
+
+  test "prefers the plain text body part" do
+    raw_mail = Mail.new do
+      text_part { body 'plain-text-message-body' }
+      html_part do
+        content_type 'text/html; charset=UTF-8'
+        body '<h1>This is HTML</h1>'
+      end
+    end.encoded
+
+    assert_equal 'plain-text-message-body', ParsedMail.new(raw_mail).body
+  end
+
+  test "shows all text parts when they are separated by an attachment" do
+    raw_mail = Mail.new do
+      text_part { body 'before-attachment' }
+      add_file(__FILE__)
+      text_part { body 'after-attachment' }
+    end.encoded
+
+    assert_match /before-attachment/, ParsedMail.new(raw_mail).body
+    assert_match /after-attachment/, ParsedMail.new(raw_mail).body
+  end
+
+  test "shows text parts that are nested within multipart/alternative parts" do
+    raw_mail = Mail.new do
+      part do |p|
+        p.text_part { body 'within-part' }
+      end
+    end.encoded
+
+    assert_match /within-part/, ParsedMail.new(raw_mail).body
+  end
 end

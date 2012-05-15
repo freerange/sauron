@@ -1,6 +1,7 @@
 class MessageRepository::Message
   attr_reader :index_record
   delegate :subject, :date, :from, :message_id, :message_hash, to: :index_record
+  delegate :body, to: :parsed_mail
 
   def initialize(index_record, store)
     @index_record = index_record
@@ -23,14 +24,6 @@ class MessageRepository::Message
     received_by?(email) || sent_by?(email)
   end
 
-  def body
-    if parsed_mail.multipart?
-      text_part_bodies(parsed_mail).join
-    else
-      parsed_mail.decoded
-    end
-  end
-
   def ==(message)
     message.is_a?(MessageRepository::Message) &&
     message.index_record == index_record
@@ -45,19 +38,6 @@ class MessageRepository::Message
   end
 
   def parsed_mail
-    @parsed_mail ||= Mail.new(raw_mail)
-  end
-
-  private
-
-  def text_part_bodies(part)
-    part.parts.inject([]) do |bodies, part|
-      if part.multipart?
-        bodies << text_part_bodies(part)
-      elsif part.content_type =~ /text\/plain/
-        bodies << part.decoded
-      end
-      bodies.flatten
-    end
+    @parsed_mail ||= ParsedMail.new(raw_mail)
   end
 end

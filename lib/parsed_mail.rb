@@ -27,6 +27,14 @@ class ParsedMail
     end
   end
 
+  def body
+    if mail.multipart?
+      text_part_bodies(mail).join
+    else
+      mail.decoded
+    end
+  end
+
   def delivered_to
     # The mail gem seems reluctant to return a real string, hence the double #to_s
     [@mail["Delivered-To"]].flatten.map { |x| x.to_s.to_s }
@@ -34,5 +42,18 @@ class ParsedMail
 
   def ==(instance)
     instance.is_a?(self.class) && instance.raw_text == self.raw_text
+  end
+
+  private
+
+  def text_part_bodies(part)
+    part.parts.inject([]) do |bodies, part|
+      if part.multipart?
+        bodies << text_part_bodies(part)
+      elsif part.content_type =~ /text\/plain/
+        bodies << part.decoded
+      end
+      bodies.flatten
+    end
   end
 end
