@@ -54,7 +54,7 @@ class MessageRepository
       ))
 
       message = index.find(id)
-      assert_equal ['chris@example.com', 'tom@example.com'].sort, message.recipients.sort
+      assert_same_elements ['chris@example.com', 'tom@example.com'], message.recipients
     end
 
     test "#find returns message with the subject, date and from fields of the original mail" do

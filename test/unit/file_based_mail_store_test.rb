@@ -49,7 +49,7 @@ class FileBasedMailStoreTest < ActiveSupport::TestCase
     store = FileBasedMailStore.new(TEST_ROOT_PATH)
     store['a'] = '1'
     store['b'] = '2'
-    assert_equal ['1', '2'], store.values.sort
+    assert_same_elements ['1', '2'], store.values
   end
 
   teardown do
