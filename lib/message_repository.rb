@@ -5,6 +5,7 @@ class MessageRepository
   EXCLUDED_ADDRESSES = [
     'notifications@pivotaltracker.com',
     'mention-*@postmaster.twitter.com',
+    'n-*@postmaster.twitter.com',
     'twitter-follow*@postmaster.twitter.com',
     'twitter-dm*@postmaster.twitter.com',
     'dm-*@postmaster.twitter.com',
