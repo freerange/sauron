@@ -21,6 +21,8 @@ class MessageRepository
         message_id: SecureRandom.hex,
         subject: 'an-example-email',
         from: 'liam@example.com',
+        to: ['baz@example.com'],
+        cc: ['mike@example.com'],
         date: Time.utc(2012, 7, 27, 20, 00, 00),
         delivered_to: ['james@example.com'],
         body: 'Any old body'
@@ -138,12 +140,35 @@ class MessageRepository
       assert results.detect {|r| r.body == 'zebra rabbit koala'}
     end
 
-    test "#search ignores fields other than the subject and body" do
+    test "#search returns messages containing the search term as their from address" do
+      index.add(mail_stub(from: 'tom@example.com'))
+      index.add(mail_stub(from: 'chris@example.com'))
+      results = index.search('tom@example.com')
+      assert_equal 1, results.length
+      assert_equal 'tom@example.com', results.first.from
+    end
+
+    test "#search returns messages containing the search term in their to addresses" do
+      index.add(mail_stub(to: ['tom@example.com', 'bob@example.com']))
+      index.add(mail_stub(to: ['chris@example.com']))
+      results = index.search('tom@example.com')
+      assert_equal 1, results.length
+      assert_equal ['tom@example.com', 'bob@example.com'], results.first.to
+    end
+
+    test "#search returns messages containing the search term in their cc addresses" do
+      index.add(mail_stub(cc: ['tom@example.com', 'bob@example.com']))
+      index.add(mail_stub(cc: ['chris@example.com']))
+      results = index.search('tom@example.com')
+      assert_equal 1, results.length
+      assert_equal ['tom@example.com', 'bob@example.com'], results.first.cc
+    end
+
+    test "#search ignores fields other than the subject, body, to, cc, bcc and from" do
       index.add(mail_stub(
         account: 'message',
         uid: 'message',
-        message_id: 'message',
-        from: 'message'
+        message_id: 'message'
       ))
       results = index.search('message')
       assert_equal 0, results.length

@@ -3,7 +3,7 @@ require 'tire'
 class MessageRepository
   class ElasticSearchMessageIndex
     class SearchResult
-      delegate :id, :message_id, :subject, :from, :body, :recipients, :mail_identifier, to: :@item
+      delegate :id, :message_id, :subject, :from, :to, :cc, :body, :recipients, :mail_identifier, to: :@item
 
       def initialize(item)
         @item = item
@@ -38,6 +38,8 @@ class MessageRepository
       attributes[:subject] = mail.subject
       attributes[:date] = mail.date
       attributes[:from] = mail.from
+      attributes[:to] = mail.to
+      attributes[:cc] = mail.cc
       attributes[:body] = mail.body
       attributes[:mail_identifier] ||= [mail.account, mail.uid]
       attributes[:recipients] ||= []
@@ -101,6 +103,9 @@ class MessageRepository
       search = search_messages size: 500 do
         query do
           boolean do
+            should { text :from, q }
+            should { text :to, q }
+            should { text :cc, q }
             should { text :subject, q }
             should { text :body, q }
           end
@@ -119,7 +124,10 @@ class MessageRepository
           properties: {
             message_id: { type: 'string', index: 'not_analyzed' },
             date: { type: 'date' },
-            recipients: { type: 'string', index: 'not_analyzed' }
+            recipients: { type: 'string', index: 'not_analyzed' },
+            from: { type: 'string', index: 'not_analyzed' },
+            to: { type: 'string', index: 'not_analyzed' },
+            cc: { type: 'string', index: 'not_analyzed' }
           }
         },
 

@@ -85,6 +85,16 @@ Subject: Joe Bloggs has requested to be a member of an excitin project on Pivota
     assert_equal ["recipient-1", "recipient-A"], ParsedMail.new(raw_mail).delivered_to
   end
 
+  test "returns the array of to addresses" do
+    raw_mail = Mail.new(to: ['tom@example.com', 'chris@example.com']).to_s
+    assert_equal ['tom@example.com', 'chris@example.com'], ParsedMail.new(raw_mail).to
+  end
+
+  test "returns the array of cc addresses" do
+    raw_mail = Mail.new(cc: ['tom@example.com', 'chris@example.com']).to_s
+    assert_equal ['tom@example.com', 'chris@example.com'], ParsedMail.new(raw_mail).cc
+  end
+
   test "body should be in UTF-8 even if raw message is in non UTF-8 encoding" do
     raw_mail = Mail.new(
       charset: 'ISO-8859-1',

@@ -2,7 +2,7 @@ require 'mail'
 
 class ParsedMail
   attr_reader :mail, :raw_text
-  delegate :date, to: :mail
+  delegate :date, :to, :cc, to: :mail
 
   def initialize(raw_text)
     @mail = Mail.new(raw_text)
