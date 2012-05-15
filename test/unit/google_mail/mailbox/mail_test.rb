@@ -46,15 +46,15 @@ class GoogleMail::Mailbox
       refute_equal mail, object
     end
 
-    test "creates a RawMail instance to handle mail parsing" do
-      assert_equal RawMail.new('raw-message'), Mail.new(anything, anything, "raw-message").raw_mail
+    test "creates a ParsedMail instance to handle mail parsing" do
+      assert_equal ParsedMail.new('raw-message'), Mail.new(anything, anything, "raw-message").parsed_mail
     end
 
     [:date, :message_id, :from, :subject, :delivered_to].each do |delegated_method|
-      test "delegates #{delegated_method} to the RawMail instance" do
+      test "delegates #{delegated_method} to the ParsedMail instance" do
         mail = Mail.new(anything, anything, "raw-message")
         result = stub('delegated-result')
-        mail.raw_mail.stubs(delegated_method).returns(result)
+        mail.parsed_mail.stubs(delegated_method).returns(result)
         assert_equal result, mail.__send__(delegated_method)
       end
     end

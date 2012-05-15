@@ -1,6 +1,6 @@
 require 'mail'
 
-class RawMail
+class ParsedMail
   attr_reader :mail, :raw_text
   delegate :date, to: :mail
 
