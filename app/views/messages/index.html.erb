@@ -1,16 +1,2 @@
 <h1>Messages</h1>
-<%= form_tag search_messages_url, method: :get do %>
-<%= label_tag :q, 'Search' %>
-<%= text_field_tag :q, params[:q] %>
-<%= submit_tag 'Search' %>
-<% end %>
-<ul id="messages">
-  <% @messages.each do |message| %>
-    <%= content_tag(:li, class: message_class(message, current_username)) do %>
-      <i class="icon-flag" title="You haven't received this message"></i>
-      <span class="date"><%= message.date %></span>
-      <span class="subject"><%= link_to message.subject, message_path(message) %></span>
-      <span class="sender"><%= message.from %></span>
-    <% end %>
-  <% end %>
-</ul>
+<%= render partial: 'list' %>

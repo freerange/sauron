@@ -11,7 +11,6 @@ class MessagesController < ApplicationController
     else
       @messages = []
     end
-    render :index
   end
 
   def show

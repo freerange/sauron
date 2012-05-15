@@ -1,5 +1,5 @@
 body {
-  padding-top: 20px;
+  padding-top: 70px;
 }
 
 ul#messages {
@@ -10,5 +10,13 @@ ul#messages {
   margin-left: -18px;
 }
 .message.sent-or-received .icon-flag {
+  display: none;
+}
+
+.navbar-search label {
+  display: none;
+}
+
+.navbar-search .submit-button {
   display: none;
 }

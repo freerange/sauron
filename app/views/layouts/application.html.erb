@@ -6,11 +6,20 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-
+<div class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <%= link_to "Sauron", root_url, class: 'brand' %>
+      <span class="navbar-text" id="session">Logged in as <span class="username"><%= current_username %></span></span>
+      <%= form_tag search_messages_url, method: :get, class: "navbar-search pull-right" do %>
+        <%= label_tag :q, 'Search' %>
+        <%= text_field_tag :q, params[:q], class: 'search-query', placeholder: 'Search messages...' %>
+        <%= submit_tag 'Search', class: 'submit-button' %>
+      <% end %>
+    </div>
+  </div>
+</div>
 <div class="container">
-
-  <p id="session">Logged in as <span class="username"><%= current_username %></span></p>
-
   <%= yield %>
 </div>
 
