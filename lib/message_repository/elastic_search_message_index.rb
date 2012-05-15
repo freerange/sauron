@@ -100,7 +100,10 @@ class MessageRepository
     def search(q)
       search = search_messages size: 500 do
         query do
-          string q
+          boolean do
+            should { text :subject, q }
+            should { text :body, q }
+          end
         end
       end
 
@@ -129,7 +132,7 @@ class MessageRepository
       }
       # It seems that after recreating the index we need to wait
       # some period of time before it is ready for searching.
-      sleep 0.5
+      sleep 0.1
     end
 
     private

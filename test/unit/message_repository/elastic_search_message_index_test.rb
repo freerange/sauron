@@ -138,6 +138,17 @@ class MessageRepository
       assert results.detect {|r| r.body == 'zebra rabbit koala'}
     end
 
+    test "#search ignores fields other than the subject and body" do
+      index.add(mail_stub(
+        account: 'message',
+        uid: 'message',
+        message_id: 'message',
+        from: 'message'
+      ))
+      results = index.search('message')
+      assert_equal 0, results.length
+    end
+
     # Non-core behaviour (bonus features!)
 
     test "#add uses identifiers that respect our existing urls" do
