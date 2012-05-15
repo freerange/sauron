@@ -120,6 +120,24 @@ class MessageRepository
       assert_equal recent.to_a.last.message_id, mails[499].message_id
     end
 
+    test "#most_recent excludes results matching passed in from addresses" do
+      index.add(mail_stub(from: 'a@example.com'))
+      index.add(mail_stub(from: 'b@example.com'))
+      index.add(mail_stub(from: 'c@example.com'))
+      recent = index.most_recent(excluding: ['a@example.com', 'c@example.com'])
+      assert_equal 1, recent.size
+      assert_equal recent.first.from, 'b@example.com'
+    end
+
+    test "#most_recent excludes results matching wilcard addresses" do
+      index.add(mail_stub(from: 'albert@example.com'))
+      index.add(mail_stub(from: 'barry@example.com'))
+      index.add(mail_stub(from: 'andrew@example.com'))
+      recent = index.most_recent(excluding: ['a*@example.com'])
+      assert_equal 1, recent.size
+      assert_equal recent.first.from, 'barry@example.com'
+    end
+
     test "#search returns messages containing the search term in their subject" do
       index.add(mail_stub(subject: 'llama zebra tiger'))
       index.add(mail_stub(subject: 'zebra rabbit koala'))

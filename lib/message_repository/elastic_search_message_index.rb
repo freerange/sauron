@@ -89,8 +89,18 @@ class MessageRepository
       results.first && results.first.uid
     end
 
-    def most_recent
+    def most_recent(options = {})
+      excluding = options[:excluding] || []
       search = search_messages size: 500 do
+        unless excluding.empty?
+          query do
+            boolean do
+              excluding.each do |address|
+                must_not { string "from:#{address}" }
+              end
+            end
+          end
+        end
         sort { by :date, :desc}
       end
 

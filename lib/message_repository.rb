@@ -2,6 +2,15 @@
 require 'mail'
 
 class MessageRepository
+  EXCLUDED_ADDRESSES = [
+    'notifications@pivotaltracker.com',
+    'mention-*@postmaster.twitter.com',
+    'twitter-follow*@postmaster.twitter.com',
+    'twitter-dm*@postmaster.twitter.com',
+    'dm-*@postmaster.twitter.com',
+    'calendar-notification@google.com'
+  ]
+
   class << self
     attr_writer :instance
 
@@ -38,7 +47,7 @@ class MessageRepository
   end
 
   def messages
-    message_index.most_recent.map do |record|
+    message_index.most_recent(excluding: EXCLUDED_ADDRESSES).map do |record|
       Message.new(record, mail_store)
     end
   end
