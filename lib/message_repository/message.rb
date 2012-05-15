@@ -33,6 +33,10 @@ class MessageRepository::Message
     @raw_mail ||= @store.find(*index_record.mail_identifier)
   end
 
+  def displayable_raw_mail
+    raw_mail.force_encoding('UTF-8')
+  end
+
   def to_param
     message_hash
   end
