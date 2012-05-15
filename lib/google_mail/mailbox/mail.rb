@@ -2,7 +2,7 @@ module GoogleMail
   class Mailbox
     class Mail
       attr_reader :account, :uid, :raw, :parsed_mail
-      delegate :date, :message_id, :from, :subject, :delivered_to, to: :parsed_mail
+      delegate :date, :message_id, :from, :subject, :body, :delivered_to, to: :parsed_mail
 
       def initialize(account, uid, raw)
         @account = account

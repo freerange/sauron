@@ -50,7 +50,7 @@ class GoogleMail::Mailbox
       assert_equal ParsedMail.new('raw-message'), Mail.new(anything, anything, "raw-message").parsed_mail
     end
 
-    [:date, :message_id, :from, :subject, :delivered_to].each do |delegated_method|
+    [:date, :message_id, :from, :subject, :body, :delivered_to].each do |delegated_method|
       test "delegates #{delegated_method} to the ParsedMail instance" do
         mail = Mail.new(anything, anything, "raw-message")
         result = stub('delegated-result')

@@ -4,6 +4,12 @@ Given /^a message with the subject "([^"]*)"$/ do |subject|
   AccountMailImporter.import_for("alice@example.com", 'password')
 end
 
+Given /^a message with the body "([^"]*)"$/ do |body|
+  @mail = Mail.new(body: body)
+  FakeGmail.server.accounts["alice@example.com"].add_mail(@mail)
+  AccountMailImporter.import_for("alice@example.com", 'password')
+end
+
 When /^I search for the term "([^"]*)"$/ do |term|
   login
   visit "/"

@@ -22,7 +22,8 @@ class MessageRepository
         subject: 'an-example-email',
         from: 'liam@example.com',
         date: Time.utc(2012, 7, 27, 20, 00, 00),
-        delivered_to: ['james@example.com']
+        delivered_to: ['james@example.com'],
+        body: 'Any old body'
       }.merge(attributes))
     end
 
@@ -125,6 +126,16 @@ class MessageRepository
       assert_equal 2, results.length
       assert results.detect {|r| r.subject == 'llama zebra tiger'}
       assert results.detect {|r| r.subject == 'zebra rabbit koala'}
+    end
+
+    test "#search returns messages containing the search term in their body" do
+      index.add(mail_stub(body: 'llama zebra tiger'))
+      index.add(mail_stub(body: 'zebra rabbit koala'))
+      index.add(mail_stub(body: 'marmoset adder penguin'))
+      results = index.search('zebra')
+      assert_equal 2, results.length
+      assert results.detect {|r| r.body == 'llama zebra tiger'}
+      assert results.detect {|r| r.body == 'zebra rabbit koala'}
     end
 
     # Non-core behaviour (bonus features!)

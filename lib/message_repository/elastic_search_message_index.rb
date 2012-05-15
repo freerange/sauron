@@ -3,7 +3,7 @@ require 'tire'
 class MessageRepository
   class ElasticSearchMessageIndex
     class SearchResult
-      delegate :id, :message_id, :subject, :from, :recipients, :mail_identifier, to: :@item
+      delegate :id, :message_id, :subject, :from, :body, :recipients, :mail_identifier, to: :@item
 
       def initialize(item)
         @item = item
@@ -38,6 +38,7 @@ class MessageRepository
       attributes[:subject] = mail.subject
       attributes[:date] = mail.date
       attributes[:from] = mail.from
+      attributes[:body] = mail.body
       attributes[:mail_identifier] ||= [mail.account, mail.uid]
       attributes[:recipients] ||= []
       attributes[:recipients] += mail.delivered_to
@@ -97,7 +98,7 @@ class MessageRepository
     end
 
     def search(q)
-      search = search_messages do
+      search = search_messages size: 500 do
         query do
           string q
         end
