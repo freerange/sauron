@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120515160259) do
+ActiveRecord::Schema.define(:version => 20120516182359) do
 
   create_table "conversations", :force => true do |t|
     t.string   "identifier"
@@ -21,12 +21,17 @@ ActiveRecord::Schema.define(:version => 20120515160259) do
     t.datetime "updated_at",          :null => false
   end
 
+  add_index "conversations", ["identifier"], :name => "index_conversations_on_identifier"
+
   create_table "in_reply_to_id_conversations", :force => true do |t|
     t.string   "in_reply_to_id"
     t.integer  "conversation_id"
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
   end
+
+  add_index "in_reply_to_id_conversations", ["conversation_id"], :name => "index_in_reply_to_id_conversations_on_conversation_id"
+  add_index "in_reply_to_id_conversations", ["in_reply_to_id"], :name => "index_in_reply_to_id_conversations_on_in_reply_to_id"
 
   create_table "mail_index", :force => true do |t|
     t.integer  "message_index_id"
@@ -45,6 +50,9 @@ ActiveRecord::Schema.define(:version => 20120515160259) do
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
   end
+
+  add_index "message_id_conversations", ["conversation_id"], :name => "index_message_id_conversations_on_conversation_id"
+  add_index "message_id_conversations", ["message_id"], :name => "index_message_id_conversations_on_message_id"
 
   create_table "message_index", :force => true do |t|
     t.string   "subject"
