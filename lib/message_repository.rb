@@ -4,6 +4,7 @@ require 'mail'
 class MessageRepository
   EXCLUDED_ADDRESSES = [
     'notifications@pivotaltracker.com',
+    'tracker-noreply@pivotallabs.com',
     'mention-*@postmaster.twitter.com',
     'n-*@postmaster.twitter.com',
     'twitter-follow*@postmaster.twitter.com',
