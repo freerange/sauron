@@ -29,6 +29,16 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     repository.add_mail(mail)
   end
 
+  test 'add returns the message that was added' do
+    record = stub('index record')
+    index = stub('index', add: record)
+    store = stub('store', add: nil)
+    mail = stub('mail', account: 'sam@example.com', uid: 123, raw: 'raw-message', message_id: '<abc123@example.com>')
+    repository = MessageRepository.new(index, store)
+    message = repository.add_mail(mail)
+    assert_equal MessageRepository::Message.new(record, store), message
+  end
+
   test 'uses index to obtain highest mail uid for account' do
     index = stub('index')
     index.stubs(:highest_uid).with('sam@example.com').returns(999)
