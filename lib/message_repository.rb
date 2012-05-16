@@ -34,8 +34,9 @@ class MessageRepository
   end
 
   def add_mail(mail)
-    message_index.add mail
-    mail_store.add mail
+    record = message_index.add(mail)
+    mail_store.add(mail)
+    Message.new(record, mail_store)
   end
 
   def mail_exists?(account, uid)

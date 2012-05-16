@@ -3,7 +3,7 @@ require 'tire'
 class MessageRepository
   class ElasticSearchMessageIndex
     class SearchResult
-      delegate :id, :message_id, :subject, :from, :to, :cc, :body, :recipients, :mail_identifier, to: :@item
+      delegate :id, :subject, :from, :to, :cc, :body, :recipients, :mail_identifier, to: :@item
 
       def initialize(item)
         @item = item
@@ -15,6 +15,14 @@ class MessageRepository
 
       def date
         Time.parse(@item.date)
+      end
+
+      def message_id
+        if @item.message_id.is_a?(Tire::Results::Item)
+          @item.message_id.wrapped_string
+        else
+          @item.message_id
+        end
       end
 
       def message_hash
@@ -49,7 +57,7 @@ class MessageRepository
       index.store type: 'mail_import', account: mail.account, uid: mail.uid
       index.refresh
 
-      id
+      find(id)
     end
 
     def find(id)

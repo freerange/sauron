@@ -34,9 +34,8 @@ class MessageRepository
       assert index.mail_exists?(mail.account, mail.uid)
     end
 
-    test "#add returns an identifier that can be used to retrieve the message corresponding to a mail" do
-      id = index.add(mail)
-      message = index.find(id)
+    test "#add returns a message corresponding to a mail" do
+      message = index.add(mail)
       assert_equal message.message_id, mail.message_id
     end
 
@@ -47,18 +46,19 @@ class MessageRepository
         delivered_to: ['chris@example.com']
       ))
 
-      id = index.add(mail_stub(
+      result = index.add(mail_stub(
         account: 'tom@example.com',
         message_id: 'unique-message-id',
         delivered_to: ['tom@example.com']
       ))
 
-      message = index.find(id)
+      message = index.find(result.id)
       assert_same_elements ['chris@example.com', 'tom@example.com'], message.recipients
     end
 
     test "#find returns message with the subject, date and from fields of the original mail" do
-      message = index.find(index.add(mail))
+      result = index.add(mail)
+      message = index.find(result.id)
       assert_equal message.subject, mail.subject
       assert_equal message.date, mail.date
       assert_equal message.from, mail.from
@@ -73,6 +73,14 @@ class MessageRepository
       assert index.mail_exists?(mail.account, mail.uid)
     end
 
+    test "#find returns messages with message_ids that are always Strings" do
+      message_id = Mail.new("Message-Id: message-id").message_id
+      mail = mail_stub(message_id: message_id)
+      result = index.add(mail)
+      message = index.find(result.id)
+      assert_instance_of String, message.message_id
+    end
+
     test "#mail_exists? returns true if a matching mail has been added to an existing message" do
       first_mail = mail_stub(
         account: 'chris@example.com',
@@ -84,10 +92,10 @@ class MessageRepository
         message_id: 'unique-message-id'
       )
 
-      first_id = index.add(first_mail)
-      second_id = index.add(second_mail)
+      first_message = index.add(first_mail)
+      second_message = index.add(second_mail)
 
-      assert_equal first_id, second_id
+      assert_equal first_message.id, second_message.id
       assert index.mail_exists?(first_mail.account, first_mail.uid)
       assert index.mail_exists?(second_mail.account, second_mail.uid)
     end
@@ -195,8 +203,8 @@ class MessageRepository
     # Non-core behaviour (bonus features!)
 
     test "#add uses identifiers that respect our existing urls" do
-      id = index.add(mail)
-      assert_equal id, Digest::SHA1.hexdigest(mail.message_id)
+      message = index.add(mail)
+      assert_equal message.id, Digest::SHA1.hexdigest(mail.message_id)
     end
   end
 end

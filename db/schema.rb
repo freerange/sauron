@@ -11,7 +11,22 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120511142731) do
+ActiveRecord::Schema.define(:version => 20120515160259) do
+
+  create_table "conversations", :force => true do |t|
+    t.string   "identifier"
+    t.string   "subject"
+    t.datetime "latest_message_date"
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+  end
+
+  create_table "in_reply_to_id_conversations", :force => true do |t|
+    t.string   "in_reply_to_id"
+    t.integer  "conversation_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
 
   create_table "mail_index", :force => true do |t|
     t.integer  "message_index_id"
@@ -23,6 +38,13 @@ ActiveRecord::Schema.define(:version => 20120511142731) do
   end
 
   add_index "mail_index", ["message_index_id"], :name => "index_mail_index_on_message_index_id"
+
+  create_table "message_id_conversations", :force => true do |t|
+    t.string   "message_id"
+    t.integer  "conversation_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
 
   create_table "message_index", :force => true do |t|
     t.string   "subject"

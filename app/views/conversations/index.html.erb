@@ -1,0 +1,8 @@
+<h1>Conversations</h1>
+<ul id="conversations">
+  <% @conversations.each do |conversation| %>
+    <li class="conversation">
+      <span class="subject"><%= conversation.subject %></span>
+    </li>
+  <% end %>
+</ul>

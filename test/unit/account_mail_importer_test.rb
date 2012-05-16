@@ -17,13 +17,12 @@ class AccountMailImporterTest < ActiveSupport::TestCase
     AccountMailImporter.import_for('whatever', 'whatever')
   end
 
-  test 'uses the default mail repository' do
+  test 'uses the default message and conversation repositories' do
     GoogleMail::Mailbox.stubs(:connect).returns(stub('mailbox'))
 
-    mail_repository = stub('mail-repository')
     importer = stub('importer')
     MailImporter.stubs(:new).returns(importer)
-    importer.expects(:import_into).with(MessageRepository)
+    importer.expects(:import_into).with(MessageRepository, ConversationRepository)
 
     AccountMailImporter.import_for('whatever', 'whatever')
   end
