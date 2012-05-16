@@ -109,6 +109,16 @@ class ConversationRepository::ConversationIndexTest < ActiveSupport::TestCase
     assert_equal 1, conversations.length
   end
 
+  test "adding messages multiple times shouldn't produce duplicate conversations" do
+    message = stub_message('message')
+
+    3.times { @index.add(message) }
+
+    conversations = @index.most_recent
+
+    assert_equal 1, conversations.length
+  end
+
   test "subject of a conversation is the subject of the latest emessage in the conversation" do
     original_message = stub_message('original-message', subject: 'original-subject', date: 3.days.ago)
     reply_message_1 = stub_reply_to(original_message, 'reply-message-1', subject: 'reply-1-subject', date: 2.days.ago)

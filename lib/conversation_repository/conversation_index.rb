@@ -5,6 +5,7 @@ class ConversationRepository
     end
 
     def add(message)
+      return if message_exists?(message)
       if conversation = find_conversation_for(message)
         conversation.add_message(message)
         @implementation.save(conversation)
@@ -20,6 +21,10 @@ class ConversationRepository
           @implementation.save(conversation)
         end
       end
+    end
+
+    def message_exists?(message)
+      @implementation.find_conversation_with_message_id(message.message_id).present?
     end
 
     def most_recent
