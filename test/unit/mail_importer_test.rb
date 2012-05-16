@@ -18,12 +18,11 @@ class MailImporterTest < ActiveSupport::TestCase
 
   test 'skip mails with uids lower than those already imported' do
     mailbox = stub('mailbox', email: 'tom@example.com')
-    mailbox.stubs(:uids).with(2).returns([2])
-    mailbox.stubs(:mail).returns(:mail_to_import)
+    mailbox.expects(:uids).with(2).returns([2])
     mailbox.stubs(:mail).with(2).returns(:mail2)
     importer = MailImporter.new(mailbox)
     message_repository = stub('message-repository', highest_mail_uid: 2, mail_exists?: false)
-    message_repository.expects(:add_mail).with(:mail2)
+    message_repository.stubs(:add_mail)
     conversation_repository = stub_everything('conversation-repository')
     importer.import_into(message_repository, conversation_repository)
   end
