@@ -22,7 +22,7 @@
 env :MAILTO, 'everyone@gofreerange.com'
 
 set :job_template, nil
-job_type :lockrun_rake, "/usr/local/bin/lockrun --lockfile=:lockfile.lockrun --quiet -- bash -l -c 'cd :path && RAILS_ENV=:environment nice rake :task --trace :output'"
+job_type :lockrun_rake, "/usr/local/bin/lockrun --lockfile=:lockfile.lockrun --quiet -- bash -l -c 'cd :path && RAILS_ENV=:environment nice rake :task :output'"
 
 every 1.minute do
   lockrun_rake "mail:import", lockfile: 'mail-import'
