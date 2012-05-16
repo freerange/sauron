@@ -113,6 +113,30 @@ Subject: Joe Bloggs has requested to be a member of an excitin project on Pivota
     assert_nothing_raised { ParsedMail.new(raw_mail).body }
   end
 
+  test "body should be forced into utf8 if otherwise invalid" do
+    raw_mail = Mail.new(
+      content_type: 'text/html; charset=us-ascii',
+      body: 'Café',
+      content_transfer_encoding: '7bit'
+    )
+
+    assert_nothing_raised { ParsedMail.new(raw_mail).body }
+    assert_equal "Café", ParsedMail.new(raw_mail).body
+  end
+
+  test "body from a text part should forced into utf8 if otherwise invalid" do
+    raw_mail = Mail.new do
+      content_transfer_encoding '7bit'
+      text_part do
+        content_type 'text/plain; charset=us-ascii'
+        body 'Café'
+      end
+    end.to_s
+
+    assert_nothing_raised { ParsedMail.new(raw_mail).body }
+    assert_equal "Caf��", ParsedMail.new(raw_mail).body
+  end
+
   test "body should be in UTF-8 even if raw message contains text part which is in non UTF-8 encoding" do
     raw_mail = Mail.new do
       text_part do

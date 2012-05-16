@@ -31,7 +31,7 @@ class ParsedMail
     if mail.multipart?
       text_part_bodies(mail).join
     else
-      mail.decoded
+      force_to_utf8(mail)
     end
   end
 
@@ -51,9 +51,15 @@ class ParsedMail
       if part.multipart?
         bodies << text_part_bodies(part)
       elsif part.content_type =~ /text\/plain/
-        bodies << part.decoded
+        bodies << force_to_utf8(part)
       end
       bodies.flatten
     end
+  end
+
+  def force_to_utf8(part)
+    part.decoded
+  rescue
+    part.body.to_s.encode('UTF-8', invalid: :replace, undef: :replace)
   end
 end
