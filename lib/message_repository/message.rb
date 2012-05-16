@@ -1,6 +1,6 @@
 class MessageRepository::Message
   attr_reader :index_record
-  delegate :subject, :date, :from, :message_id, :message_hash, to: :index_record
+  delegate :subject, :date, :from, :to, :message_id, :message_hash, to: :index_record
   delegate :body, to: :parsed_mail
 
   def initialize(index_record, store)

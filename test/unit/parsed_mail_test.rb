@@ -41,6 +41,16 @@ Subject: Joe Bloggs has requested to be a member of an excitin project on Pivota
     assert_nil ParsedMail.new(raw_message).from
   end
 
+  test "returns an empty array when there is no To: header" do
+    raw_message = Mail.new.to_s
+    assert_equal [], ParsedMail.new(raw_message).to
+  end
+
+  test "returns the array of recipients defined in the To: headers" do
+    raw_message = Mail.new(to: ['bob@example.com', 'george@example.com']).to_s
+    assert_equal ['bob@example.com', 'george@example.com'], ParsedMail.new(raw_message).to
+  end
+
   test "returns the subject" do
     raw_message = Mail.new(subject: "email-subject").to_s
     assert_equal "email-subject", ParsedMail.new(raw_message).subject

@@ -3,6 +3,13 @@
   <dl class="dl-horizontal">
     <dt>From</dt><dd class="from"><%= @message.from %></dd>
     <dt>Date</dt><dd class="date"><%= @message.date %></dd>
+    <dt>To</dt><dd class="to">
+      <ul>
+      <% @message.to.each do |recipient| %>
+        <li class="to"><%= recipient %></li>
+      <% end %>
+      </ul>
+    </dd>
     <dt>Recipients</dt><dd class="recipients">
       <ul>
       <% @message.recipients.each do |recipient| %>
