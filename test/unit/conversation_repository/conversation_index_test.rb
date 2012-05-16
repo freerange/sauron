@@ -70,7 +70,7 @@ class ConversationRepository::ConversationIndexTest < ActiveSupport::TestCase
     assert_equal 1, conversations.length
   end
 
-  test "the set of BLAH" do
+  test "messages should be added to the right conversation even if the reply is imported first" do
     original_message = stub_message('original-message')
     reply_message = stub_reply_to(original_message, 'reply-message')
 
