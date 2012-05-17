@@ -27,9 +27,15 @@ class ActiveSupport::TestCase
   end
 
   def message_stub(attributes = {})
-    stub_everything('message', {
+    stub('message', {
       recipients: [],
-      to: []
+      to: [],
+      sent_or_received_by?: false,
+      date: Time.now,
+      subject: 'subject',
+      from: 'sender',
+      body: 'body',
+      displayable_raw_mail: 'displayable-raw-mail'
     }.merge(attributes))
   end
 
