@@ -166,6 +166,14 @@ class MessageRepository
       assert results.detect {|r| r.body == 'zebra rabbit koala'}
     end
 
+    test "#search returns matching messages in reverse chronological order" do
+      index.add(mail_stub(subject: 'subject-3', date: 3.days.ago))
+      index.add(mail_stub(subject: 'subject-2', date: 2.days.ago))
+      index.add(mail_stub(subject: 'subject-1', date: 1.day.ago))
+      results = index.search('subject')
+      assert_equal %w(subject-1 subject-2 subject-3), results.map(&:subject)
+    end
+
     test "#search returns messages containing the search term as their from address" do
       index.add(mail_stub(from: 'tom@example.com'))
       index.add(mail_stub(from: 'chris@example.com'))

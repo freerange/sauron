@@ -128,6 +128,7 @@ class MessageRepository
             should { text :body, q }
           end
         end
+        sort { by :date, :desc }
       end
 
       search.results.map do |result|
