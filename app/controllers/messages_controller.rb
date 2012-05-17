@@ -2,7 +2,7 @@ require 'message_repository'
 
 class MessagesController < ApplicationController
   def index
-    @messages = MessageRepository.messages
+    @messages = MessageRepository.messages(500)
   end
 
   def search

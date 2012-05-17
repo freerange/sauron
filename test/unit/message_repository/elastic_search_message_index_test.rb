@@ -104,20 +104,24 @@ class MessageRepository
       assert_equal 9, index.highest_uid(mail.account)
     end
 
-    test "#most_recent returns the 500 most recent mails" do
-      mails = 501.times.collect {|i| mail_stub("mail-#{i}", date: i.minutes.ago)}
-      mails.each {|mail| index.add(mail) }
-      recent = index.most_recent
-      assert_equal 500, recent.size
-      assert_equal recent.first.message_id, mails[0].message_id
-      assert_equal recent.to_a.last.message_id, mails[499].message_id
+    test "#most_recent returns the requested number of most recent mails" do
+      oldest_mail = mail_stub('oldest-mail', date: 3.minutes.ago)
+      older_mail = mail_stub('older-mail', date: 2.minutes.ago)
+      newer_mail = mail_stub('newer-mail', date: 1.minute.ago)
+      index.add(oldest_mail)
+      index.add(older_mail)
+      index.add(newer_mail)
+      recent = index.most_recent(2)
+      assert_equal 2, recent.size
+      assert_equal newer_mail.message_id, recent[0].message_id
+      assert_equal older_mail.message_id, recent[1].message_id
     end
 
     test "#most_recent excludes results matching passed-in from addresses" do
       index.add(mail_stub('noisy-mail-1', from: 'a@example.com'))
       index.add(mail_stub('good-mail', from: 'b@example.com'))
       index.add(mail_stub('noisy-mail-2', from: 'c@example.com'))
-      recent = index.most_recent(excluding: ['a@example.com', 'c@example.com'])
+      recent = index.most_recent(100, excluding: ['a@example.com', 'c@example.com'])
       assert_equal 1, recent.size
       assert_equal recent.first.from, 'b@example.com'
     end
@@ -126,7 +130,7 @@ class MessageRepository
       index.add(mail_stub('noisy-mail-1', from: 'albert@example.com'))
       index.add(mail_stub('good-mail', from: 'barry@example.com'))
       index.add(mail_stub('noisy-mail-2', from: 'andrew@example.com'))
-      recent = index.most_recent(excluding: ['a*@example.com'])
+      recent = index.most_recent(100, excluding: ['a*@example.com'])
       assert_equal 1, recent.size
       assert_equal recent.first.from, 'barry@example.com'
     end

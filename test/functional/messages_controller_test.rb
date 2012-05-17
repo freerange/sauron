@@ -7,21 +7,26 @@ class MessagesControllerTest < ActionController::TestCase
 
   test "#index indicates which messages were neither sent nor received by the current user" do
     neither_sent_nor_received = message_stub('message', subject: "neither-sent-nor-received", sent_or_received_by?: false)
-    MessageRepository.stubs(:messages).with().returns([neither_sent_nor_received])
+    MessageRepository.stubs(:messages).returns([neither_sent_nor_received])
     get :index
     assert_select ".message.neither-sent-nor-received .subject", text: "neither-sent-nor-received"
   end
 
   test "#index indicates which messages were sent or received by the current user" do
     sent_or_received = message_stub('message', subject: "sent-or-received", sent_or_received_by?: true)
-    MessageRepository.stubs(:messages).with().returns([sent_or_received])
+    MessageRepository.stubs(:messages).returns([sent_or_received])
     get :index
     assert_select ".message.sent-or-received .subject", text: "sent-or-received"
   end
 
+  test "#index requests the 500 most recent messages" do
+    MessageRepository.expects(:messages).with(500).returns([])
+    get :index
+  end
+
   test "#index finds messages via repository" do
     messages = [message_stub('message-1'), message_stub('message-2')]
-    MessageRepository.stubs(:messages).with().returns(messages)
+    MessageRepository.stubs(:messages).returns(messages)
     get :index
     assert_equal messages, assigns[:messages]
   end

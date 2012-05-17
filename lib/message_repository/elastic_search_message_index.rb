@@ -97,9 +97,9 @@ class MessageRepository
       results.first && results.first.uid
     end
 
-    def most_recent(options = {})
+    def most_recent(number_of_messages, options = {})
       excluding = options[:excluding] || []
-      search = search_messages size: 500 do
+      search = search_messages size: number_of_messages do
         unless excluding.empty?
           query do
             boolean do

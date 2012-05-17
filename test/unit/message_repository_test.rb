@@ -53,13 +53,23 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     assert repository.mail_exists?('sam@example.com', 1)
   end
 
-  test 'retrieves the most recent messages from the index' do
+  test 'retrieves the requested number of most recent messages from the index' do
+    number_of_messages_to_return = 5
     index = stub('index')
     store = stub('store', find: '')
     repository = MessageRepository.new(index, store)
     primary_index_record = stub('primary-index-record', account: 'bob@example.com', uid: 456, message_hash: 'message-hash')
-    index.stubs(:most_recent).with(excluding: MessageRepository::EXCLUDED_ADDRESSES).returns([primary_index_record])
-    assert_equal [MessageRepository::Message.new(primary_index_record, store)], repository.messages
+    index.stubs(:most_recent).with(number_of_messages_to_return, anything).returns([primary_index_record])
+    assert_equal [MessageRepository::Message.new(primary_index_record, store)], repository.messages(number_of_messages_to_return)
+  end
+
+  test 'retrieves the most recent interesting messages from the index' do
+    index = stub('index')
+    store = stub('store', find: '')
+    repository = MessageRepository.new(index, store)
+    primary_index_record = stub('primary-index-record', account: 'bob@example.com', uid: 456, message_hash: 'message-hash')
+    index.stubs(:most_recent).with(anything, excluding: MessageRepository::EXCLUDED_ADDRESSES).returns([primary_index_record])
+    assert_equal [MessageRepository::Message.new(primary_index_record, store)], repository.messages(anything)
   end
 
   test 'finds a single message from the index' do

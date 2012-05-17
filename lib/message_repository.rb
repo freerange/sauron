@@ -49,8 +49,8 @@ class MessageRepository
     Message.new(record, mail_store) if record.present?
   end
 
-  def messages
-    message_index.most_recent(excluding: EXCLUDED_ADDRESSES).map do |record|
+  def messages(number_of_messages)
+    message_index.most_recent(number_of_messages, excluding: EXCLUDED_ADDRESSES).map do |record|
       Message.new(record, mail_store)
     end
   end
