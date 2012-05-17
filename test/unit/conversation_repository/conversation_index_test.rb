@@ -111,7 +111,7 @@ class ConversationRepository::ConversationIndexTest < ActiveSupport::TestCase
     assert_equal 1, conversations.length
   end
 
-  test "subject of a conversation is the subject of the latest emessage in the conversation" do
+  test "subject of a conversation is the subject of the latest message in the conversation" do
     original_message = message_stub('original-message', subject: 'original-subject', date: 3.days.ago)
     reply_message_1 = reply_to(original_message, 'reply-message-1', subject: 'reply-1-subject', date: 2.days.ago)
     reply_message_2 = reply_to(original_message, 'reply-message-2', subject: 'reply-2-subject', date: 1.day.ago)
@@ -148,5 +148,19 @@ class ConversationRepository::ConversationIndexTest < ActiveSupport::TestCase
     conversations = @index.most_recent
 
     assert_same_elements ['alice', 'bob'], conversations.first.participants
+  end
+
+  test "returns conversations ordered by most recent message first" do
+    original_message = message_stub('original-message', subject: 'original-subject', date: 5.days.ago)
+    reply_message_1 = reply_to(original_message, 'reply-message-1', subject: 'original-subject', date: 2.days.ago)
+    older_message = message_stub('older-message', subject: 'older-subject', date: 10.days.ago)
+
+    [older_message, original_message, reply_message_1].each do |message|
+      @index.add(message)
+    end
+
+    conversations = @index.most_recent
+
+    assert_equal ['original-subject', 'older-subject'], conversations.map(&:subject)
   end
 end

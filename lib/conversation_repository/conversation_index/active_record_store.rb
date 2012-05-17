@@ -67,7 +67,7 @@ class ConversationRepository
       end
 
       def all
-        ConversationRecord.all
+        ConversationRecord.order("latest_message_date DESC").all
       end
 
       def find_conversation_with_message_id(message_id)
