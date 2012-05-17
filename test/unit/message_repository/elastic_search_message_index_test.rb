@@ -14,21 +14,6 @@ class MessageRepository
       @mail ||= mail_stub
     end
 
-    def mail_stub(attributes = {})
-      stub("GoogleMail::Mailbox::Mail", {
-        account: 'james@example.com',
-        uid: rand(100000),
-        message_id: SecureRandom.hex,
-        subject: 'an-example-email',
-        from: 'liam@example.com',
-        to: ['baz@example.com'],
-        cc: ['mike@example.com'],
-        date: Time.utc(2012, 7, 27, 20, 00, 00),
-        delivered_to: ['james@example.com'],
-        body: 'Any old body'
-      }.merge(attributes))
-    end
-
     test "#add adds the mail to the elastic search index" do
       index.add(mail)
       assert index.mail_exists?(mail.account, mail.uid)

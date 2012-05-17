@@ -6,14 +6,6 @@ class ConversationRepository::ConversationIndexTest < ActiveSupport::TestCase
     @index = ConversationRepository::ConversationIndex.new(storage)
   end
 
-  def stub_message(name, attributes={})
-    stub(name, {date: 1.minute.ago, subject: 'subject', in_reply_to: nil, message_id: SecureRandom.hex}.merge(attributes))
-  end
-
-  def stub_reply_to(message, name, attributes={})
-    stub_message(name, {in_reply_to: message.message_id, subject: message.subject}.merge(attributes))
-  end
-
   test "two unrelated messages are in two conversations" do
     message = stub_message('message', message_id: 'message-id', subject: 'subject')
     another_message = stub_message('another-message', message_id: 'another-id', subject: 'another-subject')

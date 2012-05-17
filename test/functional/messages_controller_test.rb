@@ -7,13 +7,6 @@ class MessagesControllerTest < ActionController::TestCase
     @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("alice@example.com:password")
   end
 
-  def message_stub(attributes = {})
-    stub_everything('message', {
-      recipients: [],
-      to: []
-    }.merge(attributes))
-  end
-
   test "#index indicates which messages were neither sent nor received by the current user" do
     neither_sent_nor_received = message_stub(subject: "neither-sent-nor-received", sent_or_received_by?: false)
     MessageRepository.stubs(:messages).with().returns([neither_sent_nor_received])
