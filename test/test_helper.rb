@@ -23,7 +23,7 @@ class ActiveSupport::TestCase
       date: Time.utc(2012, 7, 27, 20, 00, 00),
       delivered_to: ['james@example.com'],
       body: 'Any old body'
-    }.merge(attributes))
+    }.merge(attributes)).responds_like(GoogleMail::Mailbox::Mail.new(nil, nil, nil))
   end
 
   def message_stub(attributes = {})
@@ -36,18 +36,23 @@ class ActiveSupport::TestCase
       from: 'sender',
       body: 'body',
       displayable_raw_mail: 'displayable-raw-mail'
-    }.merge(attributes))
+    }.merge(attributes)).responds_like(MessageRepository::Message.new(nil, nil))
   end
 
   def conversation_stub(stub_name, attributes = {})
     stub(stub_name, {
       latest_message_date: Time.now,
       subject: 'subject',
-    }.merge(attributes))
+    }.merge(attributes)).responds_like(ConversationRepository::Conversation.new)
   end
 
   def stub_message(name, attributes={})
-    stub(name, {date: 1.minute.ago, subject: 'subject', in_reply_to: nil, message_id: SecureRandom.hex}.merge(attributes))
+    stub(name, {
+      date: 1.minute.ago,
+      subject: 'subject',
+      in_reply_to: nil,
+      message_id: SecureRandom.hex
+    }.merge(attributes)).responds_like(MessageRepository::Message.new(nil, nil))
   end
 
   def stub_reply_to(message, name, attributes={})
