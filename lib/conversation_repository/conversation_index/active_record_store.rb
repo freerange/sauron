@@ -19,6 +19,12 @@ class ConversationRepository
         belongs_to :conversation, class_name: 'ConversationRecord'
       end
 
+      def reset!
+        ConversationRecord.delete_all
+        MessageIdConversation.delete_all
+        InReplyToIdConversation.delete_all
+      end
+
       def save(conversation)
         record = ConversationRecord.find_by_identifier(conversation.id) || ConversationRecord.new(identifier: conversation.id)
         record.update_attributes!(subject: conversation.subject, latest_message_date: conversation.latest_message_date)
