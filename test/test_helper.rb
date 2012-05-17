@@ -35,8 +35,14 @@ class ActiveSupport::TestCase
       subject: 'subject',
       from: 'sender',
       body: 'body',
-      displayable_raw_mail: 'displayable-raw-mail'
+      displayable_raw_mail: 'displayable-raw-mail',
+      message_id: SecureRandom.hex,
+      in_reply_to: nil
     }.merge(attributes)).responds_like(MessageRepository::Message.new(nil, nil))
+  end
+
+  def reply_to(message, name, attributes={})
+    message_stub(name, {in_reply_to: message.message_id, subject: message.subject}.merge(attributes))
   end
 
   def conversation_stub(name, attributes = {})
@@ -44,19 +50,6 @@ class ActiveSupport::TestCase
       latest_message_date: Time.now,
       subject: 'subject',
     }.merge(attributes)).responds_like(ConversationRepository::Conversation.new)
-  end
-
-  def stub_message(name, attributes={})
-    stub(name, {
-      date: 1.minute.ago,
-      subject: 'subject',
-      in_reply_to: nil,
-      message_id: SecureRandom.hex
-    }.merge(attributes)).responds_like(MessageRepository::Message.new(nil, nil))
-  end
-
-  def stub_reply_to(message, name, attributes={})
-    stub_message(name, {in_reply_to: message.message_id, subject: message.subject}.merge(attributes))
   end
 end
 
