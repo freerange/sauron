@@ -6,6 +6,7 @@ Sauron::Application.routes.draw do
     end
   end
   resources :conversations, only: [:index]
+  resource :ping, only: [:show]
 
   if Rails.env.test?
     # So that we can test arbitrary test controllers but avoid exposing this catch-all route in production
