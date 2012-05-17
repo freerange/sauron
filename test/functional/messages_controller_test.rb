@@ -70,10 +70,14 @@ class MessagesControllerTest < ActionController::TestCase
     assert_equal messages, assigns[:messages]
   end
 
-  test "#search handles empty query by bypassing repository and showing empty list" do
+  test "#search with empty query does not query repository" do
     MessageRepository.expects(:search).never
     get :search, q: ''
-    assert_equal [], assigns[:messages]
+  end
+
+  test "#search with empty query redirects to messages page" do
+    get :search, q: ''
+    assert_redirected_to action: 'index'
   end
 
   test "#search displays previous query in search input" do

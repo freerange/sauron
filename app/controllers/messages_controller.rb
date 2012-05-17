@@ -9,7 +9,7 @@ class MessagesController < ApplicationController
     if params[:q].present?
       @messages = MessageRepository.search(params[:q])
     else
-      @messages = []
+      redirect_to action: 'index'
     end
   end
 
