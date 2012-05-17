@@ -14,9 +14,11 @@ When /^I view the conversations$/ do
 end
 
 Then /^I should see a single conversation for both messages$/ do
+  save_and_open_page
   assert page.has_css?(".conversation", count: 1), "should only show one entry for the two messages"
   within ".conversation" do
     assert page.has_css?(".subject", text: "Re: How are you?"), "should show subject" # could remove Re:
     assert page.has_css?(".date[title='2012-05-23T12:34:56Z']"), "should show the most recent date"
+    assert page.has_css?(".participants", text: "alice@example.com, bob@example.com"), "should show all the participants"
   end
 end
