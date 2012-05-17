@@ -11,8 +11,8 @@ class ActiveSupport::TestCase
     assert_equal expected.sort, actual.sort, message
   end
 
-  def mail_stub(attributes = {})
-    stub("GoogleMail::Mailbox::Mail", {
+  def mail_stub(name, attributes = {})
+    stub(name, {
       account: 'james@example.com',
       uid: rand(100000),
       message_id: SecureRandom.hex,
@@ -26,8 +26,8 @@ class ActiveSupport::TestCase
     }.merge(attributes)).responds_like(GoogleMail::Mailbox::Mail.new(nil, nil, nil))
   end
 
-  def message_stub(attributes = {})
-    stub('message', {
+  def message_stub(name, attributes = {})
+    stub(name, {
       recipients: [],
       to: [],
       sent_or_received_by?: false,
@@ -39,8 +39,8 @@ class ActiveSupport::TestCase
     }.merge(attributes)).responds_like(MessageRepository::Message.new(nil, nil))
   end
 
-  def conversation_stub(stub_name, attributes = {})
-    stub(stub_name, {
+  def conversation_stub(name, attributes = {})
+    stub(name, {
       latest_message_date: Time.now,
       subject: 'subject',
     }.merge(attributes)).responds_like(ConversationRepository::Conversation.new)
