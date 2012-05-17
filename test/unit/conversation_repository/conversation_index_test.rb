@@ -125,4 +125,28 @@ class ConversationRepository::ConversationIndexTest < ActiveSupport::TestCase
 
     assert_same_elements ['reply-2-subject'], conversations.map(&:subject)
   end
+
+  test "participants of a conversation are the senders of messages in the conversation" do
+    original_message = message_stub('original-message', from: 'alice')
+    reply_message_1 = reply_to(original_message, 'reply-message-1', from: 'bob')
+    reply_message_2 = reply_to(original_message, 'reply-message-2', from: 'clive')
+
+    [original_message, reply_message_1, reply_message_2].each  { |m| @index.add(m) }
+
+    conversations = @index.most_recent
+
+    assert_same_elements ['alice', 'bob', 'clive'], conversations.first.participants
+  end
+
+  test "participants should only be listed once in the conversation" do
+    original_message = message_stub('original-message', from: 'alice')
+    reply_message_1 = reply_to(original_message, 'reply-message-1', from: 'bob')
+    reply_message_2 = reply_to(original_message, 'reply-message-2', from: 'alice')
+
+    [original_message, reply_message_1, reply_message_2].each  { |m| @index.add(m) }
+
+    conversations = @index.most_recent
+
+    assert_same_elements ['alice', 'bob'], conversations.first.participants
+  end
 end

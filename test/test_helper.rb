@@ -49,6 +49,7 @@ class ActiveSupport::TestCase
     stub(name, {
       latest_message_date: Time.now,
       subject: 'subject',
+      participants: []
     }.merge(attributes)).responds_like(ConversationRepository::Conversation.new)
   end
 end
