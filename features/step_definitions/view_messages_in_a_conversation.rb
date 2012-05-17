@@ -17,5 +17,6 @@ Then /^I should see a single conversation for both messages$/ do
   assert page.has_css?(".conversation", count: 1), "should only show one entry for the two messages"
   within ".conversation" do
     assert page.has_css?(".subject", text: "Re: How are you?"), "should show subject" # could remove Re:
+    assert page.has_css?(".date[title='2012-05-23T12:34:56Z']"), "should show the most recent date"
   end
 end

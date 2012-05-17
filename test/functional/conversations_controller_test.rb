@@ -7,8 +7,15 @@ class ConversationsControllerTest < ActionController::TestCase
     @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("alice@example.com:password")
   end
 
+  def conversation_stub(stub_name, attributes = {})
+    stub(stub_name, {
+      latest_message_date: Time.now,
+      subject: 'subject',
+    }.merge(attributes))
+  end
+
   test "loads conversations" do
-    conversations = [stub('conversation-1', subject: 'subject-1'), stub('conversation-2', subject: 'subject-1')]
+    conversations = [conversation_stub('conversation-1'), conversation_stub('conversation-2')]
     ConversationRepository.stubs(:conversations).returns(conversations)
     get :index
     assert_equal conversations, assigns(:conversations)
