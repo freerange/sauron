@@ -1,2 +1,4 @@
 <h1>Messages matching '<%= params[:q] %>'</h1>
-<%= render partial: 'list' %>
+<%= ul(@messages, id: 'messages', empty_list: 'No messages were found') do |message| %>
+  <%= render partial: 'message', object: message %>
+<% end %>

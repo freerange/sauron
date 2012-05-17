@@ -35,6 +35,13 @@ class MessagesControllerTest < ActionController::TestCase
     assert_equal messages, assigns[:messages]
   end
 
+  test "#index displays a message if no recent messages are found" do
+    MessageRepository.stubs(:messages).returns([])
+    get :index
+    assert_select 'ul#messages', count: 0
+    assert_select 'p', text: 'No messages were found'
+  end
+
   test "#show finds message via repository" do
     message = message_stub
     MessageRepository.stubs(:find).with('1234').returns(message)
@@ -84,5 +91,12 @@ class MessagesControllerTest < ActionController::TestCase
     MessageRepository.stubs(:search).returns([])
     get :search, q: 'a-query-string'
     assert_select '#q[value=a-query-string]'
+  end
+
+  test "#search displays a message if no matching messages are found" do
+    MessageRepository.stubs(:search).returns([])
+    get :search, q: 'a-query-string'
+    assert_select 'ul#messages', count: 0
+    assert_select 'p', text: 'No messages were found'
   end
 end
