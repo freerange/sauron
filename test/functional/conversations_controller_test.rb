@@ -2,9 +2,7 @@ require 'test_helper'
 
 class ConversationsControllerTest < ActionController::TestCase
   setup do
-    ENV["TEAM"] = "alice@example.com"
-    ENV["HTTP_PASSWORD"] = "password"
-    @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("alice@example.com:password")
+    logged_in
   end
 
   test "loads conversations" do

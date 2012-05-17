@@ -54,3 +54,11 @@ class ActiveSupport::TestCase
 end
 
 Mocha::Configuration.prevent(:stubbing_non_existent_method)
+
+class ActionController::TestCase
+  def logged_in
+    ENV["TEAM"] = "alice@example.com"
+    ENV["HTTP_PASSWORD"] = "password"
+    @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("alice@example.com:password")
+  end
+end

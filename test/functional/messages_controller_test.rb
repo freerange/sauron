@@ -2,9 +2,7 @@ require 'test_helper'
 
 class MessagesControllerTest < ActionController::TestCase
   setup do
-    ENV["TEAM"] = "alice@example.com"
-    ENV["HTTP_PASSWORD"] = "password"
-    @request.env["HTTP_AUTHORIZATION"] = "Basic " + Base64::encode64("alice@example.com:password")
+    logged_in
   end
 
   test "#index indicates which messages were neither sent nor received by the current user" do
