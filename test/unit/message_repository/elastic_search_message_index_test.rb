@@ -53,6 +53,18 @@ class MessageRepository
       assert_nil index.find('made-up-id')
     end
 
+    test "#find_by_message_id returns message with matching message id" do
+      index.add(mail_stub('mail', message_id: 'unique-message-id', subject: 'hello', from: 'james'))
+      message = index.find_by_message_id('unique-message-id')
+      assert_equal 'unique-message-id', message.message_id
+      assert_equal 'hello', message.subject
+      assert_equal 'james', message.from
+    end
+
+    test "#find_by_message_id returns nil if no matching message was found" do
+      assert_nil index.find_by_message_id('made-up-message-id')
+    end
+
     test "#mail_exists? returns true if a matching mail has been added" do
       index.add(mail)
       assert index.mail_exists?(mail.account, mail.uid)

@@ -79,6 +79,15 @@ class MessageRepository
       find(hash)
     end
 
+    def find_by_message_id(message_id)
+      results = search_messages size: 1 do
+        query do
+          term :message_id, message_id
+        end
+      end
+      results.first && SearchResult.new(results.first)
+    end
+
     def mail_exists?(account, uid)
       search_mail_imports size: 1 do
         query do

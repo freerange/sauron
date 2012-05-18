@@ -88,6 +88,15 @@ class MessageRepositoryTest < ActiveSupport::TestCase
     assert_nil repository.find('hash-for-message-that-does-not-exist')
   end
 
+  test 'finds a single message from the index using its message-id' do
+    index = stub('index')
+    store = stub('store', find: '')
+    repository = MessageRepository.new(index, store)
+    primary_index_record = stub('primary-index-record', account: 'tom@example.com', uid: 123)
+    index.stubs(:find_by_message_id).with('<abc123@example.com>').returns(primary_index_record)
+    assert_equal MessageRepository::Message.new(primary_index_record, store), repository.find_by_message_id('<abc123@example.com>')
+  end
+
   test 'searches messages using the index' do
     index = stub('index')
     store = stub('store', find: '')

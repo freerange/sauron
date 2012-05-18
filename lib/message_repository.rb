@@ -16,7 +16,7 @@ class MessageRepository
   class << self
     attr_writer :instance
 
-    delegate :highest_mail_uid, :find, :add_mail, :mail_exists?, :messages, :search, to: :instance
+    delegate :highest_mail_uid, :find, :find_by_message_id, :add_mail, :mail_exists?, :messages, :search, to: :instance
 
     def instance
       @instance ||= new
@@ -46,6 +46,11 @@ class MessageRepository
 
   def find(message_hash)
     record = message_index.find_by_message_hash(message_hash)
+    Message.new(record, mail_store) if record.present?
+  end
+
+  def find_by_message_id(message_id)
+    record = message_index.find_by_message_id(message_id)
     Message.new(record, mail_store) if record.present?
   end
 
