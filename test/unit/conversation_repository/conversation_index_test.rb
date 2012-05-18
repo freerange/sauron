@@ -3,7 +3,8 @@ require 'test_helper'
 class ConversationRepository::ConversationIndexTest < ActiveSupport::TestCase
   setup do
     storage = ConversationRepository::ConversationIndex::ActiveRecordStore.new
-    @index = ConversationRepository::ConversationIndex.new(storage)
+    @message_repository = stub('message repository').responds_like(MessageRepository.new)
+    @index = ConversationRepository::ConversationIndex.new(storage, @message_repository)
   end
 
   test "two unrelated messages are in two conversations" do
@@ -184,6 +185,23 @@ class ConversationRepository::ConversationIndexTest < ActiveSupport::TestCase
 
     assert_equal 'What up dawg', found_conversation.subject
     assert_equal found_conversation, conversation
+  end
+
+  test "conversations load their messages by collaborating with the message repository" do
+    original_message = message_stub('original-message', message_id: 'message-1')
+    reply_message_1 = reply_to(original_message, 'reply-message-1', message_id: 'message-2')
+    reply_message_2 = reply_to(reply_message_1, 'reply-message-2', message_id: 'message-3')
+
+    @index.add(original_message)
+    @index.add(reply_message_1)
+    conversation = @index.add(reply_message_2)
+
+    messages = [original_message, reply_message_1, reply_message_2]
+    @message_repository.expects(:find_by_message_id).with('message-1').returns(messages[0])
+    @message_repository.expects(:find_by_message_id).with('message-2').returns(messages[1])
+    @message_repository.expects(:find_by_message_id).with('message-3').returns(messages[2])
+
+    assert_equal messages, conversation.messages
   end
 
   test "returns nil if the conversation identifier doesn't exist" do

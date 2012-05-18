@@ -31,5 +31,7 @@ end
 Then /^I should see both messages presented in the conversation$/ do
   within ".conversation" do
     assert page.has_css?(".subject", text: "Re: How are you?"), "show show the subject of the conversation"
+    assert page.has_css?(".body", text: "Hey Bob!"), "should show the body of the first message"
+    assert page.has_css?(".body", text: "Hey Alice!"), "should show the body of the second message"
   end
 end

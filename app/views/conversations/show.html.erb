@@ -1,3 +1,6 @@
 <div class="conversation">
   <h1 class="subject"><%= @conversation.subject %></h1>
+  <% @conversation.messages.each do |message| %>
+    <div class="body"><%= message.body %></div>
+  <% end %>
 </div>

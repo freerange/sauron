@@ -1,7 +1,10 @@
 class ConversationRepository
   class ConversationIndex
-    def initialize(implementation = ActiveRecordStore.new)
+    attr_reader :message_repository
+
+    def initialize(implementation = ActiveRecordStore.new, message_repository = MessageRepository)
       @implementation = implementation
+      @message_repository = message_repository
     end
 
     def add(message)
@@ -10,7 +13,7 @@ class ConversationRepository
         conversation.add_message(message)
         @implementation.save(conversation)
       else
-        conversation = Conversation.new
+        conversation = Conversation.new(nil, message_repository)
         conversation.add_message(message)
         @implementation.save(conversation)
       end
@@ -30,24 +33,29 @@ class ConversationRepository
 
     def find(id)
       record = @implementation.find_conversation_by_id(id)
-      Conversation.new(record) if record
+      conversation_from_record(record)
     end
 
     def most_recent
-      @implementation.all.map { |record| Conversation.new(record) }
+      @implementation.all.map { |record| conversation_from_record(record) }
     end
 
     private
 
     def find_conversation_for(message)
       record = @implementation.find_conversation_with_message_id(message.in_reply_to)
-      Conversation.new(record) if record
+      conversation_from_record(record)
     end
 
     def find_conversations_with_replies_to(message)
       @implementation.find_conversations_with_in_reply_to_id(message.message_id).map do |record|
-        Conversation.new(record)
+        conversation_from_record(record)
       end
+    end
+
+    def conversation_from_record(record)
+      return unless record.present?
+      Conversation.new(record, message_repository)
     end
   end
 end

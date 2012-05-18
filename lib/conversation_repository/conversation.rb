@@ -2,7 +2,8 @@ class ConversationRepository
   class Conversation
     attr_reader :id, :subject, :latest_message_date, :message_ids, :in_reply_to_ids, :participants
 
-    def initialize(storage_record=nil)
+    def initialize(storage_record=nil, message_repository=nil)
+      @message_repository = message_repository
       if storage_record
         @message_ids = storage_record.message_ids
         @in_reply_to_ids = storage_record.in_reply_to_ids
@@ -38,6 +39,10 @@ class ConversationRepository
       end
       @participants += other_conversation.participants
       self
+    end
+
+    def messages
+      message_ids.map { |id| @message_repository.find_by_message_id(id) }
     end
 
     def ==(other_conversation)
