@@ -111,6 +111,17 @@ class ConversationRepository::ConversationIndexTest < ActiveSupport::TestCase
     assert_equal 1, conversations.length
   end
 
+  test "adding messages returns the conversation" do
+    message = message_stub('message', subject: 'Hello')
+    reply = reply_to(message, 'reply')
+
+    conversation = @index.add(message)
+    conversation_from_reply = @index.add(reply)
+
+    assert_equal 'Hello', conversation.subject
+    assert_equal conversation_from_reply, conversation
+  end
+
   test "subject of a conversation is the subject of the latest message in the conversation" do
     original_message = message_stub('original-message', subject: 'original-subject', date: 3.days.ago)
     reply_message_1 = reply_to(original_message, 'reply-message-1', subject: 'reply-1-subject', date: 2.days.ago)
@@ -162,5 +173,20 @@ class ConversationRepository::ConversationIndexTest < ActiveSupport::TestCase
     conversations = @index.most_recent
 
     assert_equal ['original-subject', 'older-subject'], conversations.map(&:subject)
+  end
+
+  test "returns individual conversations by identifier" do
+    message = message_stub('message', subject: 'What up dawg')
+
+    conversation = @index.add(message)
+
+    found_conversation = @index.find(conversation.id)
+
+    assert_equal 'What up dawg', found_conversation.subject
+    assert_equal found_conversation, conversation
+  end
+
+  test "returns nil if the conversation identifier doesn't exist" do
+    assert_nil @index.find('non-existent-id')
   end
 end

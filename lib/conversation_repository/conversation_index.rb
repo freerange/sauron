@@ -21,10 +21,15 @@ class ConversationRepository
           @implementation.save(conversation)
         end
       end
+      conversation
     end
 
     def message_exists?(message)
       @implementation.find_conversation_with_message_id(message.message_id).present?
+    end
+
+    def find(id)
+      @implementation.find_conversation_by_id(id)
     end
 
     def most_recent

@@ -39,5 +39,19 @@ class ConversationRepository
       @participants += other_conversation.participants
       self
     end
+
+    def ==(other_conversation)
+      other_conversation.id == id
+    end
+
+    extend ActiveModel::Naming
+
+    def to_param
+      id
+    end
+
+    def self.model_name
+      ActiveModel::Name.new(self, nil, "Conversation")
+    end
   end
 end

@@ -67,7 +67,14 @@ class ConversationRepository
       end
 
       def all
-        ConversationRecord.order("latest_message_date DESC").all
+        ConversationRecord.order("latest_message_date DESC").all.map do |record|
+          Conversation.new(record)
+        end
+      end
+
+      def find_conversation_by_id(id)
+        record = ConversationRecord.find_by_identifier(id)
+        Conversation.new(record) if record
       end
 
       def find_conversation_with_message_id(message_id)

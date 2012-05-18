@@ -49,8 +49,20 @@ class ActiveSupport::TestCase
     stub(name, {
       latest_message_date: Time.now,
       subject: 'subject',
-      participants: []
+      participants: [],
+      to_param: SecureRandom.hex
     }.merge(attributes)).responds_like(ConversationRepository::Conversation.new)
+  end
+
+  def conversation_record_stub(name, attributes={})
+    stub(name, {
+      message_ids: [],
+      in_reply_to_ids: [],
+      latest_message_date: Time.now,
+      participants: [],
+      subject: 'subject',
+      identifier: SecureRandom.hex
+    }.merge(attributes))
   end
 end
 

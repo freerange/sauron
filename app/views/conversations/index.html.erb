@@ -5,6 +5,6 @@
       <%= conversation.latest_message_date.to_date.to_s(:long_ordinal) %>
     </abbr>
     <span class="participants"><%= conversation.participants.join(", ") %></span>
-    <span class="subject"><%= conversation.subject %></span>
+    <span class="subject"><%= link_to(conversation.subject, conversation) %></span>
   </li>
 <% end %>

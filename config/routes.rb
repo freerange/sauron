@@ -5,7 +5,7 @@ Sauron::Application.routes.draw do
       get :search
     end
   end
-  resources :conversations, only: [:index]
+  resources :conversations, only: [:index, :show]
   resource :ping, only: [:show]
 
   if Rails.env.test?
