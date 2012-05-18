@@ -1,5 +1,4 @@
-Sauron
-======
+# Sauron
 
 We all share responsibility for handling all parts of the business at GFR, but sometimes external people will try to engage in conversations with individuals, making it hard for other members of GFR to help.
 
@@ -10,3 +9,9 @@ We believe it would be better for any member of GFR to view all email traffic as
 It should also be possible for us to efficiently find past conversations where we might need to remind ourselves what was discussed.
 
 Finally, giving each email a URL will make it easier to discuss specific conversations in other mediums, such as Campfire, or indeed other emails.
+
+## Pre-requisites
+
+* [elasticsearch][].  You can install this using Homebrew on a Mac.
+
+[elasticsearch]: http://www.elasticsearch.org/
