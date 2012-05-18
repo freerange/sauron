@@ -10,7 +10,7 @@ It should also be possible for us to efficiently find past conversations where w
 
 Finally, giving each email a URL will make it easier to discuss specific conversations in other mediums, such as Campfire, or indeed other emails.
 
-## Pre-requisites
+## Prerequisites
 
 * [elasticsearch][].  You can install this using Homebrew on a Mac.
 
