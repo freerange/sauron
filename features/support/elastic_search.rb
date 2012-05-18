@@ -1,3 +1,3 @@
 Before do
-  MessageRepository::ElasticSearchMessageIndex.new.reset!
+  MessageRepository::ElasticSearchMessageIndex.new.delete_all
 end
