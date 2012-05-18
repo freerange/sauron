@@ -29,21 +29,25 @@ class ConversationRepository
     end
 
     def find(id)
-      @implementation.find_conversation_by_id(id)
+      record = @implementation.find_conversation_by_id(id)
+      Conversation.new(record) if record
     end
 
     def most_recent
-      @implementation.all
+      @implementation.all.map { |record| Conversation.new(record) }
     end
 
     private
 
     def find_conversation_for(message)
-      @implementation.find_conversation_with_message_id(message.in_reply_to)
+      record = @implementation.find_conversation_with_message_id(message.in_reply_to)
+      Conversation.new(record) if record
     end
 
     def find_conversations_with_replies_to(message)
-      @implementation.find_conversations_with_in_reply_to_id(message.message_id)
+      @implementation.find_conversations_with_in_reply_to_id(message.message_id).map do |record|
+        Conversation.new(record)
+      end
     end
   end
 end

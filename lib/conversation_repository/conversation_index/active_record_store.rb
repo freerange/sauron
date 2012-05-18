@@ -67,25 +67,20 @@ class ConversationRepository
       end
 
       def all
-        ConversationRecord.order("latest_message_date DESC").all.map do |record|
-          Conversation.new(record)
-        end
+        ConversationRecord.order("latest_message_date DESC").all
       end
 
       def find_conversation_by_id(id)
         record = ConversationRecord.find_by_identifier(id)
-        Conversation.new(record) if record
       end
 
       def find_conversation_with_message_id(message_id)
         mapping = MessageIdConversation.where(message_id: message_id).first
-        Conversation.new(mapping.conversation) if mapping
+        mapping.conversation if mapping
       end
 
       def find_conversations_with_in_reply_to_id(message_id)
-        InReplyToIdConversation.where(in_reply_to_id: message_id).includes(:conversation).map do |mapping|
-          Conversation.new(mapping.conversation)
-        end
+        InReplyToIdConversation.where(in_reply_to_id: message_id).includes(:conversation).map(&:conversation)
       end
     end
   end
