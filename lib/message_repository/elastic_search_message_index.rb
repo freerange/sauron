@@ -30,6 +30,12 @@ class MessageRepository
       end
     end
 
+    attr_reader :index_name
+
+    def initialize(index_name = "sauron-#{Rails.env}")
+      @index_name = index_name
+    end
+
     def ==(object)
       object.is_a?(self.class)
     end
@@ -162,10 +168,16 @@ class MessageRepository
       sleep 0.5
     end
 
+    def delete_all
+      Tire::Configuration.client.delete index.url + "/_query?q=type:message"
+      Tire::Configuration.client.delete index.url + "/_query?q=type:mail_import"
+      index.refresh
+    end
+
     private
 
     def index
-      @index ||= Tire::Index.new "sauron-#{Rails.env}"
+      @index ||= Tire::Index.new index_name
     end
 
     def search_messages(options = {}, &block)

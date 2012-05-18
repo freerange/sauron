@@ -3,11 +3,11 @@ require 'test_helper'
 class MessageRepository
   class ElasticSearchMessageIndexTest < ActiveSupport::TestCase
     setup do
-      index.reset!
+      index.delete_all
     end
 
     def index
-      @index ||= ElasticSearchMessageIndex.new
+      @index = ElasticSearchMessageIndex.new
     end
 
     def mail
