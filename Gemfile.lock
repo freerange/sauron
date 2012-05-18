@@ -1,5 +1,5 @@
 GIT
-  remote: git@github.com:freerange/recap.git
+  remote: git://github.com/freerange/recap.git
   revision: 7d7039fb8b246d8615b608dc7b1d5db0d40cdfef
   branch: foreman-export-template
   specs:
