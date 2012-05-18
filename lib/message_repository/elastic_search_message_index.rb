@@ -157,7 +157,9 @@ class MessageRepository
           }
         }
       }
-      index.refresh
+      # It seems that after recreating the index we need to wait
+      # some period of time before it is ready for searching.
+      sleep 0.5
     end
 
     private
