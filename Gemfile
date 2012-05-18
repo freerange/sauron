@@ -15,7 +15,7 @@ end
 gem 'jquery-rails'
 
 gem 'tire'
-gem 'recap', '~> 1.0.0'
+gem 'recap', git: 'git@github.com:freerange/recap.git', branch: 'foreman-export-template'
 gem 'foreman'
 gem 'unicorn'
 gem 'whenever', require: false

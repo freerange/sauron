@@ -6,6 +6,8 @@ set :application, "sauron"
 set :repository,  "git@github.com:freerange/sauron.git"
 set :branch, "master"
 
+set :foreman_export_template, "config/foreman/upstart"
+
 set :whenever_command, "bundle exec whenever"
 set(:whenever_identifier)   { application }
 set(:whenever_update_flags) { "--update-crontab #{whenever_identifier} -u #{application_user}" }
