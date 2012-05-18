@@ -201,7 +201,7 @@ class ConversationRepository::ConversationIndexTest < ActiveSupport::TestCase
     @message_repository.expects(:find_by_message_id).with('message-2').returns(messages[1])
     @message_repository.expects(:find_by_message_id).with('message-3').returns(messages[2])
 
-    assert_equal messages, conversation.messages
+    assert_equal messages.reverse, conversation.messages
   end
 
   test "returns nil if the conversation identifier doesn't exist" do

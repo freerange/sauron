@@ -42,7 +42,7 @@ class ConversationRepository
     end
 
     def messages
-      message_ids.map { |id| @message_repository.find_by_message_id(id) }
+      message_ids.map { |id| @message_repository.find_by_message_id(id) }.sort_by(&:date).reverse
     end
 
     def ==(other_conversation)
