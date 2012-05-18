@@ -1,24 +1,5 @@
 <div class="message">
-  <h1 class="subject"><%= @message.subject %></h1>
-  <dl class="dl-horizontal">
-    <dt>From</dt><dd class="from"><%= @message.from %></dd>
-    <dt>Date</dt><dd class="date"><%= @message.date %></dd>
-    <dt>To</dt><dd class="to">
-      <ul>
-      <% @message.to.each do |recipient| %>
-        <li class="to"><%= recipient %></li>
-      <% end %>
-      </ul>
-    </dd>
-    <dt>Recipients</dt><dd class="recipients">
-      <ul>
-      <% @message.recipients.each do |recipient| %>
-        <li class="recipient"><%= recipient %></li>
-      <% end %>
-      </ul>
-    </dd>
-  </dl>
-  <pre class="body"><%= @message.body %></pre>
+  <%= render partial: 'message', object: @message %>
 </div>
 
 <!--

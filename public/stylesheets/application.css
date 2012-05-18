@@ -20,3 +20,7 @@ ul#messages {
 .navbar-search .submit-button {
   display: none;
 }
+
+.conversation .message .subject {
+  display: none;
+}
