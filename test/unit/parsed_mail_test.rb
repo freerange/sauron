@@ -4,7 +4,7 @@ require 'test_helper'
 class ParsedMailTest < ActiveSupport::TestCase
   test "returns the date" do
     raw_message = ::Mail.new(date: "2012-01-01 09:00:00").to_s
-    assert_equal Time.parse("2012-01-01 09:00:00"), ParsedMail.new(raw_message).date
+    assert_equal Time.zone.parse("2012-01-01 09:00:00"), ParsedMail.new(raw_message).date
   end
 
   test "returns the message_id" do
