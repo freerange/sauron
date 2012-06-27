@@ -4,7 +4,6 @@ namespace :mail do
     Rails.logger.info("Starting import at #{Time.now}")
     begin
       TeamMailImporter.import_for(Team.new)
-      raise "SHIT"
     rescue Object => e
       messages = [
         "Import failed at #{Time.now}:",
