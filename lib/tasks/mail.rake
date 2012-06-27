@@ -4,10 +4,18 @@ namespace :mail do
     Rails.logger.info("Starting import at #{Time.now}")
     begin
       TeamMailImporter.import_for(Team.new)
+      raise "SHIT"
     rescue Object => e
-      Rails.logger.info("Import failed at #{Time.now}:")
-      Rails.logger.info(e)
-      Rails.logger.info(e.backtrace.join("\n"))
+      messages = [
+        "Import failed at #{Time.now}:",
+        e,
+        e.class,
+        e.instance_variables.inject({}) { |h, v| h[v] = e.instance_variable_get(v); h },
+        e.respond_to?(:response) ? e.response : nil,
+        e.backtrace.join("\n")
+      ].compact
+      messages.each { |m| Rails.logger.info(m) }
+      messages.each { |m| puts m }
       raise e
     end
     Rails.logger.info("Done import at #{Time.now}")
