@@ -3,7 +3,11 @@ namespace :mail do
   task :import => :environment do
     Rails.logger.info("Starting import at #{Time.now}")
     begin
-      TeamMailImporter.import_for(Team.new)
+      IntermittentErrorHandler.new(Rails.logger) do
+        IntermittentImapErrorFilter.new do
+          TeamMailImporter.import_for(Team.new)
+        end
+      end
     rescue Object => e
       messages = [
         "Import failed at #{Time.now}:",
