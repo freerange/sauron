@@ -29,7 +29,8 @@ class IntermittentImapErrorFilter
         raise e
       end
     rescue Net::IMAP::ByeResponseError => e
-      if e.message == 'System error'
+      case e.message
+      when 'System error', 'Temporary System Error'
         raise KnownError.new(e)
       else
         raise e

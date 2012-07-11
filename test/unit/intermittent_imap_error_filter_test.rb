@@ -33,6 +33,14 @@ class IntermittentImapErrorFilterTest < ActiveSupport::TestCase
     end
   end
 
+  test "should re-raise errors caused by IMAP response 'BYE Temporary System Error' as KnownError" do
+    assert_raises(IntermittentImapErrorFilter::KnownError) do
+      IntermittentImapErrorFilter.new do
+        raise Net::IMAP::ByeResponseError.new(stub('response', name: 'BYE', data: stub('data', text: 'Temporary System Error')))
+      end
+    end
+  end
+
   test "should re-raise other errors transparently" do
     assert_raises(RuntimeError) do
       IntermittentImapErrorFilter.new { raise RuntimeError }
