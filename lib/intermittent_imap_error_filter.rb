@@ -32,7 +32,7 @@ class IntermittentImapErrorFilter
       case e.message
       when 'System error', 'Temporary System Error'
         raise KnownError.new(e)
-      when /\w{11,12}we\w\.\d+/
+      when /\w{9,12}we\w\.\d+/
         raise KnownError.new(e)
       else
         raise e

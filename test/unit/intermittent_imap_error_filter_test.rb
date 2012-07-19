@@ -42,15 +42,11 @@ class IntermittentImapErrorFilterTest < ActiveSupport::TestCase
   end
 
   test "should re-raise errors caused by IAMP response 'BYE System Error p34if2288003weq.91' (or thereabouts) as KnownError" do
-    assert_raises(IntermittentImapErrorFilter::KnownError) do
-      IntermittentImapErrorFilter.new do
-        raise Net::IMAP::ByeResponseError.new(stub('response', name: 'BYE', data: stub('data', text: 'u47if2308312wes.68')))
-      end
-    end
-
-    assert_raises(IntermittentImapErrorFilter::KnownError) do
-      IntermittentImapErrorFilter.new do
-        raise Net::IMAP::ByeResponseError.new(stub('response', name: 'BYE', data: stub('data', text: 'h54if230849wec.1')))
+    %w(x9if40165web.199 u47if2308312wes.68 h54if230849wec.1).each do |text|
+      assert_raises(IntermittentImapErrorFilter::KnownError) do
+        IntermittentImapErrorFilter.new do
+          raise Net::IMAP::ByeResponseError.new(stub('response', name: 'BYE', data: stub('data', text: text)))
+        end
       end
     end
   end
